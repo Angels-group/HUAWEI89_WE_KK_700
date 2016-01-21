@@ -281,7 +281,7 @@ static int get_tmd2771_register(struct tmd2771_priv  *aps, u8 reg, int flag)
  * DF:Device Factor
  * alsGain: ALS Gain
  * aTime: ALS Timing
- * ALSIT = 2.72ms * (256 ¨C ATIME) = 2.72ms * (256-0xDB) =  100ms
+ * ALSIT = 2.72ms * (256 áº€C ATIME) = 2.72ms * (256-0xDB) =  100ms
  */
 
 /*

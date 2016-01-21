@@ -38,6 +38,7 @@
 #include <linux/wakelock.h>
 //add for fix resume issue end
 #include <linux/hardware_self_adapt.h>
+#include <mtk_kpd.h>
 #include <cust_alsps.h>
 
 #define SENSOR_INVALID_VALUE -1

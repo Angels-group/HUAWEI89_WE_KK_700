@@ -80,16 +80,15 @@ VBAT_TO_PERCENT Batt_VoltToPercent_Table[] = {
 /* Teperature related setting */
 #define RBAT_PULL_UP_R             39000
 #define RBAT_PULL_UP_VOLT          1800
-//#define TBAT_OVER_CRITICAL_LOW     68237
-//#define TBAT_OVER_CRITICAL_LOW     483954
 #define TBAT_OVER_CRITICAL_LOW     68237
+//#define TBAT_OVER_CRITICAL_LOW     483954
 #define BAT_TEMP_PROTECT_ENABLE    1
 #define BAT_NTC_10 1
 #define BAT_NTC_47 0
 
 /* Battery Notify */
-#define BATTERY_NOTIFY_CASE_0001
-#define BATTERY_NOTIFY_CASE_0002
+//#define BATTERY_NOTIFY_CASE_0001
+//#define BATTERY_NOTIFY_CASE_0002
 //#define BATTERY_NOTIFY_CASE_0003
 //#define BATTERY_NOTIFY_CASE_0004
 //#define BATTERY_NOTIFY_CASE_0005

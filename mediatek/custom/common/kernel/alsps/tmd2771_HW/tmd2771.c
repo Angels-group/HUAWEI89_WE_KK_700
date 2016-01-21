@@ -117,7 +117,7 @@ module_param_named(tmd2771_debug, tmd2771_debug_mask, int, S_IRUGO | S_IWUSR | S
 	extern void mt_eint_set_polarity(kal_uint8 eintno, kal_bool ACT_Polarity);
 	extern void mt_eint_set_hw_debounce(kal_uint8 eintno, kal_uint32 ms);
 	extern kal_uint32 mt_eint_set_sens(kal_uint8 eintno, kal_bool sens);
-	extern void mt_eint_registration(kal_uint8 eintno, kal_bool Dbounce_En,
+	extern void mt65xx_eint_registration(kal_uint8 eintno, kal_bool Dbounce_En,
 										 kal_bool ACT_Polarity, void (EINT_FUNC_PTR)(void),
 										 kal_bool auto_umask);
 	
@@ -926,7 +926,7 @@ int tmd2771_setup_eint(struct i2c_client *client)
 	mt_eint_set_sens(CUST_EINT_ALS_NUM, CUST_EINT_ALS_SENSITIVE);
 	mt_eint_set_polarity(CUST_EINT_ALS_NUM, CUST_EINT_ALS_POLARITY);
 	mt_eint_set_hw_debounce(CUST_EINT_ALS_NUM, CUST_EINT_ALS_DEBOUNCE_CN);
-	mt_eint_registration(CUST_EINT_ALS_NUM, CUST_EINT_ALS_DEBOUNCE_EN, CUST_EINT_ALS_POLARITY, tmd2771_eint_func, 0);
+	mt65xx_eint_registration(CUST_EINT_ALS_NUM, CUST_EINT_ALS_DEBOUNCE_EN, CUST_EINT_ALS_POLARITY, tmd2771_eint_func, 0);
 
 	mt_eint_mask(CUST_EINT_ALS_NUM);
     return 0;
@@ -1412,7 +1412,9 @@ int tmd2771_ps_operate(void* self, uint32_t command, void* buff_in, int size_in,
 			else
 			{				
 				value = *(int *)buff_in;
-				
+				/*change power_key_ps to false when enable ps*/  
+				//power_key_ps = false;  
+
 				if(value)
 				{
 					if(err = tmd2771_enable_ps(obj->client, 1))

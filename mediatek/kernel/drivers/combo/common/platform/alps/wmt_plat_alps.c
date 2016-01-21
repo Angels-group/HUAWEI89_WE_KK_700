@@ -521,15 +521,13 @@ wmt_plat_eirq_ctrl (
     case PIN_BGF_EINT:
 #ifdef GPIO_COMBO_BGF_EINT_PIN
         if (PIN_STA_INIT == state) {
-#if 0
-            mt_eint_set_sens(CUST_EINT_COMBO_BGF_NUM, CUST_EINT_COMBO_BGF_SENSITIVE);
+            #if CUST_EINT_COMBO_BGF_DEBOUNCE_EN
             mt_eint_set_hw_debounce(CUST_EINT_COMBO_BGF_NUM, CUST_EINT_COMBO_BGF_DEBOUNCE_CN);
+            #endif
             mt_eint_registration(CUST_EINT_COMBO_BGF_NUM,
-                CUST_EINT_COMBO_BGF_DEBOUNCE_EN,
-                CUST_EINT_COMBO_BGF_POLARITY,
+            		CUST_EINT_COMBO_BGF_TYPE,
                 wmt_plat_bgf_eirq_cb,
                 0);
-#endif
             mt_eint_mask(CUST_EINT_COMBO_BGF_NUM); /*2*/
         }
         else if (PIN_STA_EINT_EN == state) {
@@ -1036,7 +1034,7 @@ INT32 wmt_plat_pcm_ctrl(ENUM_PIN_STATE state)
 	
 	if (0 != normalPCMFlag)
 	{
-    #if (CONFIG_ARCH_MT6589)
+
 		/*normal PCM function define*/
 		switch(state)
 		{
@@ -1073,43 +1071,6 @@ INT32 wmt_plat_pcm_ctrl(ENUM_PIN_STATE state)
 			WMT_WARN_FUNC("WMT-PLAT:MT6589 Warnning, invalid state(%d) on PCM Group\n", state);
 			break;
 		}
-    #else
-		switch(state)
-		{
-		case PIN_STA_MUX:
-		case PIN_STA_INIT:
-			mt_set_gpio_mode(GPIO_PCM_DAICLK_PIN, GPIO_PCM_DAICLK_PIN_M_CLK);
-			mt_set_gpio_mode(GPIO_PCM_DAIPCMOUT_PIN, GPIO_PCM_DAIPCMOUT_PIN_M_DAIPCMOUT);
-			mt_set_gpio_mode(GPIO_PCM_DAIPCMIN_PIN, GPIO_PCM_DAIPCMIN_PIN_M_DAIPCMIN);
-			mt_set_gpio_mode(GPIO_PCM_DAISYNC_PIN, GPIO_PCM_DAISYNC_PIN_M_BTSYNC);
-			WMT_DBG_FUNC("WMT-PLAT:PCM init (pcm) \n");
-			break;
-	
-		case PIN_STA_IN_L:
-		case PIN_STA_DEINIT:
-			mt_set_gpio_mode(GPIO_PCM_DAICLK_PIN, GPIO_PCM_DAICLK_PIN_M_GPIO);
-			mt_set_gpio_dir(GPIO_PCM_DAICLK_PIN, GPIO_DIR_OUT);
-			mt_set_gpio_out(GPIO_PCM_DAICLK_PIN, GPIO_OUT_ZERO);
-	
-			mt_set_gpio_mode(GPIO_PCM_DAIPCMOUT_PIN, GPIO_PCM_DAIPCMOUT_PIN_M_GPIO);
-			mt_set_gpio_dir(GPIO_PCM_DAIPCMOUT_PIN, GPIO_DIR_OUT);
-			mt_set_gpio_out(GPIO_PCM_DAIPCMOUT_PIN, GPIO_OUT_ZERO);
-	
-			mt_set_gpio_mode(GPIO_PCM_DAIPCMIN_PIN, GPIO_PCM_DAIPCMIN_PIN_M_GPIO);
-			mt_set_gpio_dir(GPIO_PCM_DAIPCMIN_PIN, GPIO_DIR_OUT);
-			mt_set_gpio_out(GPIO_PCM_DAIPCMIN_PIN, GPIO_OUT_ZERO);
-	
-			mt_set_gpio_mode(GPIO_PCM_DAISYNC_PIN, GPIO_PCM_DAISYNC_PIN_M_GPIO);
-			mt_set_gpio_dir(GPIO_PCM_DAISYNC_PIN, GPIO_DIR_OUT);
-			mt_set_gpio_out(GPIO_PCM_DAISYNC_PIN, GPIO_OUT_ZERO);
-			WMT_DBG_FUNC("WMT-PLAT:PCM deinit (out 0) \n");
-			break;
-	
-		default:
-			WMT_WARN_FUNC("WMT-PLAT:Warnning, invalid state(%d) on PCM Group\n", state);
-			break;
-		}
-    #endif
 	}
 	
     return 0;
@@ -1176,7 +1137,6 @@ INT32 wmt_plat_i2s_ctrl(ENUM_PIN_STATE state)
 	}
     if (0 != normalI2SFlag)
     {
-     #if (CONFIG_ARCH_MT6589)
 	    #if defined(FM_DIGITAL_INPUT) || defined(FM_DIGITAL_OUTPUT)
 	        #if defined (GPIO_COMBO_I2S_CK_PIN)
 			    switch(state)
@@ -1213,44 +1173,6 @@ INT32 wmt_plat_i2s_ctrl(ENUM_PIN_STATE state)
     #else
             WMT_INFO_FUNC( "[MT662x]<I2S IF>warnning:FM digital mode is not set, no I2S GPIO settings should be modified by combo driver\n");
 		#endif
-	#else
-		#if defined(FM_DIGITAL_INPUT) || defined(FM_DIGITAL_OUTPUT)
-		    #if defined (GPIO_COMBO_I2S_CK_PIN)
-		        switch(state)
-		        {
-		        case PIN_STA_INIT:
-		        case PIN_STA_MUX:
-		                mt_set_gpio_mode(GPIO_COMBO_I2S_CK_PIN, GPIO_COMBO_I2S_CK_PIN_M_I2S0_CK);
-		                mt_set_gpio_mode(GPIO_COMBO_I2S_WS_PIN, GPIO_COMBO_I2S_WS_PIN_M_I2S0_WS);
-		                mt_set_gpio_mode(GPIO_COMBO_I2S_DAT_PIN, GPIO_COMBO_I2S_DAT_PIN_M_I2S0_DAT);
-		                WMT_DBG_FUNC("WMT-PLAT:I2S init (I2S0 system) \n");
-		            break;
-		        case PIN_STA_IN_L:
-		        case PIN_STA_DEINIT:
-		                mt_set_gpio_mode(GPIO_COMBO_I2S_CK_PIN, GPIO_COMBO_I2S_CK_PIN_M_GPIO);
-		                mt_set_gpio_dir(GPIO_COMBO_I2S_CK_PIN, GPIO_DIR_OUT);
-		                mt_set_gpio_out(GPIO_COMBO_I2S_CK_PIN, GPIO_OUT_ZERO);
-
-		                mt_set_gpio_mode(GPIO_COMBO_I2S_WS_PIN, GPIO_COMBO_I2S_WS_PIN_M_GPIO);
-		                mt_set_gpio_dir(GPIO_COMBO_I2S_WS_PIN, GPIO_DIR_OUT);
-		                mt_set_gpio_out(GPIO_COMBO_I2S_WS_PIN, GPIO_OUT_ZERO);
-		    
-		                mt_set_gpio_mode(GPIO_COMBO_I2S_DAT_PIN, GPIO_COMBO_I2S_DAT_PIN_M_GPIO);
-		                mt_set_gpio_dir(GPIO_COMBO_I2S_DAT_PIN, GPIO_DIR_OUT);
-		                mt_set_gpio_out(GPIO_COMBO_I2S_DAT_PIN, GPIO_OUT_ZERO);
-		                WMT_DBG_FUNC("WMT-PLAT:I2S deinit (out 0) \n");
-		            break;
-		        default:
-		            WMT_WARN_FUNC("WMT-PLAT:Warnning, invalid state(%d) on I2S Group\n", state);
-		            break;
-		        }
-		    #else
-		        WMT_ERR_FUNC( "[MT662x]Error:FM digital mode set, but no I2S GPIOs defined\n");
-		    #endif
-		#else
-		        WMT_INFO_FUNC( "[MT662x]warnning:FM digital mode is not set, no I2S GPIO settings should be modified by combo driver\n");
-		#endif
-	#endif
     }
 	
     return 0;

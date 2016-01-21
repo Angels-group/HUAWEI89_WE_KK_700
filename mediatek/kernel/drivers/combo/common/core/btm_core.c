@@ -456,7 +456,9 @@ static INT32 _stp_btm_proc (void *pvData)
         if(gDumplogflag)
         {
             //printk("enter place1\n");    
+            #if WMT_PLAT_ALPS
             dump_uart_history();
+            #endif
             gDumplogflag = 0;
             continue;
         }

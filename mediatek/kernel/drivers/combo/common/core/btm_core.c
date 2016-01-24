@@ -171,7 +171,7 @@ static INT32 _stp_btm_put_dump_to_aee(void)
 			retry = 0;
         } else {  
             retry ++;
-            osal_sleep_ms(100);
+            osal_sleep_ms(20);
         }
     }while ((remain > 0) || (retry < 10));
 

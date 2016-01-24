@@ -58,10 +58,10 @@ enum {
 
 extern void mt6616_poweron(int idx);
 extern void mt6616_poweroff(int idx);
-extern void MT65XX_EINT_IRQ_UNMASK(unsigned int line);
-extern void MT65XX_EINT_IRQ_MASK(unsigned int line);
-extern void MT65XX_EINT_SET_HW_DEBOUNCE(kal_uint8 eintno, kal_uint32 ms);
-extern kal_uint32 MT65XX_EINT_SET_SENSITIVITY(kal_uint8 eintno, kal_bool sens);
+extern void MT_EINT_IRQ_UNMASK(unsigned int line);
+extern void MT_EINT_IRQ_MASK(unsigned int line);
+extern void MT_EINT_SET_HW_DEBOUNCE(kal_uint8 eintno, kal_uint32 ms);
+extern kal_uint32 MT_EINT_SET_SENSITIVITY(kal_uint8 eintno, kal_bool sens);
 extern void MT65XX_EINT_REGISTRATION(kal_uint8 eintno, kal_bool Dbounce_En, 
                                      kal_bool ACT_Polarity, void (EINT_FUNC_PTR)(void), 
                                      kal_bool auto_umask);
@@ -3259,7 +3259,7 @@ static int __init mt_fm_init(void)
 
 	WCN_DBG(L4|D_ALL,"Enter %s\n", __FUNCTION__);
 
-#ifdef MT6516
+#if 0//def MT6516
 	WCN_DBG(L4|D_ALL,"i2c_add_driver PORT = 2, client addr = 0xe0\n");
 #else
 	WCN_DBG(L4|D_ALL,"i2c_add_driver PORT = 1, client addr = 0xe0\n");

@@ -159,12 +159,12 @@ int mt_bt_resume(pm_message_t state)
 #if defined(CONFIG_MTK_WCN_CMB_SDIO_SLOT)
 static void mtk_wcn_cmb_sdio_enable_eirq(void)
 {
-    mt65xx_eint_unmask(mtk_wcn_cmb_sdio_eint_num);/* CUST_EINT_WIFI_NUM */
+    mt_eint_unmask(mtk_wcn_cmb_sdio_eint_num);/* CUST_EINT_WIFI_NUM */
 }
 
 static void mtk_wcn_cmb_sdio_disable_eirq(void)
 {
-    mt65xx_eint_mask(mtk_wcn_cmb_sdio_eint_num); /* CUST_EINT_WIFI_NUM */
+    mt_eint_mask(mtk_wcn_cmb_sdio_eint_num); /* CUST_EINT_WIFI_NUM */
 }
 
 static void mtk_wcn_cmb_sdio_eirq_handler_stub(void)
@@ -179,8 +179,8 @@ static void mtk_wcn_cmb_sdio_request_eirq(sdio_irq_handler_t irq_handler, void *
     mtk_wcn_sdio_irq_flag_set (0);
     mtk_wcn_cmb_sdio_eirq_data    = data;
     mtk_wcn_cmb_sdio_eirq_handler = irq_handler;
-    mt65xx_eint_set_sens(mtk_wcn_cmb_sdio_eint_num, CUST_EINT_WIFI_SENSITIVE); /*CUST_EINT_WIFI_NUM */
-    mt65xx_eint_set_hw_debounce(mtk_wcn_cmb_sdio_eint_num, CUST_EINT_WIFI_DEBOUNCE_CN); /*CUST_EINT_WIFI_NUM */
+    mt_eint_set_sens(mtk_wcn_cmb_sdio_eint_num, CUST_EINT_WIFI_SENSITIVE); /*CUST_EINT_WIFI_NUM */
+    mt_eint_set_hw_debounce(mtk_wcn_cmb_sdio_eint_num, CUST_EINT_WIFI_DEBOUNCE_CN); /*CUST_EINT_WIFI_NUM */
     mt_set_gpio_pull_enable(mtk_wcn_cmb_sdio_eint_pin, GPIO_PULL_ENABLE);
     mt_set_gpio_pull_select(mtk_wcn_cmb_sdio_eint_pin, GPIO_PULL_UP);
     mt65xx_eint_registration(mtk_wcn_cmb_sdio_eint_num/*CUST_EINT_WIFI_NUM */,
@@ -188,7 +188,7 @@ static void mtk_wcn_cmb_sdio_request_eirq(sdio_irq_handler_t irq_handler, void *
         CUST_EINT_WIFI_POLARITY,
         mtk_wcn_cmb_sdio_eirq_handler_stub,
         0);
-    mt65xx_eint_mask(mtk_wcn_cmb_sdio_eint_num);/*CUST_EINT_WIFI_NUM */
+    mt_eint_mask(mtk_wcn_cmb_sdio_eint_num);/*CUST_EINT_WIFI_NUM */
 
 }
 
@@ -297,12 +297,12 @@ EXPORT_SYMBOL(mtk_wcn_sdio_irq_flag_set);
 #if !defined(CONFIG_MTK_WCN_CMB_SDIO_SLOT)
 static void mt_wifi_enable_irq(void)
 {
-    mt65xx_eint_unmask(CUST_EINT_WIFI_NUM);
+    mt_eint_unmask(CUST_EINT_WIFI_NUM);
 }
 
 static void mt_wifi_disable_irq(void)
 {
-    mt65xx_eint_mask(CUST_EINT_WIFI_NUM);
+    mt_eint_mask(CUST_EINT_WIFI_NUM);
 }
 
 static void mt_wifi_eirq_handler(void)
@@ -314,14 +314,14 @@ static void mt_wifi_eirq_handler(void)
 
 static void mt_wifi_request_irq(sdio_irq_handler_t irq_handler, void *data)
 {
-    mt65xx_eint_set_sens(CUST_EINT_WIFI_NUM, CUST_EINT_WIFI_SENSITIVE);
-    mt65xx_eint_set_hw_debounce(CUST_EINT_WIFI_NUM, CUST_EINT_WIFI_DEBOUNCE_CN);
+    mt_eint_set_sens(CUST_EINT_WIFI_NUM, CUST_EINT_WIFI_SENSITIVE);
+    mt_eint_set_hw_debounce(CUST_EINT_WIFI_NUM, CUST_EINT_WIFI_DEBOUNCE_CN);
     mt65xx_eint_registration(CUST_EINT_WIFI_NUM,
         CUST_EINT_WIFI_DEBOUNCE_EN,
         CUST_EINT_WIFI_POLARITY,
         mt_wifi_eirq_handler,
         0);
-    mt65xx_eint_mask(CUST_EINT_WIFI_NUM);
+    mt_eint_mask(CUST_EINT_WIFI_NUM);
 
     mt_wifi_irq_handler = irq_handler;
     mt_wifi_irq_data    = data;

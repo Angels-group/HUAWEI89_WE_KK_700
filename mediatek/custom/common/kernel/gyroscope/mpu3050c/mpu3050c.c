@@ -1071,7 +1071,7 @@ static int mpu3000_init_client(struct i2c_client *client, bool enable)
 	GYRO_FUN();	
 	mpu3000_gpio_config();
 
-	res = MPU3000_SetPowerMode(client, true);
+	res = MPU3000_SetPowerMode(client, enable);
 	if(res != MPU3000_SUCCESS)
 	{
 		return res;

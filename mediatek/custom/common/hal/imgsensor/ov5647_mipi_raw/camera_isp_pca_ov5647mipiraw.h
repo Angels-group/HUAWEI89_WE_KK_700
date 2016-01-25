@@ -58,7 +58,6 @@ TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE, OR REFUND ANY SOFTWARE LICE
  *     THE TRANSACTION CONTEMPLATED HEREUNDER SHALL BE CONSTRUED IN ACCORDANCE WITH THE LAWS
  *     OF THE STATE OF CALIFORNIA, USA, EXCLUDING ITS CONFLICT OF LAWS PRINCIPLES.
  ************************************************************************************************/
-
 /*******************************************************************************
 *   ISP_NVRAM_PCA_STRUCT
 ********************************************************************************/
@@ -623,4 +622,3 @@ PCA_LUTS:{
         {   0,      0x32,      0,      0   }, //
     }
 }
-

@@ -1,37 +1,37 @@
 /* Copyright Statement:
-*
-* This software/firmware and related documentation ("MediaTek Software") are
-* protected under relevant copyright laws. The information contained herein
-* is confidential and proprietary to MediaTek Inc. and/or its licensors.
-* Without the prior written permission of MediaTek inc. and/or its licensors,
-* any reproduction, modification, use or disclosure of MediaTek Software,
-* and information contained herein, in whole or in part, shall be strictly prohibited.
-*/
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. and/or its licensors.
+ * Without the prior written permission of MediaTek inc. and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ */
 /* MediaTek Inc. (C) 2010. All rights reserved.
-*
-* BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
-* THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
-* RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
-* AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
-* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
-* NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
-* SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
-* SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
-* THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
-* THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
-* CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
-* SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
-* STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
-* CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
-* AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
-* OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
-* MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
-*
-* The following software/firmware and/or related documentation ("MediaTek Software")
-* have been modified by MediaTek Inc. All revisions are subject to any receiver's
+ *
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
+ * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
+ * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ *
+ * The following software/firmware and/or related documentation ("MediaTek Software")
+ * have been modified by MediaTek Inc. All revisions are subject to any receiver's
  * applicable license agreements with MediaTek Inc.
-*/
+ */
 
 /*
 **
@@ -49,12 +49,12 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
-
 #ifndef _CAMERA_AE_PLINETABLE_OV5647MIPIRAW_H
 #define _CAMERA_AE_PLINETABLE_OV5647MIPIRAW_H
 
 #include "camera_custom_AEPlinetable.h"
-static strEvSetting sPreviewPLineTable_60Hz[133] =
+
+static strEvSetting sPreviewPLineTable_60Hz[131] =
 {
     {136,1408,1064, 0, 0, 0},  //TV = 12.84(4000 lines)  AV=2.97  SV=5.60  BV=10.22
     {170,1152,1080, 0, 0, 0},  //TV = 12.52(5000 lines)  AV=2.97  SV=5.33  BV=10.16
@@ -187,11 +187,9 @@ static strEvSetting sPreviewPLineTable_60Hz[133] =
     {199988,6656,1032, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=7.80  BV=-2.50
     {199988,7168,1024, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=7.89  BV=-2.60
     {199988,7680,1024, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=7.99  BV=-2.70
-    {199988,8192,1032, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=8.10  BV=-2.80
-    {199988,8192,1104, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=8.19  BV=-2.90
 };
 
-static strEvSetting sPreviewPLineTable_50Hz[133] =
+static strEvSetting sPreviewPLineTable_50Hz[131] =
 {
     {136,1408,1064, 0, 0, 0},  //TV = 12.84(4000 lines)  AV=2.97  SV=5.60  BV=10.22
     {170,1152,1080, 0, 0, 0},  //TV = 12.52(5000 lines)  AV=2.97  SV=5.33  BV=10.16
@@ -324,17 +322,15 @@ static strEvSetting sPreviewPLineTable_50Hz[133] =
     {199988,6656,1032, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=7.80  BV=-2.50
     {199988,7168,1024, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=7.89  BV=-2.60
     {199988,7680,1024, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=7.99  BV=-2.70
-    {199988,8192,1032, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=8.10  BV=-2.80
-    {199988,8192,1104, 0, 0, 0},  //TV = 2.32(5882000 lines)  AV=2.97  SV=8.19  BV=-2.90
 };
 
 static strAETable g_AE_PreviewTable =
 {
     AETABLE_RPEVIEW_AUTO,    //eAETableID
-    133,    //u4TotalIndex
+    131,    //u4TotalIndex
     20,    //u4StrobeTrigerBV
     103,    //i4MaxBV
-    -29,    //i4MinBV
+    -27,    //i4MinBV
     LIB3A_AE_ISO_SPEED_AUTO, //ISO SPEED
     sPreviewPLineTable_60Hz,
     sPreviewPLineTable_50Hz,
@@ -1349,7 +1345,7 @@ static strAETable g_AE_VideoNightDynamicTable =
     NULL,
 };
 
-static strEvSetting sCapturePLineTable_60Hz[125] =
+static strEvSetting sCapturePLineTable_60Hz[123] =
 {
     {140,1408,1032, 0, 0, 0},  //TV = 12.80(4000 lines)  AV=2.97  SV=5.55  BV=10.22
     {140,1408,1064, 0, 0, 0},  //TV = 12.80(4000 lines)  AV=2.97  SV=5.60  BV=10.17
@@ -1432,53 +1428,51 @@ static strEvSetting sCapturePLineTable_60Hz[125] =
     {33320,1152,1104, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.36  BV=2.52
     {33320,1280,1072, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.47  BV=2.41
     {33320,1408,1040, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.57  BV=2.31
-    {33320,1536,1024, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.67  BV=2.21
-    {33320,1536,1096, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.77  BV=2.11
-    {33320,1664,1088, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.87  BV=2.01
-    {33320,1792,1080, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.97  BV=1.91
-    {33320,1920,1088, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=6.08  BV=1.80
-    {33320,2176,1024, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=6.17  BV=1.71
-    {33320,2304,1032, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=6.27  BV=1.61
-    {33320,2432,1048, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=6.37  BV=1.51
-    {41650,2048,1072, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=6.15  BV=1.41
-    {41650,2304,1024, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=6.25  BV=1.30
+    {41650,1152,1088, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=5.34  BV=2.21
+    {41650,1280,1056, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=5.45  BV=2.11
+    {41650,1408,1024, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=5.54  BV=2.01
+    {49980,1152,1120, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.38  BV=1.91
+    {49980,1280,1080, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.48  BV=1.81
+    {49980,1408,1056, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.59  BV=1.71
+    {49980,1536,1032, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.68  BV=1.61
+    {49980,1664,1024, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.78  BV=1.51
+    {49980,1664,1096, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.88  BV=1.41
+    {49980,1792,1088, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.98  BV=1.31
     {49980,2048,1024, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.08  BV=1.21
     {49980,2176,1032, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.18  BV=1.11
-    {49980,2304,1048, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.29  BV=1.01
-    {49980,2432,1064, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.39  BV=0.91
-    {49980,2688,1032, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.49  BV=0.81
-    {49980,2816,1056, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.59  BV=0.71
-    {49980,3072,1040, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.69  BV=0.60
-    {49980,3328,1024, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.78  BV=0.51
-    {49980,3456,1056, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.88  BV=0.41
-    {58345,3200,1048, 0, 0, 0},  //TV = 4.10(1667000 lines)  AV=2.97  SV=6.76  BV=0.31
+    {49980,2304,1040, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.28  BV=1.02
+    {58345,2048,1080, 0, 0, 0},  //TV = 4.10(1667000 lines)  AV=2.97  SV=6.16  BV=0.91
+    {58345,2304,1032, 0, 0, 0},  //TV = 4.10(1667000 lines)  AV=2.97  SV=6.27  BV=0.80
+    {66675,2176,1024, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.17  BV=0.71
+    {66675,2304,1032, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.27  BV=0.61
+    {66675,2432,1048, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.37  BV=0.51
+    {66675,2560,1072, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.47  BV=0.41
+    {66675,2816,1040, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.57  BV=0.31
     {66675,3072,1024, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.67  BV=0.21
     {66675,3200,1056, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.77  BV=0.11
-    {66675,3456,1056, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.88  BV=-0.01
-    {66675,3712,1048, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.98  BV=-0.10
-    {66675,3968,1048, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=7.07  BV=-0.19
-    {66675,4352,1032, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=7.18  BV=-0.31
-    {75005,4096,1040, 0, 0, 0},  //TV = 3.74(2143000 lines)  AV=2.97  SV=7.11  BV=-0.40
-    {75005,4480,1024, 0, 0, 0},  //TV = 3.74(2143000 lines)  AV=2.97  SV=7.21  BV=-0.51
-    {83335,4224,1040, 0, 0, 0},  //TV = 3.58(2381000 lines)  AV=2.97  SV=7.15  BV=-0.60
-    {91665,4096,1048, 0, 0, 0},  //TV = 3.45(2619000 lines)  AV=2.97  SV=7.12  BV=-0.70
+    {75005,3072,1048, 0, 0, 0},  //TV = 3.74(2143000 lines)  AV=2.97  SV=6.70  BV=0.01
+    {75005,3328,1040, 0, 0, 0},  //TV = 3.74(2143000 lines)  AV=2.97  SV=6.81  BV=-0.10
+    {83335,3200,1040, 0, 0, 0},  //TV = 3.58(2381000 lines)  AV=2.97  SV=6.75  BV=-0.19
+    {91665,3072,1056, 0, 0, 0},  //TV = 3.45(2619000 lines)  AV=2.97  SV=6.71  BV=-0.30
+    {99995,3072,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.69  BV=-0.40
+    {99995,3328,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.78  BV=-0.49
+    {99995,3584,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.89  BV=-0.60
+    {99995,3840,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.00  BV=-0.71
     {99995,4096,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.10  BV=-0.80
-    {99995,4352,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.19  BV=-0.90
-    {99995,4736,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.29  BV=-1.00
-    {99995,4992,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.39  BV=-1.10
-    {99995,5376,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.49  BV=-1.19
-    {108325,5376,1024, 0, 0, 0},  //TV = 3.21(3095000 lines)  AV=2.97  SV=7.48  BV=-1.30
-    {116655,5248,1040, 0, 0, 0},  //TV = 3.10(3333000 lines)  AV=2.97  SV=7.46  BV=-1.39
-    {124985,5248,1040, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.46  BV=-1.49
-    {124985,5632,1040, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.57  BV=-1.59
-    {124985,6144,1024, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.67  BV=-1.70
-    {124985,6528,1032, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.77  BV=-1.80
-    {124985,7040,1032, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.88  BV=-1.91
-    {124985,7552,1032, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.98  BV=-2.01
-    {124985,8064,1032, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=8.07  BV=-2.10
+    {108325,4096,1024, 0, 0, 0},  //TV = 3.21(3095000 lines)  AV=2.97  SV=7.08  BV=-0.91
+    {116655,3968,1048, 0, 0, 0},  //TV = 3.10(3333000 lines)  AV=2.97  SV=7.07  BV=-1.00
+    {124985,3968,1048, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.07  BV=-1.10
+    {133315,4096,1024, 0, 0, 0},  //TV = 2.91(3809000 lines)  AV=2.97  SV=7.08  BV=-1.21
+    {141645,4096,1024, 0, 0, 0},  //TV = 2.82(4047000 lines)  AV=2.97  SV=7.08  BV=-1.29
+    {141645,4352,1040, 0, 0, 0},  //TV = 2.82(4047000 lines)  AV=2.97  SV=7.19  BV=-1.40
+    {141645,4736,1024, 0, 0, 0},  //TV = 2.82(4047000 lines)  AV=2.97  SV=7.29  BV=-1.50
+    {150010,4736,1032, 0, 0, 0},  //TV = 2.74(4286000 lines)  AV=2.97  SV=7.30  BV=-1.60
+    {158340,4864,1024, 0, 0, 0},  //TV = 2.66(4524000 lines)  AV=2.97  SV=7.33  BV=-1.70
+    {175000,4608,1048, 0, 0, 0},  //TV = 2.51(5000000 lines)  AV=2.97  SV=7.29  BV=-1.80
+    {183330,4736,1040, 0, 0, 0},  //TV = 2.45(5238000 lines)  AV=2.97  SV=7.32  BV=-1.90
 };
 
-static strEvSetting sCapturePLineTable_50Hz[125] =
+static strEvSetting sCapturePLineTable_50Hz[123] =
 {
     {140,1408,1032, 0, 0, 0},  //TV = 12.80(4000 lines)  AV=2.97  SV=5.55  BV=10.22
     {140,1408,1064, 0, 0, 0},  //TV = 12.80(4000 lines)  AV=2.97  SV=5.60  BV=10.17
@@ -1560,65 +1554,78 @@ static strEvSetting sCapturePLineTable_50Hz[125] =
     {29995,1280,1032, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.42  BV=2.61
     {29995,1280,1112, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.52  BV=2.51
     {29995,1408,1088, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.63  BV=2.40
-    {29995,1536,1056, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.71  BV=2.32
-    {29995,1664,1048, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.82  BV=2.21
-    {29995,1792,1040, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.91  BV=2.12
-    {29995,1920,1040, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.01  BV=2.02
-    {29995,2048,1048, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.12  BV=1.91
-    {29995,2176,1056, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.22  BV=1.81
-    {29995,2304,1072, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.32  BV=1.71
-    {29995,2560,1032, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.42  BV=1.61
-    {40005,2048,1040, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=6.11  BV=1.51
-    {40005,2176,1048, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=6.20  BV=1.41
-    {40005,2304,1056, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=6.30  BV=1.32
+    {29995,1536,1064, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.72  BV=2.31
+    {40005,1280,1024, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=5.41  BV=2.21
+    {40005,1280,1096, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=5.50  BV=2.11
+    {40005,1408,1064, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=5.60  BV=2.02
+    {50015,1152,1120, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.38  BV=1.91
+    {50015,1280,1080, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.48  BV=1.81
+    {50015,1408,1056, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.59  BV=1.70
+    {50015,1536,1032, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.68  BV=1.61
+    {50015,1664,1024, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.78  BV=1.51
+    {50015,1664,1096, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.88  BV=1.41
+    {50015,1792,1088, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.98  BV=1.31
     {50015,2048,1024, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.08  BV=1.21
     {50015,2176,1032, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.18  BV=1.11
-    {50015,2304,1048, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.29  BV=1.00
-    {50015,2432,1056, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.38  BV=0.92
-    {50015,2688,1032, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.49  BV=0.80
-    {50015,2816,1056, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.59  BV=0.70
-    {50015,3072,1032, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.68  BV=0.61
-    {50015,3328,1024, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.78  BV=0.51
-    {50015,3456,1056, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.88  BV=0.41
-    {59990,3072,1064, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.72  BV=0.31
+    {50015,2304,1040, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.28  BV=1.02
+    {59990,2048,1048, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.12  BV=0.91
+    {59990,2176,1064, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.23  BV=0.80
+    {59990,2304,1072, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.32  BV=0.71
+    {59990,2560,1040, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.43  BV=0.60
+    {59990,2688,1056, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.52  BV=0.51
+    {59990,2944,1032, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.62  BV=0.41
+    {59990,3072,1056, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.71  BV=0.32
     {59990,3328,1048, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.82  BV=0.21
-    {59990,3584,1040, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.91  BV=0.12
-    {59990,3840,1056, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=7.04  BV=-0.01
-    {59990,4224,1024, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=7.13  BV=-0.10
-    {59990,4480,1032, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=7.22  BV=-0.19
-    {70000,4096,1040, 0, 0, 0},  //TV = 3.84(2000000 lines)  AV=2.97  SV=7.11  BV=-0.30
-    {70000,4480,1024, 0, 0, 0},  //TV = 3.84(2000000 lines)  AV=2.97  SV=7.21  BV=-0.41
-    {80010,4096,1048, 0, 0, 0},  //TV = 3.64(2286000 lines)  AV=2.97  SV=7.12  BV=-0.50
-    {80010,4480,1024, 0, 0, 0},  //TV = 3.64(2286000 lines)  AV=2.97  SV=7.21  BV=-0.60
-    {89985,4224,1032, 0, 0, 0},  //TV = 3.47(2571000 lines)  AV=2.97  SV=7.14  BV=-0.69
+    {70000,3072,1040, 0, 0, 0},  //TV = 3.84(2000000 lines)  AV=2.97  SV=6.69  BV=0.12
+    {70000,3328,1040, 0, 0, 0},  //TV = 3.84(2000000 lines)  AV=2.97  SV=6.81  BV=0.00
+    {80010,3072,1056, 0, 0, 0},  //TV = 3.64(2286000 lines)  AV=2.97  SV=6.71  BV=-0.10
+    {80010,3328,1040, 0, 0, 0},  //TV = 3.64(2286000 lines)  AV=2.97  SV=6.81  BV=-0.19
+    {89985,3200,1032, 0, 0, 0},  //TV = 3.47(2571000 lines)  AV=2.97  SV=6.74  BV=-0.29
+    {99995,3072,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.69  BV=-0.40
+    {99995,3328,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.78  BV=-0.49
+    {99995,3584,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.89  BV=-0.60
+    {99995,3840,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.00  BV=-0.71
     {99995,4096,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.10  BV=-0.80
-    {99995,4352,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.19  BV=-0.90
-    {99995,4736,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.29  BV=-1.00
-    {99995,4992,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.39  BV=-1.10
-    {99995,5376,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.49  BV=-1.19
-    {110005,5248,1032, 0, 0, 0},  //TV = 3.18(3143000 lines)  AV=2.97  SV=7.45  BV=-1.30
-    {120015,5120,1040, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.43  BV=-1.40
-    {120015,5504,1040, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.53  BV=-1.50
-    {120015,5888,1040, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.63  BV=-1.60
-    {120015,6400,1024, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.73  BV=-1.70
-    {120015,6784,1032, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.82  BV=-1.79
-    {120015,7296,1032, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.93  BV=-1.90
-    {120015,7936,1024, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=8.04  BV=-2.01
-    {120015,8192,1056, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=8.13  BV=-2.10
+    {110005,3968,1040, 0, 0, 0},  //TV = 3.18(3143000 lines)  AV=2.97  SV=7.06  BV=-0.91
+    {110005,4224,1040, 0, 0, 0},  //TV = 3.18(3143000 lines)  AV=2.97  SV=7.15  BV=-1.00
+    {120015,4224,1024, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.13  BV=-1.10
+    {129990,4096,1048, 0, 0, 0},  //TV = 2.94(3714000 lines)  AV=2.97  SV=7.12  BV=-1.20
+    {140000,4096,1040, 0, 0, 0},  //TV = 2.84(4000000 lines)  AV=2.97  SV=7.11  BV=-1.30
+    {140000,4480,1024, 0, 0, 0},  //TV = 2.84(4000000 lines)  AV=2.97  SV=7.21  BV=-1.41
+    {140000,4736,1032, 0, 0, 0},  //TV = 2.84(4000000 lines)  AV=2.97  SV=7.30  BV=-1.50
+    {150010,4736,1032, 0, 0, 0},  //TV = 2.74(4286000 lines)  AV=2.97  SV=7.30  BV=-1.60
+    {159985,4736,1040, 0, 0, 0},  //TV = 2.64(4571000 lines)  AV=2.97  SV=7.32  BV=-1.70
+    {169995,4864,1024, 0, 0, 0},  //TV = 2.56(4857000 lines)  AV=2.97  SV=7.33  BV=-1.80
+    {180005,4864,1032, 0, 0, 0},  //TV = 2.47(5143000 lines)  AV=2.97  SV=7.34  BV=-1.90
 };
 
 static strAETable g_AE_CaptureTable =
 {
     AETABLE_CAPTURE_AUTO,    //eAETableID
-    125,    //u4TotalIndex
+    123,    //u4TotalIndex
     20,    //u4StrobeTrigerBV
     103,    //i4MaxBV
-    -21,    //i4MinBV
+    -19,    //i4MinBV
     LIB3A_AE_ISO_SPEED_AUTO, //ISO SPEED
     sCapturePLineTable_60Hz,
     sCapturePLineTable_50Hz,
     NULL,
 };
+
+
+static strAETable g_AE_CaptureZSDTable =
+{
+    AETABLE_CAPTURE_AUTO_ZSD,    //eAETableID
+    123,    //u4TotalIndex
+    20,    //u4StrobeTrigerBV
+    103,    //i4MaxBV
+    -19,    //i4MinBV
+    LIB3A_AE_ISO_SPEED_AUTO, //ISO SPEED
+    sCapturePLineTable_60Hz,
+    sCapturePLineTable_50Hz,
+    NULL,
+};
+
 
 static strEvSetting sCaptureISO100PLineTable_60Hz[97] =
 {
@@ -2707,7 +2714,7 @@ static strAETable g_AE_CaptureISO1600Table =
     NULL,
 };
 
-static strEvSetting sAEMode1PLineTable_60Hz[133] =
+static strEvSetting sAEMode1PLineTable_60Hz[131] =
 {
     {140,1408,1032, 0, 0, 0},  //TV = 12.80(4000 lines)  AV=2.97  SV=5.55  BV=10.22
     {140,1408,1064, 0, 0, 0},  //TV = 12.80(4000 lines)  AV=2.97  SV=5.60  BV=10.17
@@ -2790,61 +2797,59 @@ static strEvSetting sAEMode1PLineTable_60Hz[133] =
     {33320,1152,1104, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.36  BV=2.52
     {33320,1280,1072, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.47  BV=2.41
     {33320,1408,1040, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.57  BV=2.31
-    {33320,1536,1024, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.67  BV=2.21
-    {33320,1536,1096, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.77  BV=2.11
-    {33320,1664,1088, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.87  BV=2.01
-    {33320,1792,1080, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=5.97  BV=1.91
-    {33320,1920,1088, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=6.08  BV=1.80
-    {33320,2176,1024, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=6.17  BV=1.71
-    {33320,2304,1032, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=6.27  BV=1.61
-    {33320,2432,1048, 0, 0, 0},  //TV = 4.91(952000 lines)  AV=2.97  SV=6.37  BV=1.51
-    {41650,2048,1072, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=6.15  BV=1.41
-    {41650,2304,1024, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=6.25  BV=1.30
+    {41650,1152,1088, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=5.34  BV=2.21
+    {41650,1280,1056, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=5.45  BV=2.11
+    {41650,1408,1024, 0, 0, 0},  //TV = 4.59(1190000 lines)  AV=2.97  SV=5.54  BV=2.01
+    {49980,1152,1120, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.38  BV=1.91
+    {49980,1280,1080, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.48  BV=1.81
+    {49980,1408,1056, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.59  BV=1.71
+    {49980,1536,1032, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.68  BV=1.61
+    {49980,1664,1024, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.78  BV=1.51
+    {49980,1664,1096, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.88  BV=1.41
+    {49980,1792,1088, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=5.98  BV=1.31
     {49980,2048,1024, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.08  BV=1.21
     {49980,2176,1032, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.18  BV=1.11
-    {49980,2304,1048, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.29  BV=1.01
-    {49980,2432,1064, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.39  BV=0.91
-    {49980,2688,1032, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.49  BV=0.81
-    {49980,2816,1056, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.59  BV=0.71
-    {49980,3072,1040, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.69  BV=0.60
-    {49980,3328,1024, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.78  BV=0.51
-    {49980,3456,1056, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.88  BV=0.41
-    {58345,3200,1048, 0, 0, 0},  //TV = 4.10(1667000 lines)  AV=2.97  SV=6.76  BV=0.31
+    {49980,2304,1040, 0, 0, 0},  //TV = 4.32(1428000 lines)  AV=2.97  SV=6.28  BV=1.02
+    {58345,2048,1080, 0, 0, 0},  //TV = 4.10(1667000 lines)  AV=2.97  SV=6.16  BV=0.91
+    {58345,2304,1032, 0, 0, 0},  //TV = 4.10(1667000 lines)  AV=2.97  SV=6.27  BV=0.80
+    {66675,2176,1024, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.17  BV=0.71
+    {66675,2304,1032, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.27  BV=0.61
+    {66675,2432,1048, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.37  BV=0.51
+    {66675,2560,1072, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.47  BV=0.41
+    {66675,2816,1040, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.57  BV=0.31
     {66675,3072,1024, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.67  BV=0.21
     {66675,3200,1056, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.77  BV=0.11
-    {66675,3456,1056, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.88  BV=-0.01
-    {66675,3712,1048, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=6.98  BV=-0.10
-    {66675,3968,1048, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=7.07  BV=-0.19
-    {66675,4352,1032, 0, 0, 0},  //TV = 3.91(1905000 lines)  AV=2.97  SV=7.18  BV=-0.31
-    {75005,4096,1040, 0, 0, 0},  //TV = 3.74(2143000 lines)  AV=2.97  SV=7.11  BV=-0.40
-    {75005,4480,1024, 0, 0, 0},  //TV = 3.74(2143000 lines)  AV=2.97  SV=7.21  BV=-0.51
-    {83335,4224,1040, 0, 0, 0},  //TV = 3.58(2381000 lines)  AV=2.97  SV=7.15  BV=-0.60
-    {91665,4096,1048, 0, 0, 0},  //TV = 3.45(2619000 lines)  AV=2.97  SV=7.12  BV=-0.70
+    {75005,3072,1048, 0, 0, 0},  //TV = 3.74(2143000 lines)  AV=2.97  SV=6.70  BV=0.01
+    {75005,3328,1040, 0, 0, 0},  //TV = 3.74(2143000 lines)  AV=2.97  SV=6.81  BV=-0.10
+    {83335,3200,1040, 0, 0, 0},  //TV = 3.58(2381000 lines)  AV=2.97  SV=6.75  BV=-0.19
+    {91665,3072,1056, 0, 0, 0},  //TV = 3.45(2619000 lines)  AV=2.97  SV=6.71  BV=-0.30
+    {99995,3072,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.69  BV=-0.40
+    {99995,3328,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.78  BV=-0.49
+    {99995,3584,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.89  BV=-0.60
+    {99995,3840,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.00  BV=-0.71
     {99995,4096,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.10  BV=-0.80
     {99995,4352,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.19  BV=-0.90
-    {99995,4736,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.29  BV=-1.00
-    {99995,4992,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.39  BV=-1.10
-    {99995,5376,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.49  BV=-1.19
-    {108325,5376,1024, 0, 0, 0},  //TV = 3.21(3095000 lines)  AV=2.97  SV=7.48  BV=-1.30
-    {116655,5248,1040, 0, 0, 0},  //TV = 3.10(3333000 lines)  AV=2.97  SV=7.46  BV=-1.39
-    {124985,5248,1040, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.46  BV=-1.49
-    {124985,5632,1040, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.57  BV=-1.59
-    {124985,6144,1024, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.67  BV=-1.70
-    {133315,6144,1032, 0, 0, 0},  //TV = 2.91(3809000 lines)  AV=2.97  SV=7.68  BV=-1.80
-    {141645,6272,1024, 0, 0, 0},  //TV = 2.82(4047000 lines)  AV=2.97  SV=7.70  BV=-1.91
-    {150010,6272,1032, 0, 0, 0},  //TV = 2.74(4286000 lines)  AV=2.97  SV=7.71  BV=-2.00
-    {158340,6400,1024, 0, 0, 0},  //TV = 2.66(4524000 lines)  AV=2.97  SV=7.73  BV=-2.10
-    {175000,6144,1040, 0, 0, 0},  //TV = 2.51(5000000 lines)  AV=2.97  SV=7.69  BV=-2.21
-    {183330,6272,1040, 0, 0, 0},  //TV = 2.45(5238000 lines)  AV=2.97  SV=7.72  BV=-2.30
-    {199990,6272,1024, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.70  BV=-2.41
+    {108325,4352,1024, 0, 0, 0},  //TV = 3.21(3095000 lines)  AV=2.97  SV=7.17  BV=-0.99
+    {116655,4352,1024, 0, 0, 0},  //TV = 3.10(3333000 lines)  AV=2.97  SV=7.17  BV=-1.10
+    {124985,4352,1024, 0, 0, 0},  //TV = 3.00(3571000 lines)  AV=2.97  SV=7.17  BV=-1.20
+    {141645,4096,1024, 0, 0, 0},  //TV = 2.82(4047000 lines)  AV=2.97  SV=7.08  BV=-1.29
+    {141645,4352,1040, 0, 0, 0},  //TV = 2.82(4047000 lines)  AV=2.97  SV=7.19  BV=-1.40
+    {141645,4736,1024, 0, 0, 0},  //TV = 2.82(4047000 lines)  AV=2.97  SV=7.29  BV=-1.50
+    {141645,4992,1040, 0, 0, 0},  //TV = 2.82(4047000 lines)  AV=2.97  SV=7.39  BV=-1.60
+    {150010,5120,1024, 0, 0, 0},  //TV = 2.74(4286000 lines)  AV=2.97  SV=7.41  BV=-1.70
+    {158340,5120,1040, 0, 0, 0},  //TV = 2.66(4524000 lines)  AV=2.97  SV=7.43  BV=-1.80
+    {166670,5248,1032, 0, 0, 0},  //TV = 2.58(4762000 lines)  AV=2.97  SV=7.45  BV=-1.90
+    {183330,5120,1032, 0, 0, 0},  //TV = 2.45(5238000 lines)  AV=2.97  SV=7.42  BV=-2.00
+    {191660,5248,1032, 0, 0, 0},  //TV = 2.38(5476000 lines)  AV=2.97  SV=7.45  BV=-2.10
+    {199990,5376,1032, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.49  BV=-2.19
+    {199990,5760,1032, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.59  BV=-2.29
+    {199990,6144,1040, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.69  BV=-2.40
     {199990,6656,1032, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.80  BV=-2.50
     {199990,7168,1024, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.89  BV=-2.60
     {199990,7680,1024, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.99  BV=-2.70
-    {199990,8192,1032, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=8.10  BV=-2.80
-    {199990,8192,1104, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=8.19  BV=-2.90
 };
 
-static strEvSetting sAEMode1PLineTable_50Hz[133] =
+static strEvSetting sAEMode1PLineTable_50Hz[131] =
 {
     {140,1408,1032, 0, 0, 0},  //TV = 12.80(4000 lines)  AV=2.97  SV=5.55  BV=10.22
     {140,1408,1064, 0, 0, 0},  //TV = 12.80(4000 lines)  AV=2.97  SV=5.60  BV=10.17
@@ -2926,68 +2931,66 @@ static strEvSetting sAEMode1PLineTable_50Hz[133] =
     {29995,1280,1032, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.42  BV=2.61
     {29995,1280,1112, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.52  BV=2.51
     {29995,1408,1088, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.63  BV=2.40
-    {29995,1536,1056, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.71  BV=2.32
-    {29995,1664,1048, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.82  BV=2.21
-    {29995,1792,1040, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.91  BV=2.12
-    {29995,1920,1040, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.01  BV=2.02
-    {29995,2048,1048, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.12  BV=1.91
-    {29995,2176,1056, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.22  BV=1.81
-    {29995,2304,1072, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.32  BV=1.71
-    {29995,2560,1032, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=6.42  BV=1.61
-    {40005,2048,1040, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=6.11  BV=1.51
-    {40005,2176,1048, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=6.20  BV=1.41
-    {40005,2304,1056, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=6.30  BV=1.32
+    {29995,1536,1064, 0, 0, 0},  //TV = 5.06(857000 lines)  AV=2.97  SV=5.72  BV=2.31
+    {40005,1280,1024, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=5.41  BV=2.21
+    {40005,1280,1096, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=5.50  BV=2.11
+    {40005,1408,1064, 0, 0, 0},  //TV = 4.64(1143000 lines)  AV=2.97  SV=5.60  BV=2.02
+    {50015,1152,1120, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.38  BV=1.91
+    {50015,1280,1080, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.48  BV=1.81
+    {50015,1408,1056, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.59  BV=1.70
+    {50015,1536,1032, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.68  BV=1.61
+    {50015,1664,1024, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.78  BV=1.51
+    {50015,1664,1096, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.88  BV=1.41
+    {50015,1792,1088, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=5.98  BV=1.31
     {50015,2048,1024, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.08  BV=1.21
     {50015,2176,1032, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.18  BV=1.11
-    {50015,2304,1048, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.29  BV=1.00
-    {50015,2432,1056, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.38  BV=0.92
-    {50015,2688,1032, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.49  BV=0.80
-    {50015,2816,1056, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.59  BV=0.70
-    {50015,3072,1032, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.68  BV=0.61
-    {50015,3328,1024, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.78  BV=0.51
-    {50015,3456,1056, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.88  BV=0.41
-    {59990,3072,1064, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.72  BV=0.31
+    {50015,2304,1040, 0, 0, 0},  //TV = 4.32(1429000 lines)  AV=2.97  SV=6.28  BV=1.02
+    {59990,2048,1048, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.12  BV=0.91
+    {59990,2176,1064, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.23  BV=0.80
+    {59990,2304,1072, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.32  BV=0.71
+    {59990,2560,1040, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.43  BV=0.60
+    {59990,2688,1056, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.52  BV=0.51
+    {59990,2944,1032, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.62  BV=0.41
+    {59990,3072,1056, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.71  BV=0.32
     {59990,3328,1048, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.82  BV=0.21
-    {59990,3584,1040, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=6.91  BV=0.12
-    {59990,3840,1056, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=7.04  BV=-0.01
-    {59990,4224,1024, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=7.13  BV=-0.10
-    {59990,4480,1032, 0, 0, 0},  //TV = 4.06(1714000 lines)  AV=2.97  SV=7.22  BV=-0.19
-    {70000,4096,1040, 0, 0, 0},  //TV = 3.84(2000000 lines)  AV=2.97  SV=7.11  BV=-0.30
-    {70000,4480,1024, 0, 0, 0},  //TV = 3.84(2000000 lines)  AV=2.97  SV=7.21  BV=-0.41
-    {80010,4096,1048, 0, 0, 0},  //TV = 3.64(2286000 lines)  AV=2.97  SV=7.12  BV=-0.50
-    {80010,4480,1024, 0, 0, 0},  //TV = 3.64(2286000 lines)  AV=2.97  SV=7.21  BV=-0.60
-    {89985,4224,1032, 0, 0, 0},  //TV = 3.47(2571000 lines)  AV=2.97  SV=7.14  BV=-0.69
+    {70000,3072,1040, 0, 0, 0},  //TV = 3.84(2000000 lines)  AV=2.97  SV=6.69  BV=0.12
+    {70000,3328,1040, 0, 0, 0},  //TV = 3.84(2000000 lines)  AV=2.97  SV=6.81  BV=0.00
+    {80010,3072,1056, 0, 0, 0},  //TV = 3.64(2286000 lines)  AV=2.97  SV=6.71  BV=-0.10
+    {80010,3328,1040, 0, 0, 0},  //TV = 3.64(2286000 lines)  AV=2.97  SV=6.81  BV=-0.19
+    {89985,3200,1032, 0, 0, 0},  //TV = 3.47(2571000 lines)  AV=2.97  SV=6.74  BV=-0.29
+    {99995,3072,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.69  BV=-0.40
+    {99995,3328,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.78  BV=-0.49
+    {99995,3584,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=6.89  BV=-0.60
+    {99995,3840,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.00  BV=-0.71
     {99995,4096,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.10  BV=-0.80
     {99995,4352,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.19  BV=-0.90
-    {99995,4736,1024, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.29  BV=-1.00
-    {99995,4992,1040, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.39  BV=-1.10
-    {99995,5376,1032, 0, 0, 0},  //TV = 3.32(2857000 lines)  AV=2.97  SV=7.49  BV=-1.19
-    {110005,5248,1032, 0, 0, 0},  //TV = 3.18(3143000 lines)  AV=2.97  SV=7.45  BV=-1.30
-    {120015,5120,1040, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.43  BV=-1.40
-    {120015,5504,1040, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.53  BV=-1.50
-    {120015,5888,1040, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.63  BV=-1.60
-    {120015,6400,1024, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.73  BV=-1.70
-    {129990,6272,1040, 0, 0, 0},  //TV = 2.94(3714000 lines)  AV=2.97  SV=7.72  BV=-1.81
-    {140000,6272,1032, 0, 0, 0},  //TV = 2.84(4000000 lines)  AV=2.97  SV=7.71  BV=-1.90
-    {150010,6272,1032, 0, 0, 0},  //TV = 2.74(4286000 lines)  AV=2.97  SV=7.71  BV=-2.00
-    {159985,6272,1040, 0, 0, 0},  //TV = 2.64(4571000 lines)  AV=2.97  SV=7.72  BV=-2.11
-    {169995,6400,1024, 0, 0, 0},  //TV = 2.56(4857000 lines)  AV=2.97  SV=7.73  BV=-2.20
-    {190015,6144,1024, 0, 0, 0},  //TV = 2.40(5429000 lines)  AV=2.97  SV=7.67  BV=-2.30
-    {199990,6272,1024, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.70  BV=-2.41
+    {110005,4224,1040, 0, 0, 0},  //TV = 3.18(3143000 lines)  AV=2.97  SV=7.15  BV=-1.00
+    {120015,4224,1024, 0, 0, 0},  //TV = 3.06(3429000 lines)  AV=2.97  SV=7.13  BV=-1.10
+    {129990,4096,1040, 0, 0, 0},  //TV = 2.94(3714000 lines)  AV=2.97  SV=7.11  BV=-1.19
+    {140000,4096,1040, 0, 0, 0},  //TV = 2.84(4000000 lines)  AV=2.97  SV=7.11  BV=-1.30
+    {140000,4352,1048, 0, 0, 0},  //TV = 2.84(4000000 lines)  AV=2.97  SV=7.20  BV=-1.40
+    {140000,4736,1032, 0, 0, 0},  //TV = 2.84(4000000 lines)  AV=2.97  SV=7.30  BV=-1.50
+    {140000,5120,1024, 0, 0, 0},  //TV = 2.84(4000000 lines)  AV=2.97  SV=7.41  BV=-1.60
+    {150010,5120,1024, 0, 0, 0},  //TV = 2.74(4286000 lines)  AV=2.97  SV=7.41  BV=-1.70
+    {159985,5120,1032, 0, 0, 0},  //TV = 2.64(4571000 lines)  AV=2.97  SV=7.42  BV=-1.80
+    {169995,5120,1040, 0, 0, 0},  //TV = 2.56(4857000 lines)  AV=2.97  SV=7.43  BV=-1.90
+    {180005,5248,1024, 0, 0, 0},  //TV = 2.47(5143000 lines)  AV=2.97  SV=7.44  BV=-2.00
+    {190015,5248,1040, 0, 0, 0},  //TV = 2.40(5429000 lines)  AV=2.97  SV=7.46  BV=-2.10
+    {199990,5376,1032, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.49  BV=-2.19
+    {199990,5760,1032, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.59  BV=-2.29
+    {199990,6144,1040, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.69  BV=-2.40
     {199990,6656,1032, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.80  BV=-2.50
     {199990,7168,1024, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.89  BV=-2.60
     {199990,7680,1024, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=7.99  BV=-2.70
-    {199990,8192,1032, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=8.10  BV=-2.80
-    {199990,8192,1104, 0, 0, 0},  //TV = 2.32(5714000 lines)  AV=2.97  SV=8.19  BV=-2.90
 };
 
 static strAETable g_AE_ModeTable1 =
 {
     AETABLE_MODE_INDEX1,    //eAETableID
-    133,    //u4TotalIndex
+    131,    //u4TotalIndex
     20,    //u4StrobeTrigerBV
     103,    //i4MaxBV
-    -29,    //i4MinBV
+    -27,    //i4MinBV
     LIB3A_AE_ISO_SPEED_AUTO, //ISO SPEED
     sAEMode1PLineTable_60Hz,
     sAEMode1PLineTable_50Hz,
@@ -3237,7 +3240,8 @@ static strAETable g_AE_ModeTable2 =
     NULL,
 };
 
-/*static strAETable g_AE_CaptureISO100Table =
+/*
+static strAETable g_AE_CaptureISO100Table =
 {
     AETABLE_CAPTURE_ISO100,    //eAETableID
     97,    //u4TotalIndex
@@ -3248,7 +3252,8 @@ static strAETable g_AE_ModeTable2 =
     sCaptureISO100PLineTable_60Hz,
     sCaptureISO100PLineTable_50Hz,
     NULL,
-};*/
+};
+*/
 
 static strAETable g_AE_CaptureISO100ZSDTable =
 {
@@ -3360,7 +3365,7 @@ static strAEPLineTable g_strAEPlineTable =
 &g_AE_VideoNightTable,
 &g_AE_VideoNightDynamicTable,
 &g_AE_CaptureTable,
-&g_AE_CaptureTable,
+&g_AE_CaptureZSDTable,
 &g_AE_CaptureISO100Table,
 &g_AE_CaptureISO100ZSDTable,
 &g_AE_CaptureISO200Table,
@@ -3435,14 +3440,14 @@ AETABLE_RPEVIEW_AUTO
 9,10,8,5120,5120
 10,8,8,5120,6144
 11,8,5,6144,6144
-12,5,5,6144,9216
+12,5,5,6144,8192
 AETABLE_END
 
 // Video table -- Use video sensor setting
 //Index MiniExp1/T MaxExp1/T MinGain MaxGain
 AETABLE_VIDEO
 1,6000,30,1195,1195
-2,30,30,1195,8192
+2,30,30,1195,6000
 AETABLE_END
 
 // Video table -- Use video Dynamic sensor setting
@@ -3460,7 +3465,7 @@ AETABLE_VIDEO_NIGHT
 1,6000,30,1195,1195
 2,30,30,1195,2048
 3,30,15,2048,2048
-4,15,15,2048,9216
+4,15,15,2048,7750
 AETABLE_END
 
 // Video Night Dynamic table -- Use video sensor setting
@@ -3475,16 +3480,15 @@ AETABLE_END
 // Capture table -- Use capture sensor setting
 //Index MiniExp1/T MaxExp1/T MinGain MaxGain
 AETABLE_CAPTURE_AUTO
-1,6000,30,1195,1195
-2,30,30,1195,2048
-3,30,20,2048,2048
-4,20,20,2048,3072
-5,20,15,3072,3072
-6,15,15,3072,4096
-7,15,10,4096,4096
-8,10,10,4096,5120
-9,10,8,5120,5120
-10,8,8,5120,8192
+1,6000,20,1195,1195
+2,20,20,1195,2048
+3,20,15,2048,2048
+4,15,15,2048,3072
+5,15,10,3072,3072
+6,10,10,3072,4000
+7,10,7,4000,4000
+8,7,7,4000,4700
+9,7,5,4700,4700
 AETABLE_END
 
 // ZSD table -- Use ZSD sensor setting
@@ -3532,18 +3536,16 @@ AETABLE_END
 // Table1 PLine -- Use capture sensor setting
 //Index MiniExp1/T MaxExp1/T MinGain MaxGain
 AETABLE_MODE_INDEX1
-1,6000,30,1195,1195
-2,30,30,1195,2048
-3,30,20,2048,2048
-4,20,20,2048,3072
-5,20,15,3072,3072
-6,15,15,3072,4096
-7,15,10,4096,4096
-8,10,10,4096,5120
-9,10,8,5120,5120
-10,8,8,5120,6144
-11,8,5,6144,6144
-12,5,5,6144,9216
+1,6000,20,1195,1195
+2,20,20,1195,2048
+3,20,15,2048,2048
+4,15,15,2048,3072
+5,15,10,3072,3072
+6,10,10,3072,4096
+7,10,7,4096,4096
+8,7,7,4096,5120
+9,7,5,5120,5120
+10,5,5,5120,8192
 AETABLE_END
 
 // Table2 PLine -- Use capture sensor setting
@@ -3624,4 +3626,7 @@ AE_MODE_STEADYPHOTO,AETABLE_MODE_INDEX2,AETABLE_MODE_INDEX2
 AE_MODE_SUNSET,AETABLE_CAPTURE_AUTO,AETABLE_CAPTURE_AUTO 
 AE_MODE_THEATRE,AETABLE_MODE_INDEX1,AETABLE_MODE_INDEX1 
 AE_MODE_ISO_ANTI_SHAKE,AETABLE_MODE_INDEX2,AETABLE_MODE_INDEX2 
+,, 
+,, 
+,, 
 #endif

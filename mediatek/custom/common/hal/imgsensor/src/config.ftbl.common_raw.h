@@ -210,6 +210,9 @@ FTABLE_SCENE_INDEP()
             ITEM_AS_DEFAULT_(MtkCameraParameters::FALSE), 
             ITEM_AS_SUPPORTED_(            
                 MtkCameraParameters::FALSE
+            #else
+                MtkCameraParameters::TRUE
+            #endif
             )
         ), 
     )

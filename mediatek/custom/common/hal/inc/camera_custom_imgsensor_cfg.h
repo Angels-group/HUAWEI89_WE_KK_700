@@ -11,21 +11,7 @@ enum EDevId
 {
     eDevId_ImgSensor0, //main sensor
     eDevId_ImgSensor1, //sub sensor
-    eDevId_ImgSensor2, //main2 sensor (for 3D)    
-};
-
-enum EMclkId
-{
-	eMclk_1 = 0x0,	//mclk1
-	eMclk_2 = 0x1,	//mclk2
-	eMclk_3	= 0x2,	//mclk3
-};
-
-enum EMipiPort
-{
-    ePort_1 = 0x0, // 4 lane
-    ePort_2 = 0x1, // 4 lane
-    ePort_3 = 0x2, // 2 lane   
+    eDevId_ImgSensor2, //main2 sensor (for 3D)
 };
 
 /*******************************************************************************
@@ -82,6 +68,7 @@ SensorOrientation_T const&  getSensorOrientation();
 * Return fake orientation for front sensor in degree 0/180 or not
 *******************************************************************************/
 MBOOL isRetFakeSubOrientation();
+
 /*******************************************************************************
 * Return fake orientation for back sensor in degree 0/180 or not
 *******************************************************************************/

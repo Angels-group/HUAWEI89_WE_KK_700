@@ -14,23 +14,11 @@
 #define DUMMY_LENS_ID                        0xFFFF
 #define FM50AF_LENS_ID                       0x0001
 #define MT9P017AF_LENS_ID                    0x0002
-#define OV8825AF_LENS_ID					 0x0003
-#define BU6429AF_LENS_ID					 0x0004
-#define OV12830AF_LENS_ID					 0x0005
-#define OV5647AF_LENS_ID					 0x0006
-#define S5K3H2YXAF_LENS_ID					 0x0007
-#define A5142AF_LENS_ID					 0x0008
-#define IMX111_LENS_ID					 0x0009
-#define AR0833AF_LENS_ID 0x000A
 
 #define SENSOR_DRIVE_LENS_ID                 0x1000
-#define BU6429AF_LENS_ID					 0x000A
-#define BU6424AF_LENS_ID					 0x000B
-#define AD5823_LENS_ID					   0x5823
-#define AD5823AF_LENS_ID					 0x5823
-#define DW9718AF_LENS_ID 					 0x9718
-#define AD5820AF_LENS_ID					 0x5820
-#define DW9714AF_LENS_ID 					 0x9714
+#define OV8825AF_LENS_ID					 0x0003
+#define BU6429AF_LENS_ID					 0x0004
+#define BU6424AF_LENS_ID					 0x0005
 
 /* AF LAMP THRESHOLD*/
 #define AF_LAMP_LV_THRES 60

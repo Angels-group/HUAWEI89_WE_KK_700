@@ -971,7 +971,7 @@ MTK_MMUMAP_SUPPORT = no
 # support mobile management framewokrs & support CTA security certificateion Level 1
 MTK_MOBILE_MANAGEMENT = yes
 MTK_MOTION_TRACK_SUPPORT = no
-
+MTK_MT519X_FM_SUPPORT = no
 # mt6592 720p msdc1 doesn't support SDR104
 MTK_MSDC1_NOT_SUPPORT_SDR104 = no
 MTK_MT6333_SUPPORT = no
@@ -1073,12 +1073,12 @@ MTK_OOBE_APP = yes
 MTK_OVERLAY_ENGINE_SUPPORT = no
 
 # support yaml format partition table
-MTK_PARTITION_TABLE_PLAIN_TEXT = no
-MTK_PASSPOINT_R1_SUPPORT = no
-MTK_PCB_BATTERY_SENSOR = no
-MTK_PERFSERVICE_SUPPORT = yes
-MTK_PERMISSION_CONTROL = no
-MTK_PERSIST_PARTITION_SUPPORT = no
+MTK_PARTITION_TABLE_PLAIN_TEXT=no
+MTK_PASSPOINT_R1_SUPPORT=no
+MTK_PCB_BATTERY_SENSOR=no
+MTK_PERFSERVICE_SUPPORT=yes
+MTK_PERMISSION_CONTROL=yes
+MTK_PERSIST_PARTITION_SUPPORT=no
 
 # This feature option is to define whether we support features for phone number attribution of China (CMCC, CU and CT) MTK_PHONE_NUMBER_GEODESCRIPTION = Yes means that  phone number attribution of China is enabled in current project, vice versa
 MTK_PHONE_NUMBER_GEODESCRIPTION = yes

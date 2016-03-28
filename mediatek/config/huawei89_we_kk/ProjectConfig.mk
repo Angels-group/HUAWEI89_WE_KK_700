@@ -22,7 +22,7 @@ BUILD_LK = yes
 BUILD_MTK_SDK = 
 
 # Decide whether to build preloader or not.
-BUILD_PRELOADER = no
+BUILD_PRELOADER = yes
 
 # Decide whether to build uboot or not.
 BUILD_UBOOT = no
@@ -59,7 +59,7 @@ CUSTOM_HAL_MAIN2_IMGSENSOR =
 CUSTOM_HAL_MAIN_BACKUP_IMGSENSOR = 
 
 # lens driver config for main camera (2nd solution)
-CUSTOM_HAL_MAIN_BACKUP_LENS = dummy_lens
+CUSTOM_HAL_MAIN_BACKUP_LENS = sensordrive
 
 # User space image sensor  driver: Main camera (rear camera) used sensor related tuning, setting and calibration information.Value is used main sensor name.
 CUSTOM_HAL_MAIN_IMGSENSOR = s5k4h5yx_mipi_raw ov8850_mipi_raw

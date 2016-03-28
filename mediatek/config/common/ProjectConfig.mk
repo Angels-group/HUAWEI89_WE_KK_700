@@ -7,7 +7,6 @@ MTK_BRANCH = KK1.MP5
 MTK_BUILD_VERNO = ALPS.KK1.MP5.V1.3
 	# Depend on release week
 
-AEON_CUSTOM_BTNAME = Mansi@G700
 
 MTK_WEEK_NO =  
 	# Depend on release week
@@ -21,7 +20,6 @@ MTK_BT_40_LE_STANDALONE = no
 MTK_CTA_SUPPORT = no
 
 # for cmmb chip.
-MTK_CMMB_CHIP = 
 
 # Change default USB Storage Type from MTP to UMS (Mass Storage)
 MTK_MASS_STORAGE = no

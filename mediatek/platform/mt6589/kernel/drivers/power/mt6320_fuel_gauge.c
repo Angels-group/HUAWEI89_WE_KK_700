@@ -1080,8 +1080,6 @@ kal_int32 fgauge_compensate_battery_voltage_recursion(kal_int32 ori_voltage, kal
             temp_voltage_1, temp_voltage_2, gFG_resistance_bat, ret_compensate_value);
     }
 
-    //xlog_printk(ANDROID_LOG_DEBUG, "Power/Battery", "[CompensateVoltage] Ori_voltage:%d, compensate_value:%d, gFG_resistance_bat:%d, gFG_current:%d\r\n", 
-    //    ori_voltage, ret_compensate_value, gFG_resistance_bat, gFG_current);
 
     return ret_compensate_value;
 }
@@ -2215,7 +2213,7 @@ kal_int32 gFG_voltageVBAT=0;
 #if defined(CHANGE_TRACKING_POINT)
 int g_tracking_point = CUST_TRACKING_POINT;
 #else
-int g_tracking_point = 14;
+int g_tracking_point = 1; //2014/1/7-maoyichou, Fix battery capacity fast drainage.
 #endif
 
 kal_int32 g_rtc_fg_soc = 0;
@@ -2303,7 +2301,7 @@ void fgauge_Normal_Mode_Work(void)
 //2. Calculate battery capacity by VBAT    
     gFG_capacity_by_v = fgauge_read_capacity_by_v();
 
-	if(gFG_booting_counter_I_FLAG == 0) {
+	if(gFG_booting_counter_I_FLAG == 0) { 
 		gFG_capacity_by_v_init = gFG_capacity_by_v;
 	}
 //3. Calculate battery capacity by Coulomb Counter
@@ -2380,11 +2378,15 @@ void fgauge_Normal_Mode_Work(void)
         //gFG_15_vlot = fgauge_read_v_by_capacity(86); //14%
         gFG_15_vlot = fgauge_read_v_by_capacity( (100-g_tracking_point) );
         xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] gFG_15_vlot = %dmV\r\n", gFG_15_vlot);        
+		//<2014/1/7-maoyichou, Fix battery capacity fast drainage.
+		#if 0
         if( (gFG_15_vlot > 3800) || (gFG_15_vlot < 3600) ) 
         {
             xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] gFG_15_vlot(%d) over range, reset to 3700\r\n", gFG_15_vlot);
             gFG_15_vlot = 3700;
         }
+		#endif
+		//>2014/1/7-maoyichou, Fix battery capacity fast drainage.
         #endif        
 
         //double check

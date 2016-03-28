@@ -62,7 +62,7 @@ VBAT_TO_PERCENT Batt_VoltToPercent_Table[] = {
 
 /* Precise Tunning */
 //#define BATTERY_AVERAGE_SIZE 	600
-#define BATTERY_AVERAGE_SIZE 	60
+#define BATTERY_AVERAGE_SIZE 	30
 
 
 #define CHARGING_IDLE_MODE	 1

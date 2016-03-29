@@ -1413,7 +1413,7 @@ int tmd2771_ps_operate(void* self, uint32_t command, void* buff_in, int size_in,
 			{				
 				value = *(int *)buff_in;
 				/*change power_key_ps to false when enable ps*/  
-				//power_key_ps = false;  
+				power_key_ps = false;  
 
 				if(value)
 				{

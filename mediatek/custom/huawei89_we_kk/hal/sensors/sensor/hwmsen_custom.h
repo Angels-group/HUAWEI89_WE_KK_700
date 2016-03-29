@@ -18,15 +18,15 @@
 #define __HWMSEN_CUSTOM_H__
 
 #ifdef CUSTOM_KERNEL_ACCELEROMETER
-	#define ACCELEROMETER 		"BMA050 3-axis Accelerometer"
+	#define ACCELEROMETER 		"BMA222 3-axis Accelerometer"
 	#define ACCELEROMETER_VENDER 	"Bosch"
 #endif
 
 #ifdef CUSTOM_KERNEL_ALSPS
-	#define PROXIMITY 		"cm36283  Proximity Sensor"
-	#define PROXIMITY_VENDER 	"Capella"
-	#define LIGHT 			"cm36283 Light Sensor"
-	#define LIGHT_VENDER 		"Capella"
+	#define PROXIMITY 		"APDS9930 Proximity Sensor"
+	#define PROXIMITY_VENDER 	"Taos"
+	#define LIGHT 			"APDS9930 Light Sensor"
+	#define LIGHT_VENDER 		"Taos"
 #endif
 
 #ifdef CUSTOM_KERNEL_MAGNETOMETER
@@ -37,7 +37,7 @@
 #endif
 
 #ifdef CUSTOM_KERNEL_GYROSCOPE
-	#define GYROSCOPE 		"MPU3050c gyroscope Sensor"
+	#define GYROSCOPE 		"MPU3050c  gyroscope Sensor"
 	#define GYROSCOPE_VENDER 	"Invensensor"
 #endif
 

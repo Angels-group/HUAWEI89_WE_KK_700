@@ -186,6 +186,14 @@ static void hwmsen_work_func(struct work_struct *work)
 		// Interrupt sensor
 		if(cxt->obj.polling == 0)
 		{
+			/* report 1 when pressing the power key after screen off*/  
+			if(power_key_ps == true && idx == ID_PROXIMITY)  
+			{  
+				// HWM_LOG("power_key_ps = %d,idx =%d\n",power_key_ps,idx);  
+				obj_data.data_updata[idx] = 1;  
+				obj_data.sensors_data[idx].values[0] = 1;  
+				power_key_ps = false;  
+			}  
 			if(obj_data.data_updata[idx] == 1)
 			{
 				mutex_lock(&obj_data.lock);

@@ -41,7 +41,7 @@ typedef struct{
 #define USB_CHARGER_CURRENT_UNCONFIGURED	Cust_CC_70MA	// def CONFIG_USB_IF
 #define USB_CHARGER_CURRENT_CONFIGURED		Cust_CC_450MA	// def CONFIG_USB_IF
 #define USB_CHARGER_CURRENT					Cust_CC_450MA
-#define AC_CHARGER_CURRENT					Cust_CC_800MA	
+#define AC_CHARGER_CURRENT					Cust_CC_700MA	
 
 /* Battery Meter Solution */
 #define CONFIG_ADC_SOLUTION 	1
@@ -50,20 +50,20 @@ typedef struct{
 VBAT_TO_PERCENT Batt_VoltToPercent_Table[] = {
 	/*BattVolt,BattPercent*/
 	{3400,0},
-	{3478,10},
-	{3556,20},
-	{3634,30},
-	{3713,40},
-	{3791,50},
-	{3869,60},
-	{3947,70},
-	{4026,80},
-	{4104,90},
-	{4183,100},
+	{3470,10},
+	{3540,20},
+	{3600,30},
+	{3680,40},
+	{3750,50},
+	{3800,60},
+	{3876,70},
+	{3944,80},
+	{4012,90},
+	{4080,100},
 };
 
 /* Precise Tunning */
-#define BATTERY_AVERAGE_SIZE 	20
+#define BATTERY_AVERAGE_SIZE 	30
 //#define BATTERY_AVERAGE_SIZE   3
 
 /* Common setting */

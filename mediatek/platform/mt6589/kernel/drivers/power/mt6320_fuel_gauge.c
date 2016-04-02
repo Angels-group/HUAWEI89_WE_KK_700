@@ -1476,6 +1476,13 @@ kal_int32 fgauge_get_dod0(kal_int32 voltage, kal_int32 temperature, kal_bool bOc
 extern int g_HW_Charging_Done;
 void fg_qmax_update_for_aging(void)
 {
+//<2013/5/16-25011-jessicatseng, [5860][ATS00159792][So][LUT]The battery out of work, MTK provide patch to fix fuel gauge issue	
+    unsigned int Capacity_Temp=0; //====add====
+
+    xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[fg_qmax_update_for_aging]:reserve original gFG_BATT_CAPACITY_aging \r\n");//====add====
+
+    Capacity_Temp = gFG_BATT_CAPACITY_aging; //====add====
+//>2013/5/16-25011-jessicatseng
     if(g_HW_Charging_Done == 1) // charging full
     {
         if(gFG_DOD0 > 85)
@@ -1487,6 +1494,10 @@ void fg_qmax_update_for_aging(void)
             
             xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[fg_qmax_update_for_aging] need update : gFG_columb=%d, gFG_DOD0=%d, new_qmax=%d\r\n", 
                 gFG_columb, gFG_DOD0, gFG_BATT_CAPACITY_aging);
+//<2013/5/16-25011-jessicatseng, [5860][ATS00159792][So][LUT]The battery out of work, MTK provide patch to fix fuel gauge issue	
+            if(abs(gFG_BATT_CAPACITY_aging-Capacity_Temp)>400) //====add====
+                gFG_BATT_CAPACITY_aging = Capacity_Temp; //====add====
+//>2013/5/16-25011-jessicatseng
         }
         else
         {
@@ -2224,9 +2235,12 @@ void fgauge_Normal_Mode_Work(void)
     int i=0;
    
 //1. Get Raw Data  
-    gFG_current = fgauge_read_current();
+//<2013/10/14-30079-jessicatseng, [5860] Fix SOC displays incorrect (100% -> 1%), patch from eService ALPS01054992
+    //gFG_current = fgauge_read_current();
 
     gFG_voltage = fgauge_read_voltage();
+		gFG_current = fgauge_read_current();
+//>2013/10/14-30079-jessicatseng
     gFG_voltage_init = gFG_voltage;
     gFG_voltage = gFG_voltage + fgauge_compensate_battery_voltage_recursion(gFG_voltage,5); //mV  
     gFG_voltage = gFG_voltage + OCV_BOARD_COMPESATE;
@@ -2301,7 +2315,7 @@ void fgauge_Normal_Mode_Work(void)
 //2. Calculate battery capacity by VBAT    
     gFG_capacity_by_v = fgauge_read_capacity_by_v();
 
-	if(gFG_booting_counter_I_FLAG == 0) { 
+	if(gFG_booting_counter_I_FLAG == 1) { 
 		gFG_capacity_by_v_init = gFG_capacity_by_v;
 	}
 //3. Calculate battery capacity by Coulomb Counter
@@ -2318,10 +2332,18 @@ void fgauge_Normal_Mode_Work(void)
         gFG_capacity_by_v = fgauge_read_capacity_by_v();
 		xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] get_hw_ocv=%d, HW_SOC=%d, SW_SOC = %d\n", 
 			gFG_voltage, gFG_capacity_by_v, gFG_capacity_by_v_init);
+//<2013/10/14-30079-jessicatseng, [5860] Fix SOC displays incorrect (100% -> 1%), patch from eService ALPS01054992
+		//if (upmu_is_chr_det() == KAL_TRUE) {
 		// compare with hw_ocv & sw_ocv, check if less than or equal to 5% tolerance 
-		if (abs(gFG_capacity_by_v_init - gFG_capacity_by_v) > 5) {
+			//if (abs(gFG_capacity_by_v_init - gFG_capacity_by_v) > 5) {
+			// compare with hw_ocv & sw_ocv, check if less than or equal to 25mV tolerance
+			if (abs(gFG_voltageVBAT - gFG_voltage) > 25) {
 			gFG_capacity_by_v = gFG_capacity_by_v_init;
 		}
+		//}
+		xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] SW_VBAT=%d, HW_VBAT=%d, gFG_capacity_by_v = %d\n", 
+			gFG_voltageVBAT, gFG_voltage, gFG_capacity_by_v);
+//>2013/10/14-30079-jessicatseng
         //-------------------------------------------------------------------------------
         g_rtc_fg_soc = get_rtc_spare_fg_value();
         if(g_rtc_fg_soc >= gFG_capacity_by_v)
@@ -2350,7 +2372,11 @@ void fgauge_Normal_Mode_Work(void)
 	xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] g_rtc_fg_soc=%d, gFG_capacity_by_v=%d\n", 
                 g_rtc_fg_soc, gFG_capacity_by_v);
         
-	if (gFG_capacity_by_v == 0 && upmu_is_chr_det() == KAL_TRUE) {
+//<2013/10/14-30079-jessicatseng, [5860] Fix SOC displays incorrect (100% -> 1%), patch from eService ALPS01054992
+	//if (gFG_capacity_by_v == 0 && upmu_is_chr_det() == KAL_TRUE) {
+	if ((gFG_capacity_by_v == 0 && upmu_is_chr_det() == KAL_TRUE) || 
+			(g_boot_mode == LOW_POWER_OFF_CHARGING_BOOT && gFG_capacity_by_v_init <= 1)) {
+//>2013/10/14-30079-jessicatseng
 		gFG_capacity_by_v = 1;
 		xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] gFG_capacity_by_v=%d\n", 
 			gFG_capacity_by_v);

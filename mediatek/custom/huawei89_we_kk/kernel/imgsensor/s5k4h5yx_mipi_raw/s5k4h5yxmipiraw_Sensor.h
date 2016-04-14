@@ -1,13 +1,11 @@
 /*******************************************************************************************/
  
-
+  
 /*******************************************************************************************/
 
 /* SENSOR FULL SIZE */
 #ifndef __SENSOR_H
 #define __SENSOR_H
-
-#define ZSD15FPS
 
 typedef enum group_enum {
     PRE_GAIN=0,
@@ -81,13 +79,6 @@ typedef struct
 }S5K4H5YX_PARA_STRUCT,*PS5K4H5YX_PARA_STRUCT;
 
 
-	#define S5K4H5YX_IMAGE_SENSOR_FULL_WIDTH					(3264-64)	
-	#define S5K4H5YX_IMAGE_SENSOR_FULL_HEIGHT					(2448-48)
-
-	/* SENSOR PV SIZE */
-	#define S5K4H5YX_IMAGE_SENSOR_PV_WIDTH					(1632-32)
-	#define S5K4H5YX_IMAGE_SENSOR_PV_HEIGHT					(1224-24)
-
 	#define S5K4H5YX_IMAGE_SENSOR_VIDEO_WIDTH					(3264-64)
 	#define S5K4H5YX_IMAGE_SENSOR_VIDEO_HEIGHT				(1836-36)
 	
@@ -99,39 +90,28 @@ typedef struct
 	/* SENSOR START/EDE POSITION */         	
 	#define S5K4H5YX_FULL_X_START						    		(2)
 	#define S5K4H5YX_FULL_Y_START						    		(2)
-	#define S5K4H5YX_FULL_X_END						        	(3264+150)     
-	#define S5K4H5YX_FULL_Y_END						        	(2448) 
 	#define S5K4H5YX_PV_X_START						    		(2)
 	#define S5K4H5YX_PV_Y_START						    		(2)
-	#define S5K4H5YX_PV_X_END						    			(1632) 
-	#define S5K4H5YX_PV_Y_END						    			(1224) 
 	#define S5K4H5YX_VIDEO_X_START								(2)
-	#define S5K4H5YX_VIDEO_Y_START								(3)
-	#define S5K4H5YX_VIDEO_X_END 									(2160) 
-	#define S5K4H5YX_VIDEO_Y_END 									(1620) 
-
+	#define S5K4H5YX_VIDEO_Y_START								(2)
+	
 	#define S5K4H5YX_MAX_ANALOG_GAIN					(16)
 	#define S5K4H5YX_MIN_ANALOG_GAIN					(1)
 	#define S5K4H5YX_ANALOG_GAIN_1X						(0x0020)
 
-	//#define S5K4H5YX_MAX_DIGITAL_GAIN					(8)
-	//#define S5K4H5YX_MIN_DIGITAL_GAIN					(1)
-	//#define S5K4H5YX_DIGITAL_GAIN_1X					(0x0100)
-
 	/* SENSOR PIXEL/LINE NUMBERS IN ONE PERIOD */
-	#define S5K4H5YX_FULL_PERIOD_PIXEL_NUMS					(0x0FCC) //(0x0FCC) //4044
-	#if defined(ZSD15FPS)
-	#define S5K4H5YX_FULL_PERIOD_LINE_NUMS					0x99C //0x99C	//2452
-	#else
-	//Add dummy lines for 13fps
-	#define S5K4H5YX_FULL_PERIOD_LINE_NUMS					0xB78	//2936
-	#endif
-	
-	#define S5K4H5YX_PV_PERIOD_PIXEL_NUMS					0x0E68  //3688
-	#define S5K4H5YX_PV_PERIOD_LINE_NUMS					0x4CA	//1226
+	#define S5K4H5YX_FULL_PERIOD_PIXEL_NUMS					(4056) 
+	#define S5K4H5YX_FULL_PERIOD_LINE_NUMS					(2498)
 
-	#define S5K4H5YX_VIDEO_PERIOD_PIXEL_NUMS 				0x0FCC //0x0FCC	//4044
-	#define S5K4H5YX_VIDEO_PERIOD_LINE_NUMS				0x072C//0x072C	//1836
+
+
+
+	
+	#define S5K4H5YX_PV_PERIOD_PIXEL_NUMS					(3688) 
+	#define S5K4H5YX_PV_PERIOD_LINE_NUMS					(2260)	
+
+	#define S5K4H5YX_VIDEO_PERIOD_PIXEL_NUMS 				(4044)
+	#define S5K4H5YX_VIDEO_PERIOD_LINE_NUMS					(2060)
 	
 
 	#define S5K4H5YX_MIN_LINE_LENGTH						0x0AA4  //2724
@@ -157,9 +137,21 @@ typedef struct
 
 #define S5K4H5YXMIPI_PAGE_SETTING_REG    (0xFF)
 
-//s_add for porting
-//s_add for porting
-//s_add for porting
+struct S5K4H5YX_MIPI_otp_struct
+{
+    kal_uint16 customer_id;
+	kal_uint16 module_integrator_id;
+	kal_uint16 lens_id;
+	kal_uint16 rg_ratio;
+	kal_uint16 bg_ratio;
+	kal_uint16 user_data[5];
+	kal_uint16 R_to_G;
+	kal_uint16 B_to_G;
+	kal_uint16 G_to_G;
+	kal_uint16 R_Gain;
+	kal_uint16 G_Gain;
+	kal_uint16 B_Gain;
+};
 
 //export functions
 UINT32 S5K4H5YXMIPIOpen(void);
@@ -168,14 +160,6 @@ UINT32 S5K4H5YXMIPIGetInfo(MSDK_SCENARIO_ID_ENUM ScenarioId, MSDK_SENSOR_INFO_ST
 UINT32 S5K4H5YXMIPIControl(MSDK_SCENARIO_ID_ENUM ScenarioId, MSDK_SENSOR_EXPOSURE_WINDOW_STRUCT *pImageWindow, MSDK_SENSOR_CONFIG_STRUCT *pSensorConfigData);
 UINT32 S5K4H5YXMIPIFeatureControl(MSDK_SENSOR_FEATURE_ENUM FeatureId, UINT8 *pFeaturePara,UINT32 *pFeatureParaLen);
 UINT32 S5K4H5YXMIPIClose(void);
-
-//#define Sleep(ms) mdelay(ms)
-//#define RETAILMSG(x,...)
-//#define TEXT
-
-//e_add for porting
-//e_add for porting
-//e_add for porting
 
 #endif /* __SENSOR_H */
 

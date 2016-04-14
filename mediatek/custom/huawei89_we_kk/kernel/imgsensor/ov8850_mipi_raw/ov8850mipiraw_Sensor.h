@@ -1,39 +1,4 @@
 /*****************************************************************************
-*  Copyright Statement:
-*  --------------------
-*  This software is protected by Copyright and the information contained
-*  herein is confidential. The software may not be copied and the information
-*  contained herein may not be used or disclosed except with the written
-*  permission of MediaTek Inc. (C) 2005
-*
-*  BY OPENING THIS FILE, BUYER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
-*  THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
-*  RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO BUYER ON
-*  AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
-*  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
-*  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
-*  NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
-*  SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
-*  SUPPLIED WITH THE MEDIATEK SOFTWARE, AND BUYER AGREES TO LOOK ONLY TO SUCH
-*  THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. MEDIATEK SHALL ALSO
-*  NOT BE RESPONSIBLE FOR ANY MEDIATEK SOFTWARE RELEASES MADE TO BUYER'S
-*  SPECIFICATION OR TO CONFORM TO A PARTICULAR STANDARD OR OPEN FORUM.
-*
-*  BUYER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND CUMULATIVE
-*  LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
-*  AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
-*  OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY BUYER TO
-*  MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE. 
-*
-*  THE TRANSACTION CONTEMPLATED HEREUNDER SHALL BE CONSTRUED IN ACCORDANCE
-*  WITH THE LAWS OF THE STATE OF CALIFORNIA, USA, EXCLUDING ITS CONFLICT OF
-*  LAWS PRINCIPLES.  ANY DISPUTES, CONTROVERSIES OR CLAIMS ARISING THEREOF AND
-*  RELATED THERETO SHALL BE SETTLED BY ARBITRATION IN SAN FRANCISCO, CA, UNDER
-*  THE RULES OF THE INTERNATIONAL CHAMBER OF COMMERCE (ICC).
-*
-*****************************************************************************/
-
-/*****************************************************************************
  *
  * Filename:
  * ---------
@@ -60,6 +25,7 @@
 //#define SENSORDB(x,...)
 #endif
 
+//#define OV8850_2_LANE  // if you use 2 lane setting on MT6589, please define it
 #define OV8850_FACTORY_START_ADDR 0
 #define OV8850_ENGINEER_START_ADDR 10
 
@@ -97,10 +63,6 @@ typedef struct _sensor_data_struct
   SENSOR_REG_STRUCT cct[OV8850_FACTORY_END_ADDR];
 } sensor_data_struct;
 
-#define OV8850_PREVIEW_CLK   204000000
-#define OV8850_CAPTURE_CLK   204000000
-#define OV8850_VIDEO_CLK     204000000
-#define OV8850_ZSD_PRE_CLK   204000000
 
 #define OV8850_COLOR_FORMAT                    SENSOR_OUTPUT_FORMAT_RAW_B
 
@@ -111,16 +73,29 @@ typedef struct _sensor_data_struct
 /* FRAME RATE UNIT */
 #define OV8850_FPS(x)                          (10 * (x))
 
+#ifdef OV8850_2_LANE
+
+#define OV8850_PREVIEW_CLK   136000000
+#define OV8850_CAPTURE_CLK   132000000
+#define OV8850_VIDEO_CLK     136000000
+#define OV8850_ZSD_PRE_CLK   132000000
+
 /* SENSOR PIXEL/LINE NUMBERS IN ONE PERIOD */
-#define OV8850_FULL_PERIOD_PIXEL_NUMS          3608  //
-#define OV8850_FULL_PERIOD_LINE_NUMS           2522   //
+#define OV8850_FULL_PERIOD_PIXEL_NUMS          3608  //  25fps
+#define OV8850_FULL_PERIOD_LINE_NUMS           2512   //
 
 #define OV8850_PV_PERIOD_PIXEL_NUMS            3608 //
-#define OV8850_PV_PERIOD_LINE_NUMS             1884 //
+#define OV8850_PV_PERIOD_LINE_NUMS             1256 //
 
 #define OV8850_VIDEO_PERIOD_PIXEL_NUMS         3608  //
-#define OV8850_VIDEO_PERIOD_LINE_NUMS          1884  //
+#define OV8850_VIDEO_PERIOD_LINE_NUMS          1256 //1920  //
 
+#define OV8850_3D_FULL_PERIOD_PIXEL_NUMS       3608 /* 15 fps */
+#define OV8850_3D_FULL_PERIOD_LINE_NUMS        2512
+#define OV8850_3D_PV_PERIOD_PIXEL_NUMS         3608 /* 30 fps */
+#define OV8850_3D_PV_PERIOD_LINE_NUMS          1256
+#define OV8850_3D_VIDEO_PERIOD_PIXEL_NUMS      3608 /* 30 fps */
+#define OV8850_3D_VIDEO_PERIOD_LINE_NUMS       1920
 /* SENSOR START/END POSITION */
 #define OV8850_FULL_X_START                    10
 #define OV8850_FULL_Y_START                    10
@@ -132,52 +107,87 @@ typedef struct _sensor_data_struct
 #define OV8850_IMAGE_SENSOR_PV_WIDTH           (1600)
 #define OV8850_IMAGE_SENSOR_PV_HEIGHT          (1200)
 
+#define OV8850_VIDEO_X_START                   2 //9
+#define OV8850_VIDEO_Y_START                   2 //11
+#define OV8850_IMAGE_SENSOR_VIDEO_WIDTH        1600 //1920 //(3264 - 64) /* 1264 */
+#define OV8850_IMAGE_SENSOR_VIDEO_HEIGHT       1200 //1080 //(1836 - 48) /* 948 */
+
+#define OV8850_3D_FULL_X_START                 10   //(1+16+6)
+#define OV8850_3D_FULL_Y_START                 10  //(1+12+4)
+#define OV8850_IMAGE_SENSOR_3D_FULL_WIDTH      (3264 - 64) //(2592 - 16) /* 2560 */
+#define OV8850_IMAGE_SENSOR_3D_FULL_HEIGHT     (2448 - 48) //(1944 - 12) /* 1920 */
+#define OV8850_3D_PV_X_START                   2
+#define OV8850_3D_PV_Y_START                   2
+#define OV8850_IMAGE_SENSOR_3D_PV_WIDTH        (1600) /* 1600 */
+#define OV8850_IMAGE_SENSOR_3D_PV_HEIGHT       (1200) /* 1200 */
+#define OV8850_3D_VIDEO_X_START                2
+#define OV8850_3D_VIDEO_Y_START                2
+#define OV8850_IMAGE_SENSOR_3D_VIDEO_WIDTH     (1600) /* 1600 */
+#define OV8850_IMAGE_SENSOR_3D_VIDEO_HEIGHT    (1200) /* 1200 */
+
+#else
+
+#define OV8850_PREVIEW_CLK   216000000
+#define OV8850_CAPTURE_CLK   228000000
+#define OV8850_VIDEO_CLK     216000000
+#define OV8850_ZSD_PRE_CLK   228000000
+
+/* SENSOR PIXEL/LINE NUMBERS IN ONE PERIOD */
+#define OV8850_FULL_PERIOD_PIXEL_NUMS          3608  //  25fps
+#define OV8850_FULL_PERIOD_LINE_NUMS           2522   //
+
+#define OV8850_PV_PERIOD_PIXEL_NUMS            3608 //
+#define OV8850_PV_PERIOD_LINE_NUMS             1996 //
+
+#define OV8850_VIDEO_PERIOD_PIXEL_NUMS         3608  //
+#define OV8850_VIDEO_PERIOD_LINE_NUMS          1996  //
+
+#define OV8850_3D_FULL_PERIOD_PIXEL_NUMS       3608 /* 15 fps */
+#define OV8850_3D_FULL_PERIOD_LINE_NUMS        2522
+#define OV8850_3D_PV_PERIOD_PIXEL_NUMS         3608 /* 30 fps */
+#define OV8850_3D_PV_PERIOD_LINE_NUMS          1996
+#define OV8850_3D_VIDEO_PERIOD_PIXEL_NUMS      3608 /* 30 fps */
+#define OV8850_3D_VIDEO_PERIOD_LINE_NUMS       2042
+/* SENSOR START/END POSITION */
+#define OV8850_FULL_X_START                    2//10
+#define OV8850_FULL_Y_START                    2//10
+#define OV8850_IMAGE_SENSOR_FULL_WIDTH         (3264 - 64) /* 2560 */
+#define OV8850_IMAGE_SENSOR_FULL_HEIGHT        (2448 - 48) /* 1920 */
+
+#define OV8850_PV_X_START                      2// 2
+#define OV8850_PV_Y_START                      6// 2
+#define OV8850_IMAGE_SENSOR_PV_WIDTH           (1600)
+#define OV8850_IMAGE_SENSOR_PV_HEIGHT          (1200)
+
 #define OV8850_VIDEO_X_START                   9
 #define OV8850_VIDEO_Y_START                   11
-#define OV8850_IMAGE_SENSOR_VIDEO_WIDTH        (1920 - 32) /* 1264 */
-#define OV8850_IMAGE_SENSOR_VIDEO_HEIGHT       (1080 - 24) /* 948 */
+#define OV8850_IMAGE_SENSOR_VIDEO_WIDTH        (3264 - 64) /* 1264 */
+#define OV8850_IMAGE_SENSOR_VIDEO_HEIGHT       (1836 - 48) /* 948 */
 
+#define OV8850_3D_FULL_X_START                 10   //(1+16+6)
+#define OV8850_3D_FULL_Y_START                 10  //(1+12+4)
+#define OV8850_IMAGE_SENSOR_3D_FULL_WIDTH      (3264 - 64) //(2592 - 16) /* 2560 */
+#define OV8850_IMAGE_SENSOR_3D_FULL_HEIGHT     (2448 - 48) //(1944 - 12) /* 1920 */
+#define OV8850_3D_PV_X_START                   2
+#define OV8850_3D_PV_Y_START                   2
+#define OV8850_IMAGE_SENSOR_3D_PV_WIDTH        (1600) /* 1600 */
+#define OV8850_IMAGE_SENSOR_3D_PV_HEIGHT       (1200) /* 1200 */
+#define OV8850_3D_VIDEO_X_START                2
+#define OV8850_3D_VIDEO_Y_START                2
+#define OV8850_IMAGE_SENSOR_3D_VIDEO_WIDTH     (1600) /* 1600 */
+#define OV8850_IMAGE_SENSOR_3D_VIDEO_HEIGHT    (1200) /* 1200 */
+
+#endif
 
 /* SENSOR READ/WRITE ID */
+
 #define OV8850_SLAVE_WRITE_ID_1   (0x6c)
 #define OV8850_SLAVE_WRITE_ID_2   (0x20)
 /************OTP Feature*********************/
 #define OV8850_USE_OTP
 
 #if defined(OV8850_USE_OTP)
-struct ov8850_module_inf
-{
-    kal_uint16 year;
-    kal_uint16 month;
-    kal_uint16 date;
-    kal_uint16 fuseID[3];
-    kal_uint16 code;
-    kal_uint16 version;    
-    
-};
-struct ov8850_awb_cal
-{
-    kal_uint16 wb_RG_H;
-    kal_uint16 wb_RG_L;
-    kal_uint16 wb_BG_H;
-    kal_uint16 wb_BG_L;
-    kal_uint16 wb_GbGr_H;
-    kal_uint16 wb_GbGr_L;    
-};
-struct ov8850_vcm_cal
-{
-    kal_uint16 start_current;
-    kal_uint16 max_current;
-};
-struct ov8850_otp_struct
-{
-    struct ov8850_module_inf module_info;
-    struct ov8850_awb_cal awb_info;
-    struct ov8850_vcm_cal vcm_info;
-    kal_uint16 lenc[62];
-};
-#define RG_TYPICAL 0x248    //R/G typical ratio
-#define BG_TYPICAL 0x295    //B/G typical ratio
+
 #endif
 /************OTP Feature*********************/
 

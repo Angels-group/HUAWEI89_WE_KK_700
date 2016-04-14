@@ -188,6 +188,7 @@ void pmic_thermal_dump_reg(void)
 // PMIC-AUXADC 
 //==============================================================================
 extern int Enable_BATDRV_LOG;
+int can_check_battery_flag=1;
 
 int PMIC_IMM_GetOneChannelValue(int dwChannel, int deCount, int trimd)
 {
@@ -224,6 +225,7 @@ int PMIC_IMM_GetOneChannelValue(int dwChannel, int deCount, int trimd)
     {
         upmu_set_rg_buf_pwd_on(1);
         upmu_set_rg_buf_pwd_b(1);
+        can_check_battery_flag = 0;
         upmu_set_baton_tdet_en(1);
         msleep(20);
     }
@@ -241,6 +243,10 @@ int PMIC_IMM_GetOneChannelValue(int dwChannel, int deCount, int trimd)
         }
         else
         {            
+            can_check_battery_flag = 0;    
+#ifdef ENABLE_PULL_UP_TBAT    
+            upmu_set_baton_tdet_en(1);    
+#endif            
             upmu_set_rg_vbuf_calen(1); /* For T_BAT*/
         }
 
@@ -469,6 +475,7 @@ int PMIC_IMM_GetOneChannelValue(int dwChannel, int deCount, int trimd)
     if(dwChannel==3)
     {
         upmu_set_baton_tdet_en(0);     
+        can_check_battery_flag = 1;        
         upmu_set_rg_buf_pwd_b(0);
         upmu_set_rg_buf_pwd_on(0);
     }
@@ -477,6 +484,10 @@ int PMIC_IMM_GetOneChannelValue(int dwChannel, int deCount, int trimd)
     {
         //upmu_set_rg_vbuf_en(0);
         //upmu_set_rg_vbuf_byp(0);
+#ifdef ENABLE_PULL_UP_TBAT        
+        upmu_set_baton_tdet_en(0);
+#endif        
+        can_check_battery_flag = 1;   
         upmu_set_rg_vbuf_calen(0);
     }
 
@@ -842,7 +853,7 @@ void cust_pmic_interrupt_en_setting(void)
     upmu_set_rg_int_en_vproc(0);
     upmu_set_rg_int_en_rtc(1);
     upmu_set_rg_int_en_audio(0);
-    upmu_set_rg_int_en_accdet(1);
+    //upmu_set_rg_int_en_accdet(1);
     upmu_set_rg_int_en_homekey(1);
     upmu_set_rg_int_en_ldo(0);    
 }

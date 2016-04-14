@@ -306,6 +306,7 @@ kal_int32 gFG_BATT_CAPACITY_init_high_current = 1200;
 kal_int32 gFG_BATT_CAPACITY_aging = 1200;
 int volt_mode_update_timer=0;
 int volt_mode_update_time_out=6; //1mins
+kal_int32 g_rtc_fg_soc = 0;
 
 #define AGING_TUNING_VALUE 103
 
@@ -1476,13 +1477,6 @@ kal_int32 fgauge_get_dod0(kal_int32 voltage, kal_int32 temperature, kal_bool bOc
 extern int g_HW_Charging_Done;
 void fg_qmax_update_for_aging(void)
 {
-//<2013/5/16-25011-jessicatseng, [5860][ATS00159792][So][LUT]The battery out of work, MTK provide patch to fix fuel gauge issue	
-    unsigned int Capacity_Temp=0; //====add====
-
-    xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[fg_qmax_update_for_aging]:reserve original gFG_BATT_CAPACITY_aging \r\n");//====add====
-
-    Capacity_Temp = gFG_BATT_CAPACITY_aging; //====add====
-//>2013/5/16-25011-jessicatseng
     if(g_HW_Charging_Done == 1) // charging full
     {
         if(gFG_DOD0 > 85)
@@ -1494,10 +1488,6 @@ void fg_qmax_update_for_aging(void)
             
             xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[fg_qmax_update_for_aging] need update : gFG_columb=%d, gFG_DOD0=%d, new_qmax=%d\r\n", 
                 gFG_columb, gFG_DOD0, gFG_BATT_CAPACITY_aging);
-//<2013/5/16-25011-jessicatseng, [5860][ATS00159792][So][LUT]The battery out of work, MTK provide patch to fix fuel gauge issue	
-            if(abs(gFG_BATT_CAPACITY_aging-Capacity_Temp)>400) //====add====
-                gFG_BATT_CAPACITY_aging = Capacity_Temp; //====add====
-//>2013/5/16-25011-jessicatseng
         }
         else
         {
@@ -1626,9 +1616,9 @@ kal_int32 fgauge_read_capacity(kal_int32 type)
     gFG_temp = fgauge_read_temperature();
     C_0mA = fgauge_get_Q_max(gFG_temp);
     C_400mA = fgauge_get_Q_max_high_current(gFG_temp);
-    if(C_0mA > C_400mA)
+    if((C_0mA > C_400mA) && (gFG_capacity_by_v == g_rtc_fg_soc))
     {
-        dvalue_new = (100-dvalue) - ( ( (C_0mA-C_400mA) * (dvalue) ) / C_400mA );
+        dvalue_new = (100-dvalue) - ( ( (C_0mA-C_400mA) * (dvalue) ) / C_0mA );
         dvalue = 100 - dvalue_new;
     }
     if (Enable_FGADC_LOG == 1){
@@ -2227,7 +2217,6 @@ int g_tracking_point = CUST_TRACKING_POINT;
 int g_tracking_point = 1; //2014/1/7-maoyichou, Fix battery capacity fast drainage.
 #endif
 
-kal_int32 g_rtc_fg_soc = 0;
 extern int get_rtc_spare_fg_value(void);
 
 void fgauge_Normal_Mode_Work(void)
@@ -2235,12 +2224,9 @@ void fgauge_Normal_Mode_Work(void)
     int i=0;
    
 //1. Get Raw Data  
-//<2013/10/14-30079-jessicatseng, [5860] Fix SOC displays incorrect (100% -> 1%), patch from eService ALPS01054992
-    //gFG_current = fgauge_read_current();
 
     gFG_voltage = fgauge_read_voltage();
 		gFG_current = fgauge_read_current();
-//>2013/10/14-30079-jessicatseng
     gFG_voltage_init = gFG_voltage;
     gFG_voltage = gFG_voltage + fgauge_compensate_battery_voltage_recursion(gFG_voltage,5); //mV  
     gFG_voltage = gFG_voltage + OCV_BOARD_COMPESATE;
@@ -2317,6 +2303,7 @@ void fgauge_Normal_Mode_Work(void)
 
 	if(gFG_booting_counter_I_FLAG == 1) { 
 		gFG_capacity_by_v_init = gFG_capacity_by_v;
+		xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] after gFG_voltage=%d\n", gFG_voltage);
 	}
 //3. Calculate battery capacity by Coulomb Counter
     gFG_capacity_by_c = fgauge_read_capacity(1);
@@ -2332,18 +2319,12 @@ void fgauge_Normal_Mode_Work(void)
         gFG_capacity_by_v = fgauge_read_capacity_by_v();
 		xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] get_hw_ocv=%d, HW_SOC=%d, SW_SOC = %d\n", 
 			gFG_voltage, gFG_capacity_by_v, gFG_capacity_by_v_init);
-//<2013/10/14-30079-jessicatseng, [5860] Fix SOC displays incorrect (100% -> 1%), patch from eService ALPS01054992
-		//if (upmu_is_chr_det() == KAL_TRUE) {
-		// compare with hw_ocv & sw_ocv, check if less than or equal to 5% tolerance 
-			//if (abs(gFG_capacity_by_v_init - gFG_capacity_by_v) > 5) {
 			// compare with hw_ocv & sw_ocv, check if less than or equal to 25mV tolerance
 			if (abs(gFG_voltageVBAT - gFG_voltage) > 25) {
 			gFG_capacity_by_v = gFG_capacity_by_v_init;
 		}
-		//}
 		xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] SW_VBAT=%d, HW_VBAT=%d, gFG_capacity_by_v = %d\n", 
 			gFG_voltageVBAT, gFG_voltage, gFG_capacity_by_v);
-//>2013/10/14-30079-jessicatseng
         //-------------------------------------------------------------------------------
         g_rtc_fg_soc = get_rtc_spare_fg_value();
         if(g_rtc_fg_soc >= gFG_capacity_by_v)
@@ -2372,11 +2353,8 @@ void fgauge_Normal_Mode_Work(void)
 	xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] g_rtc_fg_soc=%d, gFG_capacity_by_v=%d\n", 
                 g_rtc_fg_soc, gFG_capacity_by_v);
         
-//<2013/10/14-30079-jessicatseng, [5860] Fix SOC displays incorrect (100% -> 1%), patch from eService ALPS01054992
-	//if (gFG_capacity_by_v == 0 && upmu_is_chr_det() == KAL_TRUE) {
 	if ((gFG_capacity_by_v == 0 && upmu_is_chr_det() == KAL_TRUE) || 
 			(g_boot_mode == LOW_POWER_OFF_CHARGING_BOOT && gFG_capacity_by_v_init <= 1)) {
-//>2013/10/14-30079-jessicatseng
 		gFG_capacity_by_v = 1;
 		xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[FGADC] gFG_capacity_by_v=%d\n", 
 			gFG_capacity_by_v);
@@ -2644,7 +2622,6 @@ void fgauge_initialization(void)
     gFG_columb = fgauge_read_columb();
     gFG_temp = fgauge_read_temperature();
     gFG_capacity = fgauge_read_capacity(0);         
-
     gFG_columb_init = gFG_columb;
     gFG_capacity_by_c_init = gFG_capacity;
     gFG_capacity_by_c = gFG_capacity;

@@ -20,22 +20,22 @@
 #define R_FG_BOARD_SLOPE	1000 //slope
 #endif
 
-#define Q_MAX_POS_50	2097
-#define Q_MAX_POS_25	2089
-#define Q_MAX_POS_0		2116
-#define Q_MAX_NEG_10	2110
+#define Q_MAX_POS_50	2055
+#define Q_MAX_POS_25	2038
+#define Q_MAX_POS_0		1896
+#define Q_MAX_NEG_10	1536
 
-#define Q_MAX_POS_50_H_CURRENT	2080
-#define Q_MAX_POS_25_H_CURRENT	2072
-#define Q_MAX_POS_0_H_CURRENT	2055
-#define Q_MAX_NEG_10_H_CURRENT	1946
+#define Q_MAX_POS_50_H_CURRENT	2040
+#define Q_MAX_POS_25_H_CURRENT	2022
+#define Q_MAX_POS_0_H_CURRENT	1835
+#define Q_MAX_NEG_10_H_CURRENT	1423
 
 #define R_FG_VALUE 				20 // mOhm, base is 20
 #define CURRENT_DETECT_R_FG	10  //1mA
 
 #define OSR_SELECT_7			0
 
-#define CAR_TUNE_VALUE			100 //1.00
+#define CAR_TUNE_VALUE			93 //1.00
 
 /////////////////////////////////////////////////////////////////////
 // <DOD, Battery_Voltage> Table
@@ -293,6 +293,15 @@ BATTERY_PROFILE_STRUC battery_profile_t2[] =
 {	99	,	3407	},
 {	99	,	3407	},
 {	99	,	3407	},
+{	100	,	3400	},
+{	100	,	3400	},
+{	100	,	3400	},
+{	100	,	3400	},
+{	100	,	3400	},
+{	100	,	3400	},
+{	100	,	3400	},
+{	100	,	3400	},
+{	100	,	3400	},
 {	100	,	3400	},
 {	100	,	3400	},
 {	100	,	3400	},

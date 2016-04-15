@@ -169,18 +169,6 @@ INT32 wmt_plat_audio_ctrl (CMB_STUB_AIF_X state, CMB_STUB_AIF_CTRL ctrl)
         return -1;
     }
 	
-#if !(CONFIG_ARCH_MT6589)
-    if (get_chip_eco_ver() == CHIP_E1) {
-        // TODO: [FixMe][GeorgeKuo] how about MT6575? The following is applied to MT6573E1 only!!
-        pinShare = 1;
-        WMT_INFO_FUNC( "ALPS MT6573 CHIP_E1 PCM/I2S pin share\n");
-    }
-    else{ //E1 later
-        pinShare = 0;
-        WMT_INFO_FUNC( "PCM/I2S pin seperate\n");
-    }
-#endif
-
     iRet = 0;
 
     /* set host side first */
@@ -1035,7 +1023,6 @@ INT32 wmt_plat_pcm_ctrl(ENUM_PIN_STATE state)
 	
 	if (0 != normalPCMFlag)
 	{
-
 		/*normal PCM function define*/
 		switch(state)
 		{

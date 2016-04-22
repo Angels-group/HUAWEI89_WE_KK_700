@@ -90,6 +90,9 @@ extern int TMD2771_CMM_PPCOUNT_VALUE;
 static int tmd2771_debug_mask = 0;
 static int ps_read_value= 0;
 static int als_read_value = 0;
+static int lux_old = 300;
+static int IC_old = 0;
+static int s_als_value = 0;
 #define TMD27111_DBG(x...) do {\
     if (tmd2771_debug_mask) \
         printk( x);\
@@ -219,6 +222,9 @@ static struct i2c_driver tmd2771_i2c_driver = {
 
 static struct tmd2771_priv *tmd2771_obj = NULL;
 static struct platform_driver tmd2771_alsps_driver;
+static int far_threshold = 110;
+static int far_init=549;
+static int near_init=550;
 static int min_proximity_value = 822;
 static int pwin_value = 200;
 static int pwave_value = 200;
@@ -227,6 +233,7 @@ static int aps_first_read = 1;
 /*shorten the bright screen time during a call */
 #define TMD2771_CMM_PER_VALUE 0x10
 #define TMD2771_CMM_ATIME_VALUE 0xDB
+#define TMD2771_CMM_POFFSET_VALUE 0x00
 
 /* Visible compensation : 8 times
    IR compensation : 3 times 
@@ -304,37 +311,64 @@ static int get_tmd2771_register(struct tmd2771_priv  *aps, u8 reg, int flag)
 
 const int againx_table[] = {0x01, 0x08, 0x10, 0x78};
 
-static int luxcalculation(struct tmd2771_priv  *aps,int c0data, int c1data)
+//modify the method of calculate lux value 
+static int luxcalculation(struct tmd2771_priv  *aps,int cdata, int irdata)
 {
-	int luxValue = 0;
 	int control_reg = 0;
-	int cp_temp;
-	int lux_temp1;
-	int lux_temp2;
+    int cp_temp = 0;
+    int luxValue = 0;
+    int IAC1 = 0;
+    int IAC2 = 0;
+    int IAC = 0;
+    int GA;
+    int COE_B;
+    int COE_C;
+    int COE_D;
+    int DF = 52;
 
+    uint32_t testbit_PS;
+    
+    testbit_PS = test_bit(CMC_BIT_PS, &aps->enable) ? (1) : (0);
+    if(((testbit_PS == 1) && (cdata >= 6144)) || ((cdata >= 37886) && (testbit_PS == 0)))  
+    {
+        return 10000;
+    }
 	control_reg = get_tmd2771_register(aps, TMD2771_CMM_CONTROL, 0);
 	control_reg &=0x03;
 
-	cp_temp   = (againx_table[control_reg] * (272 * (0xff - TMD2771_CMM_ATIME_VALUE + 1))) / (TMD2771_CMM_GA * 24);
-    lux_temp1 = (100 * (c0data - 2 * c1data) ) / cp_temp;
-    lux_temp2 = ((60 * c0data - 100 * c1data) ) / cp_temp;
+    cp_temp = againx_table[control_reg];
+    COE_B=2117;
+    COE_C=76;
+    COE_D=78;
+    IAC1 = (cdata - (COE_B*irdata)/1000);    // re-adjust COE_B to avoid 2 decimal point
+    IAC2 = ((COE_C*cdata)/1000 - (COE_D*irdata)/1000); // re-adjust COE_C and COE_D to void 2 decimal point
 	
-	if (lux_temp1 > lux_temp2)
+    if (IAC1 > IAC2)
 	{
-		luxValue = lux_temp1;
+        IAC = IAC1;
 	}
 	else
 	{
-		if (lux_temp2 < 0)
+        IAC = IAC2;
+    }
+
+    if(IAC < 0)
 		{
-			luxValue = 0;
+        IAC =IC_old;
 		}
         else
         {
-            luxValue = lux_temp2;
+        IC_old = IAC;
         }
-	}
-    /* delete */
+    GA = 3600;
+
+    if(cdata < 240*irdata/100)
+        GA = 82*GA/100;
+    else if(cdata >= 240*irdata/100 && cdata <= 50*irdata/10 ) //daylight
+        GA= 70*GA/100;
+    else //room light
+        GA = GA ;
+    luxValue = ((IAC*GA*DF)/1000)/(((272*(256-219))/100) *cp_temp);
 	return luxValue;
 }
 int tmd2771_read_ps(struct tmd2771_priv  *aps)
@@ -343,9 +377,11 @@ int tmd2771_read_ps(struct tmd2771_priv  *aps)
 	int pdata;
 	int pthreshold_h = 0, pthreshold_l;
 
+    unsigned int is_als_enable = 1;
 	/* read the proximity data  */
 	pdata = get_tmd2771_register(aps, TMD2771_CMM_PDATA_L, 1);
 
+    is_als_enable = test_bit(CMC_BIT_ALS, &aps->enable) ? (1) : (0);
 	/* add the arithmetic of setting the proximity thresholds automatically */
 	/*shorten the bright screen time during a call */
 	printk("pdata:%d min_proximity_value:%d", pdata, min_proximity_value);
@@ -354,6 +390,11 @@ int tmd2771_read_ps(struct tmd2771_priv  *aps)
 	if (((pdata + pwave_value) < min_proximity_value)&& (pdata>0))
 	{
 		min_proximity_value = pdata + pwave_value;
+	 if(min_proximity_value<far_threshold)
+	 {
+	 	min_proximity_value=far_threshold;
+	 	printk("tmd2771_read_ps read pdata too small\n");
+	 }
 		ps_cali.close = min_proximity_value + pwin_value;
 		if(ps_cali.close >= 1023)
 		{
@@ -428,62 +469,39 @@ int tmd2771_read_als(struct tmd2771_priv  *aps)
 	/* read the CH0 data and CH1 data  */
 	cdata  = get_tmd2771_register(aps, TMD2771_CMM_C0DATA_L, 1);
 	irdata = get_tmd2771_register(aps, TMD2771_CMM_C1DATA_L, 1);
-	if ((cdata <= 0) && (irdata <= 0))  //the tmd2771 chip is not ready for read data
-	{
-		printk("the tmd2771 chip is not ready for read data!!\n");
-		return;
-	}
+    //Delete the zero value filterationg
+    s_als_value = irdata;
 	/* set ALS high threshold = ch0(cdata) + 20%,low threshold = ch0(cdata) - 20% */
-	cdata_high = (cdata * 600) / 500;
-	cdata_low = (cdata * 400) / 500;
+    //cdata_high = (cdata * 600) / 500;
+    //cdata_low = (cdata * 400) / 500;
     /* delete */
 
-	ret  = set_tmd2771_register(aps, TMD2771_CMM_AILTL, cdata_low, 1);
-	ret |= set_tmd2771_register(aps, TMD2771_CMM_AIHTL, cdata_high, 1);
-	if (ret)
-	{
-		ALS_ERR( ":set TMD2771_CMM_AILTL register is error(%d)!", ret);
-	}
+    //ret  = set_tmd2771_register(aps, TMD2771_CMM_AILTL, cdata_low, 1);
+    //ret |= set_tmd2771_register(aps, TMD2771_CMM_AIHTL, cdata_high, 1);
+    //if (ret)
+    //{
+    //    ALS_ERR( ":set TMD2771_CMM_AILTL register is error(%d)!", ret);
+    //}
 
     /* Visible compensation	*/
-    cdata = cdata*scacle_factor_vasible;
+    //cdata = cdata*scacle_factor_vasible;
     /* IR compensation */
-    irdata = irdata*scacle_factor_ir;
+    //irdata = irdata*scacle_factor_ir;
 	/* convert the raw pdata and irdata to the value in units of lux */
 	lux = luxcalculation(aps,cdata, irdata);
 
+    if(lux < 0)
+    {
+       lux = lux_old;
+       aps->als = lux;
+       return 1;
+    }
 	/* lux=0 is valid */
+    lux = lux < 10000 ? lux : 10000;
+    lux_old = lux;
+    aps->als = lux;
 	ALS_LOG("%s:cdata=%d irdata=%d lux=%d aps_first_read:%d\n", __func__, cdata, irdata, lux, aps_first_read);
-	if (lux >= 0)
-	{
-		if (aps_first_read)
-		{
-			aps_first_read = 0;
-			aps->als = 0;
-		}
-		else
-		{
-			als_level = LSENSOR_MAX_LEVEL - 1;
-			for (i = 0; i < ARRAY_SIZE(aps->hw->als_level); i++)
-			{
-                if (lux < aps->hw->als_level[i])
-				{
-					als_level = i;
-					break;
-				}
-			}
-
-			aps->als = aps->hw->als_value[als_level];
-		}
-             als_read_value = aps->als;
-	}
-	/* if lux<0,we need to change the gain which we can set register 0x0f */
-	else
-	{
-		ALS_LOG("Need to change gain %2d \n", lux);
-             als_read_value = 0;
-	}
-    /* delete */
+    return 1;
 }
 
 
@@ -950,6 +968,10 @@ static int tmd2771_init_client(struct i2c_client *client)
 		return TMD2771_ERR_I2C;
 	}
 	
+    //After set ENABLE register, need delay 4ms
+    #ifdef MTK_ALSPS_BUG
+    mdelay(4);
+    #endif
 	databuf[0] = TMD2771_CMM_ATIME;    
     databuf[1] = TMD2771_CMM_ATIME_VALUE;
 	res = i2c_master_send(client, databuf, 0x2);
@@ -1748,6 +1770,7 @@ static int tmd2771_i2c_remove(struct i2c_client *client)
 
 	return 0;
 }
+
 /*----------------------------------------------------------------------------*/
 static int tmd2771_probe(struct platform_device *pdev) 
 {

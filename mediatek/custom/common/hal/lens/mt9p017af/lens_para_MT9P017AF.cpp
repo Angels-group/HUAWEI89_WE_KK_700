@@ -18,42 +18,259 @@ const NVRAM_LENS_PARA_STRUCT MT9P017AF_LENS_PARA_DEFAULT_VALUE =
 
     // AF NVRAM
     {
-        {{
-	    {// Exact Search
-	    11,		// i4NormalNum
-	    14,		// i4MarcoNum
+        // -------- AF ------------
+        {250, // i4Offset
+          10, // i4NormalNum
+          15, // i4MacroNum
+           0, // i4InfIdxOffset
+           0, //i4MacroIdxOffset          
     	{
-             0,  142,  191, 244 ,300, 360, 425, 490, 555, 620, 685,
-           750, 815, 880, 0,   0,   0,   0,   0,   0,
+                 0,  25,  55,  90, 130, 175, 225, 280, 335, 390,
+               455, 520, 585, 650, 715,   0,   0,   0,   0,   0,
              0,   0,   0,   0,   0,   0,   0,   0,   0,   0
+            },
+          15, // i4THRES_MAIN;
+          10, // i4THRES_SUB;            
+          3,  // i4INIT_WAIT;
+          {500, 500, 500, 500, 500}, // i4FRAME_WAIT
+          0,  // i4DONE_WAIT;
               
-	    }
-    	}
-	    }},
+          0,  // i4FAIL_POS;
 
-        {100},          //i4ZoomTable[0]
-        30,             // i4AF_THRES_MAIN
-        20,             // i4AF_THRES_SUB
-        10000,          // i4AF_THRES_OFFSET
-        5,              // THRES OFFSET GAIN for LOW LIGHT
-        30,             // i4LV_THRES
-        5,              // i4MATRIX_AF_DOF
-        3,              // i4MATRIX_AF_WIN_NUM
-        15000,          // i4AFC_THRES_OFFSET;
-        10,              // i4AFC_STEPSIZE
-        4,              // i4AFC_SPEED
-        15,             // i4SCENE_CHANGE_THRES
-        15,             // i4SCENE_CHANGE_CNT
+          33,  // i4FRAME_TIME                        
+          5,  // i4FIRST_FV_WAIT;
+            
+          45,  // i4FV_CHANGE_THRES;
+          10000,  // i4FV_CHANGE_OFFSET;        
+          12,  // i4FV_CHANGE_CNT;
+          0,  // i4GS_CHANGE_THRES;    
+          20,  // i4GS_CHANGE_OFFSET;    
+          12,  // i4GS_CHANGE_CNT;            
+          12,  // i4FV_STABLE_THRES;         // percentage -> 0 more stable  
+          10000,  // i4FV_STABLE_OFFSET;        // value -> 0 more stable
+          6,  // i4FV_STABLE_NUM;           // max = 9 (more stable), reset = 0
+          6,  // i4FV_STABLE_CNT;           // max = 9                                      
+          12,  // i4FV_1ST_STABLE_THRES;        
+          10000,  // i4FV_1ST_STABLE_OFFSET;
+          6,  // i4FV_1ST_STABLE_NUM;                        
+          6  // i4FV_1ST_STABLE_CNT;      
+         },
+         
+         // -------- ZSD AF ------------
+         {250, // i4Offset
+           10, // i4NormalNum
+           15, // i4MacroNum
+            0, // i4InfIdxOffset
+            0, //i4MacroIdxOffset           
+           {
+               0,  25,  55,  90, 130, 175, 225, 280, 335, 390,
+             455, 520, 585, 650, 715,   0,   0,   0,   0,   0,
+               0,   0,   0,   0,   0,   0,   0,   0,   0,   0              
+           },
+           15, // i4THRES_MAIN;
+           10, // i4THRES_SUB;            
+           3,  // i4INIT_WAIT;
+           {500, 500, 500, 500, 500}, // i4FRAME_WAIT
+           0,  // i4DONE_WAIT;
+                     
+           0,  // i4FAIL_POS;
 
-        15,             // i4SPOT_PERCENT_X
-        15,             // i4SPOT_PERCENT_Y
-        15,             // i4MATRIX_PERCENT_X
-        15,             // i4MATRIX_PERCENT_Y
-        5,              // i4MATRIX_LOC_OFFSET
+           66,  // i4FRAME_TIME                                  
+           5,  // i4FIRST_FV_WAIT;
+                     
+           45,  // i4FV_CHANGE_THRES;
+           10000,  // i4FV_CHANGE_OFFSET;        
+           12,  // i4FV_CHANGE_CNT;
+           40,  // i4GS_CHANGE_THRES;    
+           10000,  // i4GS_CHANGE_OFFSET;    
+           12,  // i4GS_CHANGE_CNT;            
+           15,  // i4FV_STABLE_THRES;         // percentage -> 0 more stable  
+           10000,  // i4FV_STABLE_OFFSET;        // value -> 0 more stable
+           4,  // i4FV_STABLE_NUM;           // max = 9 (more stable), reset = 0
+           4,  // i4FV_STABLE_CNT;           // max = 9                                      
+           12,  // i4FV_1ST_STABLE_THRES;        
+           10000,  // i4FV_1ST_STABLE_OFFSET;
+           6,  // i4FV_1ST_STABLE_NUM;                        
+           6  // i4FV_1ST_STABLE_CNT;      
+           }, 
+           
+           // -------- VAFC ------------
+         {250, // i4Offset
+           20, // i4NormalNum
+           20, // i4MacroNum
+            0, // i4InfIdxOffset
+            0, //i4MacroIdxOffset           
+             {
+                  0,  20,  40,  60,  80, 100, 120, 140, 160, 180,
+                200, 220, 240, 260, 280, 300, 320, 340, 360, 390,
+                  0,   0,   0,   0,   0,   0,   0,   0,   0,   0              
+             },
+           15, // i4THRES_MAIN;
+           10, // i4THRES_SUB;            
+           1,  // i4INIT_WAIT;
+           {500, 500, 500, 500, 500}, // i4FRAME_WAIT
+           0,  // i4DONE_WAIT;
+             
+           0,  // i4FAIL_POS;
 
-        20000,          // i4TUNE_PARA1 : THRES OFFSET for Matrix
-        0,              // i4TUNE_PARA2 : Infinity position for normal
-        0               // i4TUNE_PARA3 : Infinity position for macro
+           33,  // i4FRAME_TIME                          
+           5,  // i4FIRST_FV_WAIT;
+             
+           45,  // i4FV_CHANGE_THRES;
+           10000,  // i4FV_CHANGE_OFFSET;        
+           12,  // i4FV_CHANGE_CNT;
+           40,  // i4GS_CHANGE_THRES;    
+           10000,  // i4GS_CHANGE_OFFSET;    
+           12,  // i4GS_CHANGE_CNT;            
+           12,  // i4FV_STABLE_THRES;         // percentage -> 0 more stable  
+           10000,  // i4FV_STABLE_OFFSET;        // value -> 0 more stable
+           6,  // i4FV_STABLE_NUM;           // max = 9 (more stable), reset = 0
+           6,  // i4FV_STABLE_CNT;           // max = 9                                      
+           12,  // i4FV_1ST_STABLE_THRES;        
+           10000,  // i4FV_1ST_STABLE_OFFSET;
+           6,  // i4FV_1ST_STABLE_NUM;                        
+           6  // i4FV_1ST_STABLE_CNT;      
+          },
+
+        // --- sAF_TH ---
+         {
+          8,   // i4ISONum;
+          {100,150,200,300,400,600,800,1600},       // i4ISO[ISO_MAX_NUM];
+                  
+          6,   // i4GMeanNum;
+          {20,55,105,150,180,205},        // i4GMean[GMEAN_MAX_NUM];
+
+          { 31, 31, 31, 31, 31, 31, 31, 31,
+            63, 63, 63, 63, 63, 63, 63, 63,
+           127,127,127,127,127,127,127,127},        // i4GMR[3][ISO_MAX_NUM];
+                  
+          {0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0},        // i4FV_DC[GMEAN_MAX_NUM][ISO_MAX_NUM];
+           
+          {50000,50000,50000,50000,50000,50000,50000,50000,
+           50000,50000,50000,50000,50000,50000,50000,50000,
+           50000,50000,50000,50000,50000,50000,50000,50000,
+           50000,50000,50000,50000,50000,50000,50000,50000,
+           50000,50000,50000,50000,50000,50000,50000,50000,
+           50000,50000,50000,50000,50000,50000,50000,50000},         // i4MIN_TH[GMEAN_MAX_NUM][ISO_MAX_NUM];        
+
+          {   5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5}, // i4HW_TH[GMEAN_MAX_NUM][ISO_MAX_NUM];       
+// ------------------------------------------------------------------------
+          {0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0},        // i4FV_DC2[GMEAN_MAX_NUM][ISO_MAX_NUM];
+           
+          {0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0},         // i4MIN_TH2[GMEAN_MAX_NUM][ISO_MAX_NUM];
+          
+          {   5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5,
+              5,5,5,5,5,5,5,5}      // i4HW_TH2[GMEAN_MAX_NUM][ISO_MAX_NUM];       
+          
+         },
+// ------------------------------------------------------------------------
+
+         // --- sZSDAF_TH ---
+          {
+           8,   // i4ISONum;
+           {100,150,200,300,400,600,800,1600},       // i4ISO[ISO_MAX_NUM];
+                   
+           6,   // i4GMeanNum;
+           {20,55,105,150,180,205},        // i4GMean[GMEAN_MAX_NUM];
+
+           { 31, 31, 31, 31, 31, 31, 31, 31,
+             63, 63, 63, 63, 63, 63, 63, 63,
+            127,127,127,127,127,127,127,127},        // i4GMR[3][ISO_MAX_NUM];
+           
+// ------------------------------------------------------------------------                   
+           {0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0},        // i4FV_DC[GMEAN_MAX_NUM][ISO_MAX_NUM];
+            
+           {50000,50000,50000,50000,50000,50000,50000,50000,
+            50000,50000,50000,50000,50000,50000,50000,50000,
+            50000,50000,50000,50000,50000,50000,50000,50000,
+            50000,50000,50000,50000,50000,50000,50000,50000,
+            50000,50000,50000,50000,50000,50000,50000,50000,
+            50000,50000,50000,50000,50000,50000,50000,50000},         // i4MIN_TH[GMEAN_MAX_NUM][ISO_MAX_NUM];        
+         
+           {0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0},       // i4HW_TH[GMEAN_MAX_NUM][ISO_MAX_NUM];       
+// ------------------------------------------------------------------------
+           {0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0},        // i4FV_DC2[GMEAN_MAX_NUM][ISO_MAX_NUM];
+            
+           {0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0},         // i4MIN_TH2[GMEAN_MAX_NUM][ISO_MAX_NUM];
+           
+           {0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0}          // i4HW_TH2[GMEAN_MAX_NUM][ISO_MAX_NUM];       
+// ------------------------------------------------------------------------           
+          },
+
+          1, // i4VAFC_FAIL_CNT;
+          0, // i4CHANGE_CNT_DELTA;
+
+          30, // i4LV_THRES;
+
+          18, // i4WIN_PERCENT_W;
+          24, // i4WIN_PERCENT_H;                
+          250,  // i4InfPos;
+          20, //i4AFC_STEP_SIZE;
+
+          {
+              {50, 100, 150, 200, 250}, // back to bestpos step
+              { 0,   0,   0,   0,   0}  // hysteresis compensate step
+          },
+
+          {0, 50, 150, 250, 350}, // back jump
+          400,  //i4BackJumpPos
+
+          80, // i4FDWinPercent;
+          40, // i4FDSizeDiff;
+
+          3,   //i4StatGain          
+
+          {0,0,0,0,0,0,0,0,0,0,
+           0,0,0,0,0,0,0,0,0,0}// i4Coef[20];
     },
 
     {0}

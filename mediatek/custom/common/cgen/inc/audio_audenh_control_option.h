@@ -3,6 +3,6 @@
 
 
 
-#define DEFAULT_AUDIO_AUDENH_CONTROL_OPTION_Coeff (0)
+#define DEFAULT_AUDIO_AUDENH_CONTROL_OPTION_Coeff (0x00000002)  //Bit0: Audenh default (Default off for Low Power) , Bit1: BesLoudness default
 
 #endif

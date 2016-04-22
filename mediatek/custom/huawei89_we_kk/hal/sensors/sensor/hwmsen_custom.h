@@ -37,7 +37,7 @@
 #endif
 
 #ifdef CUSTOM_KERNEL_GYROSCOPE
-	#define GYROSCOPE 		"MPU3050c gyroscope Sensor"
+	#define GYROSCOPE 		"MPU3050c  gyroscope Sensor"
 	#define GYROSCOPE_VENDER 	"Invensensor"
 #endif
 

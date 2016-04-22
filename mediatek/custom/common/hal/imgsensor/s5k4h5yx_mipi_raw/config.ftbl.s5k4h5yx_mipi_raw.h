@@ -1,40 +1,3 @@
-/* Copyright Statement:
- *
- * This software/firmware and related documentation ("MediaTek Software") are
- * protected under relevant copyright laws. The information contained herein is
- * confidential and proprietary to MediaTek Inc. and/or its licensors. Without
- * the prior written permission of MediaTek inc. and/or its licensors, any
- * reproduction, modification, use or disclosure of MediaTek Software, and
- * information contained herein, in whole or in part, shall be strictly
- * prohibited.
- * 
- * MediaTek Inc. (C) 2010. All rights reserved.
- * 
- * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
- * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
- * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER
- * ON AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL
- * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR
- * NONINFRINGEMENT. NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH
- * RESPECT TO THE SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY,
- * INCORPORATED IN, OR SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES
- * TO LOOK ONLY TO SUCH THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO.
- * RECEIVER EXPRESSLY ACKNOWLEDGES THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO
- * OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES CONTAINED IN MEDIATEK
- * SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK SOFTWARE
- * RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
- * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S
- * ENTIRE AND CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE
- * RELEASED HEREUNDER WILL BE, AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE
- * MEDIATEK SOFTWARE AT ISSUE, OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE
- * CHARGE PAID BY RECEIVER TO MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
- *
- * The following software/firmware and/or related documentation ("MediaTek
- * Software") have been modified by MediaTek Inc. All revisions are subject to
- * any receiver's applicable license agreements with MediaTek Inc.
- */
-
 //#ifndef _MTK_CUSTOM_PROJECT_HAL_IMGSENSOR_SRC_CONFIGFTBL__H_
 //#define _MTK_CUSTOM_PROJECT_HAL_IMGSENSOR_SRC_CONFIGFTBL__H_
 #if 1
@@ -100,17 +63,10 @@ FTABLE_SCENE_INDEP()
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
         KEY_AS_(MtkCameraParameters::KEY_PICTURE_SIZE), 
         SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_("3328x2496"), 
+            ITEM_AS_DEFAULT_("3264x2448"), 
             ITEM_AS_VALUES_(
-		"256x144", "320x240",	  //  QVGA    76800
-		"512x288",   "640x480",   // HVGA     307200
-		"1280x720",   "1024x768",	// 1 M    786432
-		 "1536x864", "1280x960",   // 1.3M     1228800
-		 "1792x1008",   "1600x1200",     // 2M  1920000
-		 "2304x1296",   "2048x1536",   // 3M   3145728
-		 "3072x1728",	 "2624x1968",  // 5M   4915200
-		 "3840x2160",    "3328x2496",     // 8M   7990272
-		//"4864x2736",	 "4224x3168",  // 13M  12582912
+                "320x240",      "640x480",      "1024x768",     "1280x720",     "1280x768",     "1280x960", 
+                "1600x1200",    "2048x1536",    "2560x1440",    "2560x1920",    "3264x2448",    "3328x1872", 
             )
         ), 
     )
@@ -136,22 +92,7 @@ FTABLE_SCENE_INDEP()
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
         KEY_AS_(MtkCameraParameters::KEY_VIDEO_SIZE), 
         SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_("640x480"), 
-            ITEM_AS_VALUES_(
-			"176x144",		"320x240",		"352x288",		"480x320",		"480x368", 
-			"640x480",		"720x480",		"800x480",		"800x600",		"864x480", 
-			"960x540",		"1280x720", 	"1920x1080", 
-            )
-        ), 
-    )
-#endif
-
-#if 0
-    //  Video Size
-    FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
-        KEY_AS_(MtkCameraParameters::KEY_VIDEO_SIZE), 
-        SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_("640x480"), 
+            ITEM_AS_DEFAULT_("1280x720"), 
             ITEM_AS_VALUES_(
                 "176x144",      "480x320",      "640x480", 
                 "864x480",      "1280x720",     "1920x1080", 
@@ -187,18 +128,6 @@ FTABLE_SCENE_INDEP()
                 "1.0",      //exposure compensation step; EV = step x index
             )
         ), 
-        //......................................................................
-        #if 1   //  SCENE HDR
-        SCENE_AS_(MtkCameraParameters::SCENE_MODE_HDR, 
-            ITEM_AS_DEFAULT_("0"), 
-            ITEM_AS_USER_LIST_(
-                "0",        //min exposure compensation index
-                "0",        //max exposure compensation index
-                "1.0",      //exposure compensation step; EV = step x index
-            )
-        )
-        #endif
-        //......................................................................
     )
 #endif
     //==========================================================================
@@ -207,23 +136,13 @@ FTABLE_SCENE_INDEP()
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
         KEY_AS_(MtkCameraParameters::KEY_ANTIBANDING), 
         SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_(MtkCameraParameters::ANTIBANDING_OFF), 
+            ITEM_AS_DEFAULT_(MtkCameraParameters::ANTIBANDING_AUTO), 
             ITEM_AS_VALUES_(
                 MtkCameraParameters::ANTIBANDING_OFF, 
                 MtkCameraParameters::ANTIBANDING_50HZ, 
                 MtkCameraParameters::ANTIBANDING_60HZ, 
                 MtkCameraParameters::ANTIBANDING_AUTO, 
             )
-        ), 
-    )
-#endif
-    //==========================================================================
-#if 1
-    //  Video Snapshot
-    FTABLE_CONFIG_AS_TYPE_OF_USER(
-        KEY_AS_(MtkCameraParameters::KEY_VIDEO_SNAPSHOT_SUPPORTED), 
-        SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_(MtkCameraParameters::TRUE), 
         ), 
     )
 #endif
@@ -288,15 +207,13 @@ FTABLE_SCENE_INDEP()
                 MtkCameraParameters::CAPTURE_MODE_SMILE_SHOT, 
                 MtkCameraParameters::CAPTURE_MODE_BEST_SHOT, 
                 MtkCameraParameters::CAPTURE_MODE_EV_BRACKET_SHOT, 
-                MtkCameraParameters::CAPTURE_MODE_AUTO_PANORAMA_SHOT,
-                MtkCameraParameters::CAPTURE_MODE_MAV_SHOT,
-                MtkCameraParameters::CAPTURE_MODE_ASD_SHOT, 
+                MtkCameraParameters::CAPTURE_MODE_AUTO_PANORAMA_SHOT, 
             )
         ), 
     )
 #endif
     //==========================================================================
-#if 0
+#if 1
     //	Video Hdr
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
         KEY_AS_(MtkCameraParameters::KEY_VIDEO_HDR), 

@@ -62,7 +62,7 @@ FTABLE_SCENE_INDEP()
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
         KEY_AS_(MtkCameraParameters::KEY_PREVIEW_SIZE), 
         SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_("640x480"), 
+            ITEM_AS_DEFAULT_("1280x720"), 
             ITEM_AS_VALUES_(
                 "176x144",      "320x240",      "352x288",      "480x320",      "480x368", 
                 "640x480",      "720x480",      "800x480",      "800x600",      "864x480", 
@@ -77,7 +77,7 @@ FTABLE_SCENE_INDEP()
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
         KEY_AS_(MtkCameraParameters::KEY_VIDEO_SIZE), 
         SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_("640x480"), 
+            ITEM_AS_DEFAULT_("1280x720"), 
             ITEM_AS_VALUES_(
                 "176x144",      "480x320",      "640x480", 
                 "864x480",      "1280x720",     "1920x1080", 
@@ -107,8 +107,8 @@ FTABLE_SCENE_INDEP()
         SCENE_AS_DEFAULT_SCENE(
             ITEM_AS_DEFAULT_("0"), 
             ITEM_AS_USER_LIST_(
-                "-1",       //min exposure compensation index
-                "1",        //max exposure compensation index
+                "-3",       //min exposure compensation index
+                "3",        //max exposure compensation index
                 "1.0",      //exposure compensation step; EV = step x index
             )
         ), 
@@ -132,7 +132,7 @@ FTABLE_SCENE_INDEP()
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
         KEY_AS_(MtkCameraParameters::KEY_ANTIBANDING), 
         SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_(MtkCameraParameters::ANTIBANDING_OFF), 
+            ITEM_AS_DEFAULT_(MtkCameraParameters::ANTIBANDING_AUTO), 
             ITEM_AS_VALUES_(
                 MtkCameraParameters::ANTIBANDING_OFF, 
                 MtkCameraParameters::ANTIBANDING_50HZ, 
@@ -145,29 +145,46 @@ FTABLE_SCENE_INDEP()
     //==========================================================================
 #if 1
     //  Video Snapshot
+#if (1 == VSS_SUPPORTED)
     FTABLE_CONFIG_AS_TYPE_OF_USER(
         KEY_AS_(MtkCameraParameters::KEY_VIDEO_SNAPSHOT_SUPPORTED), 
         SCENE_AS_DEFAULT_SCENE(
             ITEM_AS_DEFAULT_(MtkCameraParameters::TRUE), 
         ), 
     )
+#else
+    FTABLE_CONFIG_AS_TYPE_OF_USER(
+        KEY_AS_(MtkCameraParameters::KEY_VIDEO_SNAPSHOT_SUPPORTED), 
+        SCENE_AS_DEFAULT_SCENE(
+            ITEM_AS_DEFAULT_(MtkCameraParameters::FALSE), 
+        ), 
+    )
+#endif
 #endif
     //==========================================================================
 #if 1
     //  Video Stabilization (EIS)
+#if (1 == EIS_SUPPORTED)    
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_SUPPORTED(
         KEY_AS_(MtkCameraParameters::KEY_VIDEO_STABILIZATION), 
         SCENE_AS_DEFAULT_SCENE(
             ITEM_AS_DEFAULT_(MtkCameraParameters::FALSE), 
             ITEM_AS_SUPPORTED_(
-            #if 0
-                MtkCameraParameters::FALSE
-            #else
                 MtkCameraParameters::TRUE
-            #endif
             )
         ), 
     )
+#else
+    FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_SUPPORTED(
+        KEY_AS_(MtkCameraParameters::KEY_VIDEO_STABILIZATION), 
+        SCENE_AS_DEFAULT_SCENE(
+            ITEM_AS_DEFAULT_(MtkCameraParameters::FALSE), 
+            ITEM_AS_SUPPORTED_(            
+                MtkCameraParameters::FALSE
+            )
+        ), 
+    )
+#endif
 #endif
     //==========================================================================
 #if 1

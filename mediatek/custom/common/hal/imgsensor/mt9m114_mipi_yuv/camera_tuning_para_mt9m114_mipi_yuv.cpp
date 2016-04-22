@@ -328,12 +328,12 @@ const NVRAM_CAMERA_3A_STRUCT MT9M114_MIPI_YUV_CAMERA_3A_NVRAM_DEFAULT_VALUE=
             16384,  // u4MaxGain, 16x
             70,     // u4MiniISOGain, ISOxx
             128,    // u4GainStepUnit, 1x/8
-            31,     // u4PreExpUnit
+            0,     // u4PreExpUnit
             30,     // u4PreMaxFrameRate
-            31,     // u4VideoExpUnit
+            0,     // u4VideoExpUnit
             30,     // u4VideoMaxFrameRate
             1024,   // u4Video2PreRatio, 1024 base = 1x
-            58,     // u4CapExpUnit
+            0,     // u4CapExpUnit
             30,     // u4CapMaxFrameRate
             1024,   // u4Cap2PreRatio, 1024 base = 1x
             28      // u4LensFno, Fno = 2.8
@@ -354,7 +354,7 @@ const NVRAM_CAMERA_3A_STRUCT MT9M114_MIPI_YUV_CAMERA_3A_NVRAM_DEFAULT_VALUE=
 		{
 		    TRUE,            // bEnableBlackLight
             TRUE,            // bEnableHistStretch
-            FALSE,           // bEnableAntiOverExposure
+            TRUE,           // bEnableAntiOverExposure
             TRUE,            // bEnableTimeLPF
             TRUE,            // bEnableCaptureThres
             47,              // u4AETarget

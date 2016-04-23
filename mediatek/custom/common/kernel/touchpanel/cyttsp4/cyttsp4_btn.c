@@ -29,7 +29,7 @@
  *
  */
 
-#include <linux/cyttsp4_bus.h>
+#include <cyttsp4_bus.h>
 
 #include <linux/delay.h>
 #ifdef CONFIG_HAS_EARLYSUSPEND
@@ -45,8 +45,8 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 
-#include <linux/cyttsp4_btn.h>
-#include <linux/cyttsp4_core.h>
+#include <cyttsp4_btn.h>
+#include <cyttsp4_core.h>
 #include "cyttsp4_regs.h"
 
 struct cyttsp4_btn_data {

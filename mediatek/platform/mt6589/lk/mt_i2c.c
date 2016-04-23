@@ -171,8 +171,8 @@ unsigned long mt_i2c_deinit (unsigned char channel)
 }
 //I2C GPIO debug
 struct mt_i2c_gpio_t{
-	u16 scl;
-	u16 sda;
+	unsigned short scl;
+	unsigned short sda;
 };
 static struct mt_i2c_gpio_t mt_i2c_gpio_mode[7]={
 	{GPIO119,GPIO118},
@@ -217,7 +217,7 @@ static inline void mt_i2c_dump_info(struct mt_i2c_t *i2c)
 			mt_get_gpio_in(mt_i2c_gpio_mode[i2c->id].sda),
 			mt_get_gpio_mode(mt_i2c_gpio_mode[i2c->id].sda));
 
-	//I2CERR("base address %x\n",i2c_base);		
+	I2CERR("base address %x\n",i2c_base);		
 	return;
 
 }

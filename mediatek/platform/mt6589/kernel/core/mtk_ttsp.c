@@ -20,11 +20,11 @@
 #include <linux/rtpm_prio.h>
 #include <mach/mt_boot.h>
 
-#include <linux/cyttsp4_bus.h>
-#include <linux/cyttsp4_core.h>
-#include <linux/cyttsp4_i2c.h>
-#include <linux/cyttsp4_btn.h>
-#include <linux/cyttsp4_mt.h>
+#include "cyttsp4_bus.h"
+#include "cyttsp4_core.h"
+#include "cyttsp4_i2c.h"
+#include "cyttsp4_btn.h"
+#include "cyttsp4_mt.h"
 
 #include <mach/mt_gpio.h>
 #include <mach/mt_typedefs.h>
@@ -387,7 +387,7 @@ static struct cyttsp4_touch_firmware cyttsp4_firmware = {
 #endif
 
 #ifdef CONFIG_TOUCHSCREEN_CYPRESS_CYTTSP4_PLATFORM_TTCONFIG_UPGRADE
-#include <linux/cyttsp4_params.h>
+#include "cyttsp4_params.h"
 static struct touch_settings cyttsp4_sett_param_regs = {
 	.data = (uint8_t *)&cyttsp4_param_regs[0],
 	.size = ARRAY_SIZE(cyttsp4_param_regs),
@@ -399,14 +399,14 @@ static struct touch_settings cyttsp4_sett_param_size = {
 	.size = ARRAY_SIZE(cyttsp4_param_size),
 	.tag = 0,
 };
-#include <linux/Ofilm_G700_config.h>
+#include <Ofilm_G700_config.h>
 static struct touch_settings cyttsp4_G700_sett_ofilm_param_regs = {
        .data = (uint8_t *)&cyttsp4_G700_ofilm_param_regs[0],
        .size = ARRAY_SIZE(cyttsp4_G700_ofilm_param_regs),
        .tag = 0,
 };
 
-#include <linux/Truely_G700_config.h>
+#include <Truely_G700_config.h>
 static struct touch_settings cyttsp4_G700_sett_truly_param_regs = {
        .data = (uint8_t *)&cyttsp4_G700_truly_param_regs[0],
        .size = ARRAY_SIZE(cyttsp4_G700_truly_param_regs),
@@ -428,33 +428,33 @@ struct cyttsp4_sett_param_map cyttsp4_G700_config_param_map[] = {
 		  },
 		  
 };
-#include <linux/Eely_G610_config.h>
+#include <Eely_G610_config.h>
 static struct touch_settings cyttsp4_G610_sett_eely_param_regs = {
        .data = (uint8_t *)&cyttsp4_G610_eely_param_regs[0],
        .size = ARRAY_SIZE(cyttsp4_G610_eely_param_regs),
        .tag = 0,
 };
-#include <linux/Truely_G610_config.h>
+#include <Truely_G610_config.h>
 static struct touch_settings cyttsp4_G610_sett_truly_param_regs = {
        .data = (uint8_t *)&cyttsp4_G610_truly_param_regs[0],
        .size = ARRAY_SIZE(cyttsp4_G610_truly_param_regs),
        .tag = 0,
 };
-#include <linux/Ofilm_G610_config.h>
+#include <Ofilm_G610_config.h>
 static struct touch_settings cyttsp4_G610_sett_ofilm_param_regs = {
        .data = (uint8_t *)&cyttsp4_G610_ofilm_param_regs[0],
        .size = ARRAY_SIZE(cyttsp4_G610_ofilm_param_regs),
        .tag = 0,
 };
 
-#include <linux/Mutto_G610_config.h>
+#include <Mutto_G610_config.h>
 static struct touch_settings cyttsp4_G610_sett_mutto_param_regs = {
        .data = (uint8_t *)&cyttsp4_G610_mutto_param_regs[0],
        .size = ARRAY_SIZE(cyttsp4_G610_mutto_param_regs),
        .tag = 0,
 };
 
-#include <linux/Gis_G610_config.h>
+#include <Gis_G610_config.h>
 static struct touch_settings cyttsp4_G610_sett_gis_param_regs = {
        .data = (uint8_t *)&cyttsp4_G610_gis_param_regs[0],
        .size = ARRAY_SIZE(cyttsp4_G610_gis_param_regs),
@@ -659,14 +659,6 @@ struct cyttsp4_device_info cyttsp4_btn_info = {
 	.platform_data = &_cyttsp4_btn_platform_data,
 };
 
-//static struct cyttsp4_core cyttsp4_core_device = {
-//	.name = CYTTSP4_CORE_NAME,
-//	.id = "main_ttsp_core",
-//	.adap_id = CYTTSP4_I2C_NAME,
-//	.dev = {
-//		.platform_data = &_cyttsp4_core_platform_data,
-//	},
-//};
 
 static int __init tpd_ttsp_init(void) {
   printk("MediaTek TTDA ttsp touch panel driver init\n");

@@ -37,8 +37,8 @@
 #include <linux/mutex.h>
 #include <linux/pm_runtime.h>
 #include <linux/hrtimer.h>
-#include <linux/cyttsp4_bus.h>
-#include <linux/cyttsp4_core.h>
+#include "cyttsp4_bus.h"
+#include "cyttsp4_core.h"
 #include "cyttsp4_spi.h"
 
 #define CY_SPI_WR_OP		0x00 /* r/~w */

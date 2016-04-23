@@ -29,7 +29,7 @@
  * Contact Cypress Semiconductor at www.cypress.com <ttdrivers@cypress.com>
  *
  */
-#include <linux/cyttsp4_bus.h>
+#include "cyttsp4_bus.h"
 
 #include <linux/device.h>
 #include <linux/kernel.h>

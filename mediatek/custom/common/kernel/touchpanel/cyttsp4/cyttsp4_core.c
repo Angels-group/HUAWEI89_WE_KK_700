@@ -34,7 +34,7 @@ extern void cyttsp4_mtk_gpio_interrupt_enable();
 extern void cyttsp4_mtk_gpio_interrupt_disable();
 
 
-#include <linux/cyttsp4_bus.h>
+#include "cyttsp4_bus.h"
 
 #include <asm/unaligned.h>
 #include <linux/delay.h>
@@ -54,7 +54,7 @@ extern void cyttsp4_mtk_gpio_interrupt_disable();
 #include <linux/earlysuspend.h>
 #endif
 
-#include <linux/cyttsp4_core.h>
+#include "cyttsp4_core.h"
 #include "cyttsp4_regs.h"
 #include <linux/hardware_self_adapt.h>
 #include <mach/mt_gpio.h>

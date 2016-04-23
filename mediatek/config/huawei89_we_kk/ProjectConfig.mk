@@ -171,7 +171,7 @@ CUSTOM_KERNEL_SUB_IMGSENSOR = mt9m114_mipi_yuv
 CUSTOM_KERNEL_SUB_LENS = dummy_lens
 
 # touch driver  need to report correct touch axes
-CUSTOM_KERNEL_TOUCHPANEL = 
+CUSTOM_KERNEL_TOUCHPANEL = cyttsp4
 
 # Configuration for USB PHY
 CUSTOM_KERNEL_USB = mt6577

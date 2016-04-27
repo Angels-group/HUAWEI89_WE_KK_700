@@ -125,4 +125,7 @@ extern void cyttsp4_pr_buf(struct device *dev, u8 *pr_buf, u8 *dptr, int size,
 #define cyttsp4_pr_buf(a, b, c, d, e) do { } while (0)
 #endif
 
+#define CYTTSP_OFF 0
+#define CYTTSP_ON 1
+#define CYTTSP_NO_OFF 2
 #endif /* _LINUX_CYTTSP4_CORE_H */

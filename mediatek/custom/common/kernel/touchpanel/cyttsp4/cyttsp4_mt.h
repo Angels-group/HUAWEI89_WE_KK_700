@@ -30,7 +30,8 @@
 #ifndef _LINUX_CYTTSP4_MT_H
 #define _LINUX_CYTTSP4_MT_H
 
-#define CYTTSP4_MT_NAME "cyttsp4_mt"
+//#define CYTTSP4_MT_NAME "cyttsp4_mt"
+#define CYTTSP4_MT_NAME "mtk-tpd"
 
 /* abs settings */
 #define CY_IGNORE_VALUE             0xFFFF

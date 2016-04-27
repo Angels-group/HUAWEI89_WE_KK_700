@@ -106,7 +106,6 @@ static void cyttsp4_init_i2c_free_dma_buffer(void)
 
 int cyttsp4_MTK_i2c_write(struct i2c_client *client, const uint8_t *buf, int len)
 {
-  //pr_info("cyttsp4_MTK_i2c_write() client:0x%p buf:0x%p len:%d\n", client, buf, len);
 
   int i = 0;
 
@@ -128,7 +127,6 @@ int cyttsp4_MTK_i2c_write(struct i2c_client *client, const uint8_t *buf, int len
 
 int cyttsp4_MTK_i2c_read(struct i2c_client *client, uint8_t *buf, int len)
 {
-  //pr_info("cyttsp4_MTK_i2c_read() client:0x%p buf:0x%p len:%d\n", client, buf, len);
   int i = 0, err = 0;
 
   if(len <= 8){
@@ -160,21 +158,19 @@ extern void eint_interrupt_handler(void) ;
 void cyttsp4_mtk_gpio_interrupt_register()
 {
   //printk("cyttsp4_mtk_gpio_interrupt_register\n");
-	mt65xx_eint_set_sens(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_SENSITIVE);
-	mt65xx_eint_set_hw_debounce(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_DEBOUNCE_CN);
+	mt_eint_set_sens(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_SENSITIVE);
+	mt_eint_set_hw_debounce(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_DEBOUNCE_CN);
 	mt65xx_eint_registration(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_DEBOUNCE_EN, CUST_EINT_TOUCH_PANEL_POLARITY, eint_interrupt_handler, 1);
-	mt65xx_eint_unmask(CUST_EINT_TOUCH_PANEL_NUM);
+	mt_eint_unmask(CUST_EINT_TOUCH_PANEL_NUM);
 }
 
 void cyttsp4_mtk_gpio_interrupt_enable()
 {
-  //printk("cyttsp4_mtk_gpio_interrupt_enable\n");
   mt_eint_unmask(CUST_EINT_TOUCH_PANEL_NUM);
 }
 
 void cyttsp4_mtk_gpio_interrupt_disable()
 {
-  printk("cyttsp4_mtk_gpio_interrupt_disable\n");
   mt_eint_mask(CUST_EINT_TOUCH_PANEL_NUM);
 }
 
@@ -201,8 +197,6 @@ static int cyttsp4_xres(struct cyttsp4_core_platform_data *pdata,
   msleep(20);
   #endif 
   dev_info(dev,"%s: RESET CYTTSP gpio=%d r=%d\n", __func__,GPIO_CTP_RST_PIN, rc);
-  //  cyttsp4_mtk_gpio_interrupt_enable();
-  //  testGPIO77();
   return rc;
 }
 
@@ -222,7 +216,7 @@ static ssize_t cyttps4_virtualkeys_show(struct kobject *kobj,
 
 static struct kobj_attribute cyttsp4_virtualkeys_attr = {
 	.attr = {
-		.name = "virtualkeys.cyttsp4_mt",
+		.name = "virtualkeys.mtk-tpd",
 		.mode = S_IRUGO,
 	},
 	.show = &cyttps4_virtualkeys_show,
@@ -250,7 +244,7 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 	struct kobject *properties_kobj;
 	int ret;
 //add by linghai end
-	if (on) {
+	if (on == CYTTSP_ON) {
 		cyttsp4_init_i2c_alloc_dma_buffer();
 
 	  mt_set_gpio_mode(GPIO_CTP_RST_PIN, GPIO_CTP_RST_PIN_M_GPIO);
@@ -288,7 +282,7 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 		else
 			pr_err("power on cyttsp4 error\n");
 	}
-	else {
+	else if(on == CYTTSP_OFF){
 			if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER) 
 			{
 				hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
@@ -312,9 +306,10 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 
 	
 
-	/* dev_info(dev, */
-	/* 	"%s: INIT CYTTSP RST gpio=%d and IRQ gpio=%d r=%d\n", */
-	/* 	__func__, CYTTSP4_I2C_IRQ_GPIO, CYTTSP4_I2C_RST_GPIO, rc); */
+	else if(on == CYTTSP_NO_OFF)
+	{
+		cyttsp4_init_i2c_free_dma_buffer();
+	}
 	return rc;
 }
 
@@ -612,13 +607,13 @@ static struct i2c_board_info mtk_ttsp_i2c_tpd=
 		.platform_data = CYTTSP4_I2C_NAME,
 };
 
-static struct cyttsp4_core_info cyttsp4_G700_core_info = {
+struct cyttsp4_core_info cyttsp4_G700_core_info = {
 	.name = CYTTSP4_CORE_NAME,
 	.id = "main_ttsp_core",
 	.adap_id = CYTTSP4_I2C_NAME,
 	.platform_data = &_cyttsp4_G700_core_platform_data,
 };
-static struct cyttsp4_core_info cyttsp4_G610_core_info  = {
+struct cyttsp4_core_info cyttsp4_G610_core_info = {
 	.name = CYTTSP4_CORE_NAME,
 	.id = "main_ttsp_core",
 	.adap_id = CYTTSP4_I2C_NAME,

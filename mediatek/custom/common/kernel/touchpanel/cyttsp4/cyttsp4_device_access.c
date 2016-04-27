@@ -1694,7 +1694,6 @@ static unsigned int getHighPart(int num)
 	}
 
 }
-/* BEGIN PN:DTS2013062405322 ,Added by l00184147, 2013/6/24*/
 #define MAX_CAPACITANCE_LEN 	4096 
 static	int  g_capacitance_count = 0;
 static char *g_touch_capacitance = NULL;
@@ -1711,12 +1710,8 @@ static void record_tp_capacitance(enum check_data_type type, int value)
 
 	return;
 }
-/* END PN:DTS2013062405322 ,Added by l00184147, 2013/6/24*/
 static int out_of_range(enum check_data_type type, int value)
 {
-	//hw_product_type board_id;
-	//board_id=get_hardware_product_version();
-	/* BEGIN PN:DTS2013062405322 ,Added by l00184147, 2013/6/24*/
 	record_tp_capacitance(type, value);
 	/* END PN:DTS2013062405322 ,Added by l00184147, 2013/6/24*/
 	if(1/*(board_id & HW_VER_MAIN_MASK) == HW_G750_VER*/)
@@ -1948,8 +1943,6 @@ static int cyttsp4_get_data_and_check(struct device* dev, retrieve_func ret_func
 	dad->ic_buf[CY_CMD_RET_PNL_OUT_ELMNT_SZ_OFFS_L + cmdParam_ofs] =
 		LOW_BYTE(readElementOffset);
 
-	if (rc < 0)
-		goto cyttsp4_get_panel_data_show_err_sysfs;
 
 	
 	rc = cyttsp4_check_range(type, endian, elementSize, dad, dataIdx);
@@ -2030,7 +2023,6 @@ static inline void cyttsp4_out_to_buf(int ret, char ** buf)
 	}
 }
 
-/* BEGIN PN:DTS2013062405322 ,Added by l00184147, 2013/6/24*/
 static int cyttsp4_check_short_data(struct device *dev)
 {
 	struct cyttsp4_device_access_data *dad = dev_get_drvdata(dev);
@@ -2277,8 +2269,6 @@ cyttsp4_check_short_data_err_release:
  exit:
 	return rc;
 }
-/* END PN:DTS2013062405322 ,Modified by l00184147, 2013/6/24*/
-/* BEGIN PN:DTS2013071007839 ,Added by l00184147, 2013/7/11*/ 
 static void cyttsp4_fw_calibrate(struct cyttsp4_device *ttsp)
 {
 	struct device *dev = &ttsp->dev;
@@ -2370,7 +2360,6 @@ exit:
 	dev_info(dev, "%s\n", __func__);
 	pm_runtime_put(dev);
 }
-/* END PN:DTS2013071007839 ,Added by l00184147, 2013/7/11*/ 
 /*touchpanel mmi test begin*/
 static char *touch_mmi_test_result = NULL;
 static ssize_t cyttsp4_touch_mmi_test_show(struct device *dev,
@@ -2381,11 +2370,8 @@ static ssize_t cyttsp4_touch_mmi_test_show(struct device *dev,
 		pr_err("touch_mmi_test dev is null\n");
 		return -EINVAL;
 	}
-	/* BEGIN PN:DTS2013071007839 ,Added by l00184147, 2013/7/11*/ 
 	struct cyttsp4_device_access_data *dad = dev_get_drvdata(dev);
-	/* END PN:DTS2013071007839 ,Added by l00184147, 2013/7/11*/ 
 	
-	/* BEGIN PN:DTS2013062405322 ,Added by l00184147, 2013/6/24*/
 	/* if g_touch_capacitance is null, alloc memory for it*/
 	if(NULL == g_touch_capacitance)
 	{	
@@ -2399,13 +2385,11 @@ static ssize_t cyttsp4_touch_mmi_test_show(struct device *dev,
 	/*reset the g_capacitance_count and g_touch_capacitance */
 	g_capacitance_count= 0;
 	memset(g_touch_capacitance, 0, MAX_CAPACITANCE_LEN);
-	/* END PN:DTS2013062405322 ,Added by l00184147, 2013/6/24*/
 	
 	rc = cyttsp4_get_panel_data_check(&touch_mmi_test_result);
 	if(rc < 0){
 		pr_err("cyttsp4_get_panel_data_check error\n");
 	}
-	/* BEGIN PN:DTS2013071007839 ,Added by l00184147, 2013/7/11*/ 
 	if(0==strcmp(touch_mmi_test_result,"Fail")){
 		pr_err("cyttsp4_get_panel_data_check Fail,calibrate and attempt to test again\n");
 
@@ -2420,17 +2404,14 @@ static ssize_t cyttsp4_touch_mmi_test_show(struct device *dev,
 		pr_err("cyttsp4_get_panel_data_check error\n");
 		}		
 	}
-	/* END PN:DTS2013071007839 ,Added by l00184147, 2013/7/11*/ 	
 	printk("touch_mmi_test_result : %d\n", rc);
 	printk("touch_mmi_test_result : %s\n", touch_mmi_test_result);
 	
-	/* BEGIN PN:DTS2013062405322 ,Added by l00184147, 2013/6/24*/
 	/*if someting is error, we still want to report info, because it is useful for debugging*/
 	rc = sprintf(buf, "%s\n%s", touch_mmi_test_result,g_touch_capacitance);
 	kfree(g_touch_capacitance);
 	g_touch_capacitance = NULL;
 	return rc;
-	/* END PN:DTS2013062405322 ,Added by l00184147, 2013/6/24*/
 }
 static DEVICE_ATTR(touch_mmi_test, 0664,
 				   cyttsp4_touch_mmi_test_show, NULL);
@@ -2595,8 +2576,8 @@ static int cyttsp4_device_access_probe(struct cyttsp4_device *ttsp)
 	pm_runtime_suspend(dev);
 	pm_runtime_disable(dev);
 	dev_set_drvdata(dev, NULL);
-	kfree(dad);
  cyttsp4_create_touch_mmi_test_failed:
+	kfree(dad);
  cyttsp4_device_access_probe_data_failed:
 	dev_err(dev, "%s failed.\n", __func__);
 	return rc;

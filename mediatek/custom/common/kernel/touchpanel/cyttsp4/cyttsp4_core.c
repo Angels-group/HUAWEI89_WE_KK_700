@@ -4217,7 +4217,7 @@ error_request_irq:
 	destroy_workqueue(cd->startup_work_q);
 error_init:
 	if (pdata->init)
-		pdata->init(pdata, 0, dev);
+		pdata->init(pdata,CYTTSP_NO_OFF, dev);
 	dev_set_drvdata(dev, NULL);
 	kfree(cd);
 error_alloc_data_failed:

@@ -94,7 +94,7 @@ enum cyttsp4_ic_ebid {
 #define IS_BAD_PKT(x)               ((x) & 0x20)
 
 /* Timeout in ms. */
-#define CY_COMMAND_COMPLETE_TIMEOUT	500
+#define CY_COMMAND_COMPLETE_TIMEOUT	3000
 #define CY_WATCHDOG_TIMEOUT		1000
 
 /* drv_debug commands */

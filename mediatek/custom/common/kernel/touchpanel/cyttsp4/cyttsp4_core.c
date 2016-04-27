@@ -32,6 +32,7 @@
 extern void cyttsp4_mtk_gpio_interrupt_register();
 extern void cyttsp4_mtk_gpio_interrupt_enable();
 extern void cyttsp4_mtk_gpio_interrupt_disable();
+extern struct hoster_mode tp_hoster;
 
 
 #include "cyttsp4_bus.h"
@@ -89,6 +90,13 @@ static const u8 ldr_exit[] = {
 static const u8 ldr_err_app[] = {
 	0x01, 0x02, 0x00, 0x00, 0x55, 0xDD, 0x17
 };
+#ifdef HUAWEI_EASY_WAKEUP
+#define IS_DEEP_SLEEP_CONFIGURED(x) \
+		((x) == 0 || (x) == 0xFF)
+#define CY_CMD_OP_WAIT_FOR_EVENT 6
+#define CY_CMD_OP_WAIT_FOR_EVENT_CMD_SZ		2
+static struct device *core_dev_ptr = NULL;
+#endif 
 
 MODULE_FIRMWARE(CY_FW_FILE_G700_NAME);
 MODULE_FIRMWARE(CY_FW_FILE_G610_NAME);
@@ -143,6 +151,10 @@ struct cyttsp4_core_data {
 	int exclusive_waits;
 	atomic_t ignore_irq;
 	bool irq_enabled;
+#ifdef HUAWEI_EASY_WAKEUP
+    u8 easy_wakeup_gesture;
+	bool easy_wakeup_flag;
+#endif
 #ifdef VERBOSE_DEBUG
 	u8 pr_buf[CY_MAX_PRBUF_SIZE];
 #endif
@@ -154,12 +166,15 @@ struct cyttsp4_core_data {
 #endif
 };
 
+unsigned char cyttsp_device_check_ok = 0;
 struct atten_node {
 	struct list_head node;
 	int (*func)(struct cyttsp4_device *);
 	struct cyttsp4_device *ttsp;
 	int mode;
 };
+unsigned long glove_status=0;   //glove status
+static struct cyttsp4_core_data *core_data_status=NULL;
 
 static inline size_t merge_bytes(u8 high, u8 low)
 {
@@ -950,13 +965,247 @@ static void call_atten_cb(struct cyttsp4_core_data *cd,
 	spin_unlock(&cd->spinlock);
 }
 
+#ifdef HUAWEI_EASY_WAKEUP
+static struct input_dev *easy_input_dev = NULL;
+static int huawei_easywakeup_register_inputdev()
+{
+	int ret = 0;
+	easy_input_dev = input_allocate_device();
+	if(easy_input_dev == NULL){
+		printk("can't alloc input device \n");
+		return -EINVAL;
+	}
+	easy_input_dev->name = "huawei_easywakeup";
+   	set_bit(EV_KEY,easy_input_dev->evbit);
+	__set_bit(59, easy_input_dev->keybit);
+	__set_bit(60, easy_input_dev->keybit);
+	__set_bit(61, easy_input_dev->keybit);
+	__set_bit(62, easy_input_dev->keybit);
+	__set_bit(63, easy_input_dev->keybit);
+	ret = input_register_device(easy_input_dev);
+	if(ret){
+		printk("can't register input device \n");
+		return -EINVAL;
+	}	
+	return 0;
+}
+
+static void huawei_easywakeup_report_key(struct cyttsp4_core_data *cd, int reportkey){
+	unsigned long ids = 0;	
+	int key = 0;
+	dev_dbg(cd->dev, "%s: easy-wakeup turn on  lcd  \n",
+				__func__);
+	switch (reportkey){
+		case 1:
+			dev_dbg(cd->dev, "%s: easy-wakeup double event is dectected \n",
+				__func__);
+			key = 59;
+			break;
+		case 2:
+			dev_dbg(cd->dev, "%s: easy-wakeup slip down event is dectected \n",
+				__func__);
+			key = 60;
+			break;
+		case 4:
+			dev_dbg(cd->dev, "%s: easy-wakeup slip  up event is dectected \n",
+				__func__);
+			key = 61;
+			break;
+		case 8:
+			dev_dbg(cd->dev, "%s: easy-wakeup slip  right event is dectected \n",
+				__func__);
+			key = 62;
+			break;
+		case 16:
+			dev_dbg(cd->dev, "%s: easy-wakeup slip  left event is dectected \n",
+				__func__);
+			key = 63;
+			break;
+		default:
+			break;		
+	}
+	input_report_key(easy_input_dev, key, 1);
+	input_sync(easy_input_dev);
+	input_report_key(easy_input_dev, key, 0);
+	input_sync(easy_input_dev);
+}
+
+static int _get_cmd_offs(struct cyttsp4_core_data *cd, u8 mode)
+{
+	struct cyttsp4_sysinfo *si = &cd->sysinfo;
+	struct device *dev = cd->dev;
+	int cmd_ofs;
+
+	switch (mode) {
+	case CY_MODE_CAT:
+		cmd_ofs = CY_REG_CAT_CMD;
+		break;
+	case CY_MODE_OPERATIONAL:
+		cmd_ofs = si->si_ofs.cmd_ofs;
+		break;
+	default:
+		dev_err(dev, "%s: Unsupported mode %x for exec cmd\n",
+				__func__, mode);
+		return -EACCES;
+	}
+
+	return cmd_ofs;
+}
+
+static int _cyttsp4_exec_cmd(struct cyttsp4_core_data *cd, u8 mode,
+		u8 *cmd_buf, size_t cmd_size)
+{
+	
+	struct device *dev = cd->dev;
+	int cmd_ofs;
+	int cmd_param_ofs;
+	u8 command;
+	u8 *cmd_param_buf;
+	size_t cmd_param_size;
+	int rc;
+	dev_err(dev, "%s: _cyttsp4_exec_cmd:Enter\n", __func__);
+	if (mode != cd->mode) {
+		dev_err(dev, "%s: %s (having %x while %x requested)\n",
+				__func__, "attempt to exec cmd in missing mode",
+				cd->mode, mode);
+		return -EACCES;
+	}
+
+	cmd_ofs = _get_cmd_offs(cd, mode);
+	if (cmd_ofs < 0)
+		return -EACCES;
+	dev_err(dev, "%s:cyttsp4_exec_cmd.cmd_buf = %x %x \n", __func__, cmd_buf[0],cmd_buf[1]);
+	cmd_param_ofs = cmd_ofs + 1;
+	cmd_param_buf = cmd_buf + 1;
+	cmd_param_size = cmd_size - 1;
+
+	/* Check if complete is set, so write new command */
+	rc = cyttsp4_adap_read(cd->core->adap, cmd_ofs, &command, 1);
+	if (rc < 0) {
+		dev_err(dev, "%s: Error on read r=%d\n", __func__, rc);
+		return rc;
+	}
+
+	cd->cmd_toggle = GET_TOGGLE(command);
+	cd->int_status |= CY_INT_EXEC_CMD;
+
+	if ((command & CY_CMD_COMPLETE_MASK) == 0)
+		return -EBUSY;
+	
+	/*
+	 * Write new command
+	 * Only update command bits 0:5
+	 * Clear command complete bit & toggle bit
+	 */
+	cmd_buf[0] = cmd_buf[0] & CY_CMD_MASK;
+	dev_err(dev,"%s:Write command parameters first\n ",__func__);
+	/* Write command parameters first */
+	if (cmd_size > 1) {
+		rc = cyttsp4_adap_write(cd->core->adap, cmd_param_ofs, cmd_param_buf,
+				cmd_param_size);
+		if (rc < 0) {
+			dev_err(dev, "%s: Error on write command parameters r=%d\n",
+				__func__, rc);
+			return rc;
+		}
+	}
+	
+	dev_err(dev,"%s:_cyttsp4_exec_cmd:Write command \n ",__func__);
+	/* Write the command */
+	rc = cyttsp4_adap_write(cd->core->adap, cmd_ofs, cmd_buf, 1);
+	if (rc < 0) {
+		dev_err(dev, "%s: Error on write command r=%d\n",
+				__func__, rc);
+		return rc;
+	}
+	printk("_cyttsp4_exec_cmd:Write command complete\n ");
+	return 0;
+}
+
+static int _cyttsp4_put_device_into_easy_wakeup(struct cyttsp4_core_data *cd)
+{
+
+	dev_err(cd->dev, "%s:_cyttsp4_put_device_into_easy_wakeup:Enter\n",
+				__func__);
+	u8 command_buf[CY_CMD_OP_WAIT_FOR_EVENT_CMD_SZ];
+	int rc;
+	dev_vdbg(cd->dev,"cyttsp4 ttsp_ver = %d %d \n",cd->sysinfo.si_ptrs.cydata->ttsp_ver_major ,cd->sysinfo.si_ptrs.cydata->ttsp_ver_minor);
+
+	if(cd->easy_wakeup_flag == 0)
+		cd->easy_wakeup_flag = 1;
+	
+	command_buf[0] = CY_CMD_OP_WAIT_FOR_EVENT;
+	command_buf[1] = cd->easy_wakeup_gesture;
+	
+	rc = _cyttsp4_exec_cmd(cd, CY_MODE_OPERATIONAL, command_buf,
+			CY_CMD_OP_WAIT_FOR_EVENT_CMD_SZ);
+	cd->int_status &= ~CY_INT_EXEC_CMD;
+	if (rc){
+		dev_err(cd->dev, "%s: Error executing command r=%d\n",
+			__func__, rc);
+	}
+
+	return rc;
+}
+
+
+static int _cyttsp4_put_device_into_deep_sleep(struct cyttsp4_core_data *cd,
+		u8 hst_mode_reg)
+{
+	int rc;
+
+	hst_mode_reg |= CY_HST_SLEEP;
+
+	dev_vdbg(cd->dev, "%s: write DEEP SLEEP...\n", __func__);
+	rc = cyttsp4_adap_write(cd->core->adap, CY_REG_BASE, &hst_mode_reg,
+			sizeof(hst_mode_reg));
+	if (rc) {
+		dev_err(cd->dev, "%s: Fail write adapter r=%d\n", __func__, rc);
+		return -EINVAL;
+	}
+	dev_vdbg(cd->dev, "%s: write DEEP SLEEP succeeded\n", __func__);
+
+	if (cd->pdata->power) {
+		dev_dbg(cd->dev, "%s: Power down HW\n", __func__);
+		rc = cd->pdata->power(cd->pdata, 0, cd->dev, &cd->ignore_irq);
+	} else {
+		dev_dbg(cd->dev, "%s: No power function\n", __func__);
+		rc = 0;
+	}
+	if (rc < 0) {
+		dev_err(cd->dev, "%s: HW Power down fails r=%d\n",
+				__func__, rc);
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+static int _cyttsp4_put_device_into_sleep(struct cyttsp4_core_data *cd,
+		u8 hst_mode_reg)
+{
+	int rc;
+	dev_err(cd->dev, "%s: _cyttsp4_put_device_into_sleep:Enter\n",
+				__func__);
+	if (IS_DEEP_SLEEP_CONFIGURED(cd->easy_wakeup_gesture))
+		rc = _cyttsp4_put_device_into_deep_sleep(cd, hst_mode_reg);
+	else
+		rc = _cyttsp4_put_device_into_easy_wakeup(cd);
+
+	return rc;
+}
+#endif
 static irqreturn_t cyttsp4_irq(int irq, void *handle)
 {
 	struct cyttsp4_core_data *cd = handle;
 	struct device *dev = cd->dev;
 	enum cyttsp4_mode cur_mode;
 	u8 cmd_ofs = cd->sysinfo.si_ofs.cmd_ofs;
+#ifdef HUAWEI_EASY_WAKEUP
+	u8 mode[4];
+#else 
 	u8 mode[3];
+#endif
 	int rc;
 	u8 cat_masked_cmd;
 
@@ -1069,11 +1318,37 @@ static irqreturn_t cyttsp4_irq(int irq, void *handle)
 	}
 
 	/* Check whether this IRQ should be ignored (internal) */
+#ifdef HUAWEI_EASY_WAKEUP
+	if (cd->int_status & CY_INT_IGNORE) {	
+		if(cd->easy_wakeup_flag == 0){
+			goto cyttsp4_irq_handshake;
+		}
+		if (IS_DEEP_SLEEP_CONFIGURED(cd->easy_wakeup_gesture)) {
+			/* Put device back to sleep on premature wakeup */
+			dev_dbg(dev, "%s: Put device back to sleep\n",
+				__func__);
+			_cyttsp4_put_device_into_deep_sleep(cd, mode);
+			goto cyttsp4_irq_exit;
+		}
+		/* Check for Wait for Event command */
+		if ((mode[cmd_ofs] & CY_CMD_MASK) == CY_CMD_OP_WAIT_FOR_EVENT
+				&& mode[cmd_ofs] & CY_CMD_COMPLETE) {
+			dev_dbg(dev, "%s: easy-wakeup event is dectected \n",
+				__func__);
+			spin_lock(&cd->spinlock);
+			huawei_easywakeup_report_key(cd,mode[3]&0xffff);
+			spin_unlock(&cd->spinlock);	
+			cd->easy_wakeup_flag = 0;
+			goto cyttsp4_irq_handshake;
+		}
+	}
+#else
 	if (cd->int_status & CY_INT_IGNORE) {
 		dev_vdbg(dev, "%s: Ignoring IRQ\n", __func__);
 		goto cyttsp4_irq_exit;
 	}
 
+#endif
 	/* Check for wake up interrupt */
 	if (cd->int_status & CY_INT_AWAKE) {
 		cd->int_status &= ~CY_INT_AWAKE;
@@ -1222,7 +1497,6 @@ static void cyttsp4_watchdog_timer(unsigned long handle)
 {
 	struct cyttsp4_core_data *cd = (struct cyttsp4_core_data *)handle;
 
-	dev_vdbg(cd->dev, "%s: Timer triggered\n", __func__);
 
 	if (!cd)
 		return;
@@ -1303,6 +1577,7 @@ static int cyttsp4_subscribe_attention_(struct cyttsp4_device *ttsp,
 				 "already subscribed attention",
 				 ttsp, "mode", mode);
 
+			kfree(atten_new);
 			return 0;
 		}
 	}
@@ -1331,11 +1606,11 @@ static int cyttsp4_unsubscribe_attention_(struct cyttsp4_device *ttsp,
 		if (atten->ttsp == ttsp && atten->mode == mode) {
 			list_del(&atten->node);
 			spin_unlock_irqrestore(&cd->spinlock, flags);
-			kfree(atten);
 			dev_vdbg(cd->dev, "%s: %s=%p %s=%d\n",
 				__func__,
 				"unsub for atten->ttsp", atten->ttsp,
 				"atten->mode", atten->mode);
+			kfree(atten);
 			return 0;
 		}
 	}
@@ -2336,6 +2611,14 @@ static int cyttsp4_core_sleep_(struct cyttsp4_core_data *cd)
 		goto error;
 	}
 
+#ifdef HUAWEI_EASY_WAKEUP
+	rc = _cyttsp4_put_device_into_sleep(cd, mode);
+	if (rc) {
+		goto error;
+	} else {
+		goto exit;
+	}
+#else
 	mode |= CY_HST_SLEEP;
 	rc = cyttsp4_adap_write(cd->core->adap, CY_REG_BASE, &mode,
 			sizeof(mode));
@@ -2362,6 +2645,7 @@ static int cyttsp4_core_sleep_(struct cyttsp4_core_data *cd)
 	msleep(50);
 
 	goto exit;
+#endif
 
 error:
 	ss = SS_SLEEP_OFF;
@@ -2800,6 +3084,72 @@ static int cyttsp4_core_resume(struct device *dev)
 	return 0;
 }
 #endif
+int set_signal_disparity(unsigned long status)
+{
+	struct cyttsp4_core_data *cd = core_data_status;
+	unsigned long disparity_val;
+	u8 cmd_buf[CY_CMD_OP_SET_PARA_CMD_SZ];
+	u8 return_buf[CY_CMD_OP_SET_PARA_RET_SZ];
+	u8 scan_type;
+	int rc;
+
+	disparity_val=status;
+	dev_err(cd->dev, "%s: enter disparity_val=%u \n", __func__,
+			disparity_val);
+	mutex_lock(&cd->system_lock);
+	switch (disparity_val) {
+	case CY_SIGNAL_DISPARITY_NONE:
+		cd->opmode = OPMODE_FINGER;
+		scan_type = CY_OP_PARA_SCAN_TYPE_NORMAL;
+		dev_err(cd->dev, "%s: enter CY_SIGNAL_DISPARITY_NONE\n", __func__);
+		break;
+	case CY_SIGNAL_DISPARITY_SENSITIVITY:
+		cd->opmode = OPMODE_GLOVE;
+		scan_type = CY_OP_PARA_SCAN_TYPE_APAMC_MASK |
+				CY_OP_PARA_SCAN_TYPE_GLOVE_MASK;
+		dev_err(cd->dev, "%s: enter CY_SIGNAL_DISPARITY_SENSITIVITY\n", __func__);
+		break;
+	default:
+		mutex_unlock(&cd->system_lock);
+		dev_err(cd->dev, "%s: Invalid signal disparity=%d\n", __func__,
+				(int)disparity_val);
+		goto exit;
+	}
+	mutex_unlock(&cd->system_lock);
+
+	cmd_buf[0] = CY_CMD_OP_SET_PARA;
+	cmd_buf[1] = CY_OP_PARA_SCAN_TYPE;
+	cmd_buf[2] = CY_OP_PARA_SCAN_TYPE_SZ;
+	cmd_buf[3] = scan_type;
+
+	rc = request_exclusive(cd, cd->core, CY_CORE_REQUEST_EXCLUSIVE_TIMEOUT);
+	if (rc < 0) {
+		dev_err(cd->dev, "%s: fail get exclusive ex=%p own=%p\n",
+				__func__, cd->exclusive_dev, cd->core);
+		goto exit;
+	}
+
+	rc = cyttsp4_exec_cmd(cd, CY_MODE_OPERATIONAL,
+			cmd_buf, sizeof(cmd_buf),
+			return_buf, sizeof(return_buf),
+			CY_COMMAND_COMPLETE_TIMEOUT);
+	if (rc < 0) {
+		dev_err(cd->dev, "%s: exec cmd error.\n", __func__);
+		goto exit_release;
+	}
+	dev_err(cd->dev, "%s: return_buf=0x%x,0x%x\n", __func__,
+			return_buf[0],	return_buf[1]);
+exit_release:
+	if (release_exclusive(cd, cd->core) < 0)
+		/* Don't return fail code, mode is already changed. */
+		dev_err(cd->dev, "%s: fail to release exclusive\n", __func__);
+	else
+		dev_err(cd->dev, "%s: pass release exclusive\n", __func__);
+
+exit:
+	return rc;
+	
+}
 //Don't use the pm operation with PM sleep and runtime sleep 
 //static const struct dev_pm_ops cyttsp4_core_pm_ops = {
 //	SET_SYSTEM_SLEEP_PM_OPS(cyttsp4_core_suspend, cyttsp4_core_resume)
@@ -2840,6 +3190,24 @@ static void cyttsp4_core_late_resume(struct early_suspend *h)
 	rc = cyttsp4_core_wake(cd);
 	if (rc < 0) {
 		dev_err(cd->dev, "%s: Error on wake\n", __func__);
+	}
+	if(1==tp_hoster.enable)
+	{
+		dev_err(cd->dev, "%s: enter,set signal_disparity when wake \n", __func__);
+		msleep(60);
+		rc=set_signal_disparity(tp_hoster.enable);
+		if (rc < 0) {
+			dev_err(cd->dev, "%s: Error,set signal_disparity when wake \n", __func__);
+		}
+	}
+	else
+	{
+		dev_err(cd->dev, "%s: enter,set signal_disparity when wake \n", __func__);
+		msleep(60);
+		rc=set_signal_disparity(glove_status);
+		if (rc < 0) {
+			dev_err(cd->dev, "%s: Error,set signal_disparity when wake \n", __func__);
+			}
 	}
 }
 
@@ -3248,6 +3616,7 @@ static ssize_t cyttsp4_signal_disparity_store(struct device *dev,
 		goto exit;
 	}
 
+	glove_status = disparity_val;
 	mutex_lock(&cd->system_lock);
 	switch (disparity_val) {
 	case CY_SIGNAL_DISPARITY_NONE:
@@ -3422,6 +3791,114 @@ exit:
 	return rc;
 }
 
+#ifdef HUAWEI_EASY_WAKEUP
+static ssize_t cyttsp4_easy_wakeup_gesture_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct cyttsp4_core_data *cd = dev_get_drvdata(dev);
+	ssize_t ret;
+
+	mutex_lock(&cd->system_lock);
+	ret = snprintf(buf, CY_MAX_PRBUF_SIZE, "0x%02X\n",
+			cd->easy_wakeup_gesture);
+	mutex_unlock(&cd->system_lock);
+	return ret;
+}
+
+static ssize_t cyttsp4_easy_wakeup_gesture_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t size)
+{
+	struct cyttsp4_core_data *cd = dev_get_drvdata(dev);
+	unsigned long value;
+	int ret;
+
+	ret = kstrtoul(buf, 10, &value);
+	if (ret < 0)
+		return ret;
+
+	if (value > 0xFF && value < 0)
+		return -EINVAL;
+
+	pm_runtime_get_sync(dev);
+
+	mutex_lock(&cd->system_lock);
+	
+	if (cd->sysinfo.ready ){
+		cd->easy_wakeup_gesture = (u8)value&0x7f;
+	}
+	else
+		ret = -ENODEV;
+	mutex_unlock(&cd->system_lock);
+
+	pm_runtime_put(dev);
+
+	if (ret)
+		return ret;
+
+	return size;
+}
+static ssize_t cyttsp4_easy_wakeup_control_store(struct device *dev,
+		struct device_attribute *attr, const char *buf, size_t size)
+{
+	struct cyttsp4_core_data *cd = dev_get_drvdata(dev);
+	unsigned long value;
+	int ret;
+
+	ret = kstrtoul(buf, 10, &value);
+	if (ret < 0)
+		return ret;
+
+	if (value > 0xFF && value < 0)
+		return -EINVAL;
+
+	value = (u8)value&0x7f;
+	if(value == 1){
+		if (!IS_DEEP_SLEEP_CONFIGURED(cd->easy_wakeup_gesture))
+				_cyttsp4_put_device_into_easy_wakeup(cd);
+	}
+	return size;
+}
+static ssize_t hw_cyttsp4_easy_wakeup_gesture_show(struct kobject *dev,
+		struct kobj_attribute *attr, char *buf)
+{
+	struct device *cdev = core_dev_ptr;
+	if (!cdev){
+		printk("%s: device is null\n",__func__);
+		return 0;
+	}
+	return cyttsp4_easy_wakeup_gesture_show(cdev, NULL, buf);
+}
+static ssize_t hw_cyttsp4_easy_wakeup_gesture_store(struct kobject *dev,
+		struct kobj_attribute *attr, const char *buf, size_t size)
+{
+	struct device *cdev = core_dev_ptr;
+	if (!cdev){
+		printk("%s: device is null\n",__func__);
+		return 0;
+	}
+	return cyttsp4_easy_wakeup_gesture_store(cdev, NULL, buf, size);
+}
+static ssize_t hw_cyttsp4_easy_wakeup_control_store(struct kobject *dev,
+		struct kobj_attribute *attr, const char *buf, size_t size)
+{
+	struct device *cdev = core_dev_ptr;
+	if (!cdev){
+		printk("%s: device is null\n",__func__);
+		return 0;
+	}
+	return cyttsp4_easy_wakeup_control_store(cdev, NULL, buf, size);
+}
+static struct kobj_attribute easy_wakeup_gesture = {
+	.attr = {.name = "easy_wakeup_gesture", .mode = (0664)},
+	.show = hw_cyttsp4_easy_wakeup_gesture_show,
+	.store = hw_cyttsp4_easy_wakeup_gesture_store,
+};
+static struct kobj_attribute easy_wakeup_control = {
+	.attr = {.name = "easy_wakeup_control", .mode = (0664)},
+	.show = NULL,
+	.store = hw_cyttsp4_easy_wakeup_control_store,
+};
+#endif
 
 static struct device_attribute attributes[] = {
 	__ATTR(ic_ver, S_IRUGO, cyttsp4_ic_ver_show, NULL),
@@ -3436,6 +3913,14 @@ static struct device_attribute attributes[] = {
 	/* 	cyttsp4_drv_irq_store), */
 	__ATTR(drv_debug, S_IWUSR, NULL, cyttsp4_drv_debug_store),
 	__ATTR(sleep_status, S_IRUSR, cyttsp4_sleep_status_show, NULL),
+#ifdef HUAWEI_EASY_WAKEUP
+	__ATTR(easy_wakeup_gesture, S_IRUSR | S_IWUSR,
+		cyttsp4_easy_wakeup_gesture_show,
+		cyttsp4_easy_wakeup_gesture_store),
+   __ATTR(easy_wakeup_control, S_IRUSR | S_IWUSR,
+		NULL,
+		cyttsp4_easy_wakeup_control_store),
+#endif
 };
 
 static int add_sysfs_interfaces(struct device *dev)
@@ -3495,31 +3980,28 @@ static int tpd_halt=0;
 static struct task_struct *cyttsp4_event_thread = NULL;
 
 void eint_interrupt_handler(void) { 
-  //pr_err("cyttsp4 eint_interrupt_handler\n");
-  //  dump_stack();
 	cyttsp4_event_flag=1; 
 	wake_up_interruptible(&waiter);
+	//delete the irq delay time
 } 
 
 static int cyttsp4_event_handler(void *unused) {
 	int signal;
 	struct cyttsp4_core_data *cd = (struct cyttsp4_core_data *)unused;
 	struct sched_param param = { .sched_priority = RTPM_PRIO_TPD }; 
-	//pr_err("cyttsp4_event_handler \n");
 
 	sched_setscheduler(current, SCHED_RR, &param); 
 
 	do {	
 		set_current_state(TASK_INTERRUPTIBLE);
 		signal = wait_event_interruptible(waiter, cyttsp4_event_flag != 0);
-		//signal = wait_event_freezable(waiter, cyttsp4_event_flag != 0);
-		//pr_err("cyttsp4_event_handler signal:%d cd: 0x%p\n", signal, cd);
 
 		cyttsp4_event_flag = 0;
 		set_current_state(TASK_RUNNING); 
 		if (!signal) {
 			cyttsp4_irq(0, cd);
 		}
+		cyttsp4_mtk_gpio_interrupt_enable(); 
 	} while (!kthread_should_stop());
 	return 0;
 }
@@ -3531,6 +4013,7 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 	struct cyttsp4_core_platform_data *pdata = dev_get_platdata(dev);
 	enum cyttsp4_atten_type type;
 	unsigned long irq_flags;
+	struct kobject *properties_kobj;
 	int rc = 0;
 	int err=0;
 
@@ -3552,9 +4035,33 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 		goto error_alloc_data_failed;
 	}
 
-	/* point to core device and init lists */
+	cd->dev = dev;
+	cd->pdata = pdata;
+	dev_set_drvdata(dev, cd);
+	if (cd->pdata->init) {
+		dev_info(cd->dev, "%s: Init HW\n", __func__);
+		rc = cd->pdata->init(cd->pdata, 1, cd->dev);
+	} else {
+		dev_info(cd->dev, "%s: No HW INIT function\n", __func__);
+		rc = 0;
+	}
+	if (rc < 0)
+		dev_err(cd->dev, "%s: HW Init fail r=%d\n", __func__, rc);
+
+	dev_info(cd->dev, "%s: check cypress device exit or not\n", __func__);
 	cd->core = core;
 	mutex_init(&cd->system_lock);
+	rc = cyttsp4_reset_checkout(cd);
+
+	if(rc < 0) {
+		cyttsp_device_check_ok =0;
+		printk("cyttsp_device_check_ok=%d\n",cyttsp_device_check_ok);
+		dev_err(cd->dev, "%s: there is no cypress device!!! rc=%d\n", __func__, rc);
+        goto error_init;
+    }
+	cyttsp_device_check_ok =1;
+	printk("cyttsp_device_check_ok=%d\n",cyttsp_device_check_ok);
+	/* point to core device and init lists */
 	mutex_init(&cd->adap_lock);
 	for (type = 0; type < CY_ATTEN_NUM_ATTEN; type++)
 		INIT_LIST_HEAD(&cd->atten_list[type]);
@@ -3569,12 +4076,20 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 
 	dev_dbg(dev, "%s: initialize core data\n", __func__);
 	spin_lock_init(&cd->spinlock);
-	cd->dev = dev;
-	cd->pdata = pdata;
+#ifdef HUAWEI_EASY_WAKEUP
+	cd->easy_wakeup_flag = 0;
+	cd->easy_wakeup_gesture = 0x00;
+	rc = huawei_easywakeup_register_inputdev();
+	if(rc){
+		dev_dbg(dev, "%s: easy-wakeup inputdevice create failure\n", __func__);
+	}
+	core_dev_ptr = dev;
+#endif
 #ifdef HUAWEI_SET_FINGER_MODE_BY_DEFAULT
 	/* Initialize with Finger mode */
 	cd->opmode = OPMODE_FINGER;
 #endif
+     /* init cd->startup_work before intertupt*/
       INIT_WORK(&cd->startup_work, cyttsp4_startup_work_function);
 #ifdef MTK
 	cyttsp4_event_thread = kthread_run(cyttsp4_event_handler, cd, "cyttsp4_event_handler");
@@ -3592,24 +4107,7 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 	/* 	goto error_gpio_irq; */
 	/* } */
 #endif	
-	dev_set_drvdata(dev, cd);
 
-	if (cd->pdata->init) {
-		dev_info(cd->dev, "%s: Init HW\n", __func__);
-		rc = cd->pdata->init(cd->pdata, 1, cd->dev);
-	} else {
-		dev_info(cd->dev, "%s: No HW INIT function\n", __func__);
-		rc = 0;
-	}
-	if (rc < 0)
-		dev_err(cd->dev, "%s: HW Init fail r=%d\n", __func__, rc);
-
-	dev_info(cd->dev, "%s: check cypress device exit or not\n", __func__);
-	rc = cyttsp4_reset_checkout(cd);
-	if(rc < 0) {
-		dev_err(cd->dev, "%s: there is no cypress device!!! rc=%d\n", __func__, rc);
-        goto error_request_irq;
-    }
     //INIT_WORK(&cd->startup_work, cyttsp4_startup_work_function);
 
 #ifndef MTK
@@ -3644,6 +4142,32 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 		goto error_attr_create;
 	}
 
+#ifdef HUAWEI_EASY_WAKEUP
+     properties_kobj = kobject_create_and_add("touch_screen_easy_wakeup", NULL);
+        if (!properties_kobj)
+		{
+			printk("%s: create touch_screen_easy_wakeup kobjetct error!\n", __func__);
+			goto error_attr_create;
+		}
+		else
+		{
+			printk("%s: create sys/touch_screen_easy_wakeup successful!\n", __func__);
+		}
+	rc = sysfs_create_file(properties_kobj, &easy_wakeup_gesture.attr);
+	if (rc)
+	{
+		kobject_put(properties_kobj);
+		dev_err(dev,"%s: easy_wakeup_gesture create file error\n", __func__);
+		goto error_attr_create;
+	}
+	rc = sysfs_create_file(properties_kobj, &easy_wakeup_control.attr);
+	if (rc)
+	{
+		kobject_put(properties_kobj);
+		dev_err(dev,"%s: easy_wakeup_control create file error\n", __func__);
+		goto error_attr_create;
+	}
+#endif
 	if (cd->pdata->use_configure_sensitivity) {
 		rc = add_sensitivity_sysfs_interfaces(dev);
 		if (rc < 0) {
@@ -3668,8 +4192,10 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 	if (rc < 0) {
 		dev_err(cd->dev, "%s: Fail initial startup r=%d\n",
 			__func__, rc);
-		goto error_startup;
+		//avoid restart phone with a sick IC chip 
+		goto error_no_pdata;
 	}
+core_data_status= cd;
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	cyttsp4_core_setup_early_suspend(cd);
 #endif
@@ -3678,6 +4204,7 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 	goto no_error;
 
 error_startup:
+	cyttsp4_stop_wd_timer(cd);
 	pm_runtime_disable(dev);
 	cyttsp4_free_si_ptrs(cd);
 error_sens_attr_create:
@@ -3688,9 +4215,9 @@ error_attr_create:
 error_request_irq:
 //error_gpio_irq:
 	destroy_workqueue(cd->startup_work_q);
+error_init:
 	if (pdata->init)
 		pdata->init(pdata, 0, dev);
-error_init:
 	dev_set_drvdata(dev, NULL);
 	kfree(cd);
 error_alloc_data_failed:

@@ -467,6 +467,15 @@ on post-fs-data
     #chmod 0444 /dev/M4U_device
     #chown system media /dev/M4U_device
 
+    # BWC
+    # chmod 0770 /system/bin/bwc #BR: need to verify
+
+	chown system system /sys/bus/ttsp4/devices/main_ttsp_core.cyttsp4_i2c_adapter/signal_disparity
+	chmod 0664 /sys/bus/ttsp4/devices/main_ttsp_core.cyttsp4_i2c_adapter/signal_disparity
+  	chmod 0664 sys/bus/ttsp4/devices/mtk-tpd.main_ttsp_core/touch_holster
+    	chown system system sys/bus/ttsp4/devices/mtk-tpd.main_ttsp_core/touch_holster
+	chmod 0664 sys/bus/platform/devices/hwmsensor/holster
+    	chown radio radio sys/bus/platform/devices/hwmsensor/holster
     # Sensor
     chmod 0660 /dev/hwmsensor
     chmod 0660 /dev/msensor
@@ -1009,6 +1018,7 @@ service servicemanager /system/bin/servicemanager
     onrestart restart surfaceflinger
     onrestart restart drm
     onrestart restart aal
+#    onrestart restart bwc # BR: need to verify
 
 service vold /system/bin/vold
     class core
@@ -1235,6 +1245,12 @@ service media /system/bin/mediaserver
     group audio camera graphics inet net_bt net_bt_admin net_bw_acct drmrpc media sdcard_r nvram ccci radio system
     ioprio rt 4
 
+# BWC service
+#service bwc /system/bin/bwc BR: need to verify
+#    class main
+#    user system
+#    group audio camera graphics inet net_bt net_bt_admin net_bw_acct drmrpc media sdcard_r nvram ccci radio system
+        
 service vtservice /system/bin/vtservice
     class main
     socket soc_vt_tcv dgram 660 radio system
@@ -1545,6 +1561,11 @@ service poad /system/bin/poad
     user system
     group system
     oneshot
+#monitor battery status
+service batterywarning /system/bin/batterywarning
+    class main
+    user shell
+    group shell
 
 service MtkCodecService /system/bin/MtkCodecService
     class main

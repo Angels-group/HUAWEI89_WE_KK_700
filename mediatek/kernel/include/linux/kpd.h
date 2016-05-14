@@ -45,6 +45,15 @@
 #include <asm/uaccess.h>
 
 #include <mach/hal_pub_kpd.h>
+#define GPIO_KPD_KCOL0_PIN         GPIOEXT16
+#define GPIO_KPD_KCOL0_PIN_M_GPIO  GPIO_MODE_00
+#define GPIO_KPD_KCOL0_PIN_M_EINT  GPIO_MODE_02
+#define GPIO_KPD_KCOL0_PIN_M_PWM  GPIO_MODE_03
+#define GPIO_KPD_KCOL0_PIN_M_COL0_USBDL   GPIO_MODE_01
+#define GPIO_KPD_KCOL1_PIN         GPIOEXT17
+#define GPIO_KPD_KCOL1_PIN_M_GPIO  GPIO_MODE_00
+#define GPIO_KPD_KCOL1_PIN_M_EINT  GPIO_MODE_02
+#define GPIO_KPD_KCOL1_PIN_M_COL   GPIO_MODE_01
 
 #define KPD_AUTOTEST	KPD_YES
 #define KPD_DEBUG	KPD_YES
@@ -78,8 +87,6 @@
 #define RELEASE_FOCUS_KEY	_IO('k', 26)
 #define PRESS_CAMERA_KEY	_IO('k', 27)
 #define RELEASE_CAMERA_KEY	_IO('k', 28)
-#define PRESS_POWER_KEY		_IO('k', 30)
-#define RELEASE_POWER_KEY	_IO('k', 31)
 #endif
 #define SET_KPD_KCOL		_IO('k', 29)
 

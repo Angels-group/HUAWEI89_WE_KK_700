@@ -46,94 +46,6 @@ static void kpd_pwrkey_handler(unsigned long data);
 static DECLARE_TASKLET(kpd_pwrkey_tasklet, kpd_pwrkey_handler, 0);
 #endif
 
-#if AEON_FCOVER_SUPPORT
-
-static void fcover_key_handler(unsigned long data);
-static DECLARE_TASKLET(kpd_fcover_tasklet, fcover_key_handler, 0);
-//static u8 kpd_pwrkey_state = !KPD_PWRKEY_POLARITY;
-
-#define EINT_POLARITY_LOW              0
-#define EINT_POLARITY_HIGH             1
-#define EINT_EDGE_SENSITIVE            0
-#define EINT_LEVEL_SENSITIVE           1
-
-
-#define GPIO_FCOVER_EINT_PIN  GPIO_HALL_EINT_PIN //GPIO_ALS_EINT_PIN
-//78
-#define FCOVER_KEY_EINT   CUST_EINT_HALL_NUM   //CUST_EINT_ALS_NUM
-#define FCOVER_KEY_TYPE   CUST_EINT_HALL_TYPE
-// 5
-#define FCOVER_KEY_SENSITIVE EINT_LEVEL_SENSITIVE
-#define FCOVER_KEY_POLARITY  EINT_POLARITY_LOW
-#define FCOVER_KEY_DEBOUNCE  24
-
-static u8 fcover_key_state = !FCOVER_KEY_POLARITY;
-
-//#define KERNEL_OPEN_FCOVER
-
-static int fcover_close_flag=1; // fenggy test
-
-#ifdef KERNEL_OPEN_FCOVER
-extern int lcm_backlight_flag;
-#endif
-
-static void fcover_key_handler(unsigned long data)
-{
-	bool pressed;
-	u8 old_state = fcover_key_state;
-      
-	fcover_key_state = !fcover_key_state;
-	pressed = (fcover_key_state == !!FCOVER_KEY_POLARITY);
-	printk("\r\n leanda fcover_key_eint_handler in pressed=%d, fcover_key_state=%d,old_state=%d \r\n", pressed, fcover_key_state, old_state);
-	if(pressed) // close
-	{
-			fcover_close_flag = 0;
-        	input_report_key(kpd_input_dev, KEY_FCOVER_1, 1);
-        	input_sync(kpd_input_dev);
-        	mdelay(1);
-            input_report_key(kpd_input_dev, KEY_FCOVER_1, 0);
-        	input_sync(kpd_input_dev);
-        	printk("report Linux keycode = %u\n", KEY_FCOVER_1);
-			
-//======================test=========================
-#ifdef KERNEL_OPEN_FCOVER
-			if(lcm_backlight_flag == 1)
-			{
-				kpd_backlight_handler(1, KPD_PWRKEY_MAP);
-				input_report_key(kpd_input_dev, KPD_PWRKEY_MAP, 1);
-				input_sync(kpd_input_dev);
-				printk("report Linux keycode = %u\n", KPD_PWRKEY_MAP);
-				mdelay(1);
-				kpd_backlight_handler(0, KPD_PWRKEY_MAP);
-				input_report_key(kpd_input_dev, KPD_PWRKEY_MAP, 0);
-				input_sync(kpd_input_dev);
-				printk("report Linux keycode = %u\n", KPD_PWRKEY_MAP);
-			}
-#endif
-//======================end===========================			
-	}
-	else  // open
-	{
-			fcover_close_flag = 1;
-        	input_report_key(kpd_input_dev, KEY_FCOVER_2, 1);
-        	input_sync(kpd_input_dev);
-        	mdelay(1);
-             input_report_key(kpd_input_dev, KEY_FCOVER_2, 0);
-        	input_sync(kpd_input_dev);
-        	printk("report Linux keycode = %u\n", KEY_FCOVER_2);
-	}
-
-	/* for detecting the return to old_state */
-	mt_eint_set_polarity(FCOVER_KEY_EINT, old_state);
-	mt_eint_unmask(FCOVER_KEY_EINT);
-}
-
-static void kpd_fcover_eint_handler(void)
-{
-	tasklet_schedule(&kpd_fcover_tasklet);
-	printk("leanda kpd_fcover_eint_handler \r\n");
-}
-#endif
 
 
 /* for keymap handling */
@@ -432,15 +344,10 @@ void kpd_pwrkey_pmic_handler(unsigned long pressed)
 		printk("KPD input device not ready\n");
 		return;
 	}
-	if(kpd_suspend == true && pressed == 1)  
+	if(pressed == 1)  
 	power_key_ps = true;  
 	printk(KPD_SAY "KPD power_key_ps =%d \n", power_key_ps);
-		input_report_key(kpd_input_dev, KPD_PWRKEY_MAP, pressed);
-		input_sync(kpd_input_dev);
-		if (kpd_show_hw_keycode) {
-			printk(KPD_SAY "(%s) HW keycode =%d using PMIC\n",
-			       pressed ? "pressed" : "released", KPD_PWRKEY_MAP);
-		}
+	kpd_pmic_pwrkey_hal(pressed);
 }
 #endif
 
@@ -777,6 +684,7 @@ long kpd_dev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			printk("[AUTOTEST] Not Support CAMERA KEY!!\n");
 		}
 		break;
+
 	case PRESS_POWER_KEY:
 		if(test_bit(KEY_POWER, kpd_input_dev->keybit)){
 			printk("[AUTOTEST] PRESS POWER KEY!!\n");
@@ -849,7 +757,7 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 	kpd_input_dev->name = KPD_NAME;
 	kpd_input_dev->id.bustype = BUS_HOST;
 	kpd_input_dev->id.vendor = 0x2454;
-	kpd_input_dev->id.product = 0x6500;
+	kpd_input_dev->id.product = 0x6575;
 	kpd_input_dev->id.version = 0x0010;
 	kpd_input_dev->open = kpd_open;
 
@@ -884,10 +792,6 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 	__set_bit(KPD_PMIC_RSTKEY_MAP, kpd_input_dev->keybit);
 #endif
 
-#ifdef AEON_FCOVER_SUPPORT
-			   __set_bit(KEY_FCOVER_1, kpd_input_dev->keybit);
-			   __set_bit(KEY_FCOVER_2, kpd_input_dev->keybit);
-#endif
 
 
 	kpd_input_dev->dev.parent = &pdev->dev;
@@ -921,21 +825,6 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
 	mt_eint_register();
 #endif
 
-#ifdef AEON_FCOVER_SUPPORT
-    printk("leanda AEON_FCOVER_SUPPORT \r\n");
-	mt_set_gpio_mode(GPIO_FCOVER_EINT_PIN, GPIO_MODE_01);
-	mt_set_gpio_dir(GPIO_FCOVER_EINT_PIN, GPIO_DIR_IN);
-	mt_set_gpio_pull_enable(GPIO_FCOVER_EINT_PIN, GPIO_PULL_ENABLE);
-	mt_set_gpio_pull_select(GPIO_FCOVER_EINT_PIN, GPIO_PULL_UP);
-
-        
-	mt_eint_set_sens(FCOVER_KEY_EINT, FCOVER_KEY_SENSITIVE);
-	mt_eint_set_hw_debounce(FCOVER_KEY_EINT, FCOVER_KEY_DEBOUNCE);
-	mt_eint_registration(FCOVER_KEY_EINT, FCOVER_KEY_TYPE,
-	                         kpd_fcover_eint_handler, 0);
-	mt_eint_unmask(FCOVER_KEY_EINT);  
-#endif
-//mt_eint_registration(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_TYPE, tpd_eint_interrupt_handler, 1); 
 
 #ifndef KPD_EARLY_PORTING /*add for avoid early porting build err the macro is defined in custom file*/
 	long_press_reboot_function_setting();///API 4 for kpd long press reboot function setting

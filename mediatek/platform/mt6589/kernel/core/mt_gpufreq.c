@@ -70,7 +70,7 @@ static struct mt_gpufreq_power_info mt_gpufreqs_golden_power[] = {
 ***************************/
 static int g_gpufreq_dvfs_disable_count = 0;
 
-static unsigned int g_cur_freq = 286000;
+static unsigned int g_cur_freq = 312000;
 static unsigned int g_cur_volt = 0;
 static unsigned int g_cur_load = 0;
  
@@ -161,7 +161,7 @@ static void mt_gpufreq_set(unsigned int freq_old, unsigned int freq_new, unsigne
 *****************************************************************************/
 void mt_gpufreq_keep_frequency_non_OD_init(unsigned int freq_limit, unsigned int volt_limit)
 {
-    xlog_printk(ANDROID_LOG_INFO, "Power/GPU_DVFS", "mt_gpufreq_keep_frequency_non_OD_init, freq_limit = %d, volt_limit = %d\n", freq_limit, volt_limit);
+    //xlog_printk(ANDROID_LOG_INFO, "Power/GPU_DVFS", "mt_gpufreq_keep_frequency_non_OD_init, freq_limit = %d, volt_limit = %d\n", freq_limit, volt_limit);
 	
     if ((freq_limit == GPU_KEEP_FREQ_NON_OD_BYPASS) && (volt_limit == GPU_KEEP_VOLT_NON_OD_BYPASS))
     {
@@ -209,7 +209,7 @@ EXPORT_SYMBOL(mt_gpufreq_keep_frequency_non_OD);
 ********************************************************************************/
 bool mt_gpufreq_keep_frequency_non_OD_get(void)
 {
-    xlog_printk(ANDROID_LOG_INFO, "Power/GPU_DVFS", "mt_gpufreq_keep_frequency_non_OD_get, mt_gpufreq_keep_specific_frequency = %d\n", mt_gpufreq_keep_specific_frequency);
+    //xlog_printk(ANDROID_LOG_INFO, "Power/GPU_DVFS", "mt_gpufreq_keep_frequency_non_OD_get, mt_gpufreq_keep_specific_frequency = %d\n", mt_gpufreq_keep_specific_frequency);
 	
     return mt_gpufreq_keep_specific_frequency;
 }

@@ -25,7 +25,6 @@
 #include <linux/version.h>
 #include "mach/mtk_ccci_helper.h"
 #include <mach/mtk_memcfg.h>
-#include "mtk_ttsp.c"
 #include <linux/hardware_self_adapt.h>
 
 #define SERIALNO_LEN 32
@@ -1558,11 +1557,19 @@ Function:       // HW_TP_Init
   Return:         //0 or 1
   Others:
 ******************************************************************************/
-int HW_TP_Init(hw_product_type board_id)
+#include "cyttsp4_bus.h"
+extern struct cyttsp4_device_info cyttsp4_mt_virtualkey_info;
+extern struct cyttsp4_device_info cyttsp4_mt_novirtualkey_info;
+extern struct cyttsp4_core_info cyttsp4_G700_core_info;
+extern struct cyttsp4_core_info cyttsp4_G610_core_info;
+int HW_TP_Init(void)
 {
     int retval = 0;
 
     printk("-- HW_TP_Init Begin --\n");
+
+    hw_product_type board_id;
+    board_id = get_hardware_product_version();	
 
     if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
     {
@@ -1579,7 +1586,6 @@ int HW_TP_Init(hw_product_type board_id)
         printk("cyttsp4_register_device error\n");
     }
 
-    cyttsp4_register_device(&cyttsp4_btn_info);
 
     retval = platform_device_register(&mtk_tpd_dev);
 
@@ -1588,51 +1594,6 @@ int HW_TP_Init(hw_product_type board_id)
     return retval;
 }
 
-/******************************************************************************
-Function:       // hw_thread_register_tp 
-  Description:    // TP init function thread
-  Input:          
-  Output:         // init success or fail
-  Return:         //0 or 1
-  Others:
-******************************************************************************/
-int hw_thread_register_tp(void *x)
-{
-    #define TP_THREAD_SLEEP_TIMES (1500)
-
-    hw_product_type board_id;
-    board_id = get_hardware_product_version();
-
-    msleep(TP_THREAD_SLEEP_TIMES);
-
-    return HW_TP_Init(board_id);
-}
-
-/******************************************************************************
-Function:       // hw_register_tp
-  Description:    // TP init function
-  Input:          //
-  Output:         // init success or fail
-  Return:         //0 or 1
-  Others:
-******************************************************************************/
-int hw_register_tp(void)
-{
-    hw_product_type board_id;
-    board_id = get_hardware_product_version(); 
-
-    if (((NORMAL_BOOT == g_boot_mode) || (ALARM_BOOT == g_boot_mode))
-        && ((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER))
-    {
-        kthread_run(hw_thread_register_tp, NULL, "hw_thread_register_TP");
-        return 0;
-    }
-    else
-    {
-        printk("Tsh hw_register_tp not need thread.\n");
-        return HW_TP_Init(board_id);
-    }
-}
 #endif
 
 
@@ -1992,28 +1953,6 @@ __init int mt6589_board_init(void)
 #endif
 #endif
 
-#if defined(HW_HAVE_TP_THREAD)
-#else
-/* Register core and devices */
-hw_product_type board_id;
-board_id=get_hardware_product_version();
-//cyttsp4_register_core_device(&cyttsp4_core_info);
-if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
-	{
-	cyttsp4_register_device(&cyttsp4_mt_virtualkey_info);
-       cyttsp4_register_core_device(&cyttsp4_G700_core_info);
-}
-else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
-	{
-	cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
-       cyttsp4_register_core_device(&cyttsp4_G610_core_info);
-}
-else	{
-	printk("cyttsp4_register_device error\n");
-}
-
-cyttsp4_register_device(&cyttsp4_btn_info);
-#endif
 #if defined(CONFIG_MTK_USBFSH)
 	printk("register musbfsh device\n");
 	retval = platform_device_register(&mt_usb11_dev);
@@ -2043,7 +1982,7 @@ cyttsp4_register_device(&cyttsp4_btn_info);
 
 #if defined(CONFIG_MTK_TOUCHPANEL)
 #if defined(HW_HAVE_TP_THREAD)
-    retval = hw_register_tp();
+    retval = HW_TP_Init();
 #else
     retval = platform_device_register(&mtk_tpd_dev);
 #endif

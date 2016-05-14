@@ -1,3 +1,4 @@
+//add Touch driver for G610-T11
 /*
  * cyttsp4_bus.c
  * Cypress TrueTouch(TM) Standard Product V4 Bus Driver.

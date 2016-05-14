@@ -1,3 +1,4 @@
+//add Touch driver for G610-T11
 /*
  * cyttsp4_btn.h
  * Cypress TrueTouch(TM) Standard Product V4 CapSense touch reports module.

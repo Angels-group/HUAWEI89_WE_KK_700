@@ -1,3 +1,4 @@
+//add Touch driver for G610-T11
 #define DEBUG
 
 /*

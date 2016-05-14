@@ -48,6 +48,7 @@
 extern int tpd_type_cap;
 extern int tpd_load_status;
 
+#if 0
 #define CUST_EINT_TOUCH_PANEL_NUM              5
 //#define CUST_EINT_TOUCH_PANEL_NUM              79
 #define CUST_EINT_TOUCH_PANEL_DEBOUNCE_CN      0
@@ -78,6 +79,8 @@ extern void printGPIO_Status(int gpioIdx);  // printGPIO_Status(GPIO9)
 
 #define GPIO_CTP_RST_PIN_M_GPIO  GPIO_MODE_00
 
+
+#endif
 
 //lm DMA
 #include <linux/dma-mapping.h> 
@@ -157,11 +160,9 @@ extern void eint_interrupt_handler(void) ;
 
 void cyttsp4_mtk_gpio_interrupt_register()
 {
-  //printk("cyttsp4_mtk_gpio_interrupt_register\n");
-	mt_eint_set_sens(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_SENSITIVE);
-	mt_eint_set_hw_debounce(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_DEBOUNCE_CN);
-	mt65xx_eint_registration(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_DEBOUNCE_EN, CUST_EINT_TOUCH_PANEL_POLARITY, eint_interrupt_handler, 1);
-	mt_eint_unmask(CUST_EINT_TOUCH_PANEL_NUM);
+	//mt_eint_set_hw_debounce(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINT_TOUCH_PANEL_DEBOUNCE_CN);
+	mt_eint_registration(CUST_EINT_TOUCH_PANEL_NUM, CUST_EINTF_TRIGGER_FALLING, eint_interrupt_handler, 0);
+	mt_eint_mask(CUST_EINT_TOUCH_PANEL_NUM);
 }
 
 void cyttsp4_mtk_gpio_interrupt_enable()
@@ -179,29 +180,17 @@ static int cyttsp4_xres(struct cyttsp4_core_platform_data *pdata,
 		struct device *dev)
 {
   int rc = 0;
-  dev_info(dev,"%s: RESET CYTTSP gpio=%d ----r=%d start\n", __func__,GPIO_CTP_RST_PIN, rc);
   
-  #if 0
-  mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ONE);  
-  mdelay(2);
-  mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ZERO);  
-  mdelay(4);
-  mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ONE);  
-  mdelay(2);
-  #else 
   mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ONE);  
   msleep(20);
   mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ZERO);  
   msleep(40);
   mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ONE);  
   msleep(20);
-  #endif 
   dev_info(dev,"%s: RESET CYTTSP gpio=%d r=%d\n", __func__,GPIO_CTP_RST_PIN, rc);
   return rc;
 }
-
-//add begin by linghai
-static ssize_t cyttps4_virtualkeys_show(struct kobject *kobj,
+static ssize_t g700_cyttps4_virtualkeys_show(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
 {
 	return sprintf(buf,
@@ -214,21 +203,21 @@ static ssize_t cyttps4_virtualkeys_show(struct kobject *kobj,
 		"\n");
 }
 
-static struct kobj_attribute cyttsp4_virtualkeys_attr = {
+static struct kobj_attribute g700_cyttsp4_virtualkeys_attr = {
 	.attr = {
 		.name = "virtualkeys.mtk-tpd",
 		.mode = S_IRUGO,
 	},
-	.show = &cyttps4_virtualkeys_show,
+	.show = &g700_cyttps4_virtualkeys_show,
 };
 
-static struct attribute *cyttsp4_properties_attrs[] = {
-	&cyttsp4_virtualkeys_attr.attr,
+static struct attribute *g700_cyttsp4_properties_attrs[] = {
+	&g700_cyttsp4_virtualkeys_attr.attr,
 	NULL
 };
 
-static struct attribute_group cyttsp4_properties_attr_group = {
-	.attrs = cyttsp4_properties_attrs,
+static struct attribute_group g700_cyttsp4_properties_attr_group = {
+	.attrs = g700_cyttsp4_properties_attrs,
 };
 // add end by linghai
 
@@ -237,25 +226,39 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 		int on, struct device *dev)
 {
   printk("cyttsp4_init\n");
+	tpd_type_cap = 1;
+	tpd_load_status = 1;
 	hw_product_type board_id;
 	board_id=get_hardware_product_version();
 	int rc = 0;
 //add by linghai begin
 	struct kobject *properties_kobj;
 	int ret;
-//add by linghai end
+	kal_uint16 temp;
 	if (on == CYTTSP_ON) {
 		cyttsp4_init_i2c_alloc_dma_buffer();
 
-	  mt_set_gpio_mode(GPIO_CTP_RST_PIN, GPIO_CTP_RST_PIN_M_GPIO);
-	  mt_set_gpio_dir(GPIO_CTP_RST_PIN, GPIO_DIR_OUT);
-	  mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ONE);
+//	  mt_set_gpio_mode(GPIO_CTP_RST_PIN, GPIO_CTP_RST_PIN_M_GPIO);
+//	  mt_set_gpio_dir(GPIO_CTP_RST_PIN, GPIO_DIR_OUT);
+//	  mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ONE);
 	  
 	  mt_set_gpio_mode(GPIO_CTP_EINT_PIN, GPIO_CTP_EINT_PIN_M_EINT);
 	  mt_set_gpio_dir(GPIO_CTP_EINT_PIN, GPIO_DIR_IN);
 	  mt_set_gpio_pull_enable(GPIO_CTP_EINT_PIN, GPIO_PULL_ENABLE);
 	  mt_set_gpio_pull_select(GPIO_CTP_EINT_PIN, GPIO_PULL_UP);
 
+temp=DRV_Reg(0xF0005920);
+		temp |=(0x04);
+		mt65xx_reg_sync_writew(temp,0xF0005920);
+
+#ifdef HW_HAVE_TP_THREAD		//for HUAWEI
+		//increasing VGP2 to 1.85, please help to measure it from HW
+		hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
+//    		pmic_config_interface(0x0534, 0xd, 0xf, 8);	//+60mV
+    		//pmic_config_interface(0x0534, 0xb, 0xf, 8);	//+100mV
+#else
+			//TODO
+#endif
 		if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
 		{
 			hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
@@ -263,7 +266,7 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 			properties_kobj = kobject_create_and_add("board_properties", NULL);
 			if (properties_kobj)
 			ret = sysfs_create_group(properties_kobj,
-				&cyttsp4_properties_attr_group);
+				&g700_cyttsp4_properties_attr_group);
 			if (!properties_kobj || ret)
 				pr_err("%s: failed to create board_properties\n", __func__);
 		}
@@ -281,6 +284,10 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 		}
 		else
 			pr_err("power on cyttsp4 error\n");
+		//pull up reset pin after poweron the touch controller
+		mt_set_gpio_mode(GPIO_CTP_RST_PIN, GPIO_CTP_RST_PIN_M_GPIO);
+		mt_set_gpio_dir(GPIO_CTP_RST_PIN, GPIO_DIR_OUT);
+		mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ONE);
 	}
 	else if(on == CYTTSP_OFF){
 			if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER) 
@@ -394,6 +401,26 @@ static struct touch_settings cyttsp4_sett_param_size = {
 	.size = ARRAY_SIZE(cyttsp4_param_size),
 	.tag = 0,
 };
+
+
+
+
+#else
+static struct touch_settings cyttsp4_sett_param_regs = {
+	.data = NULL,
+	.size = 0,
+	.tag = 0,
+};
+
+static struct touch_settings cyttsp4_sett_param_size = {
+	.data = NULL,
+	.size = 0,
+	.tag = 0,
+};
+#endif
+
+
+
 #include <Ofilm_G700_config.h>
 static struct touch_settings cyttsp4_G700_sett_ofilm_param_regs = {
        .data = (uint8_t *)&cyttsp4_G700_ofilm_param_regs[0],
@@ -423,6 +450,41 @@ struct cyttsp4_sett_param_map cyttsp4_G700_config_param_map[] = {
 		  },
 		  
 };
+
+static struct cyttsp4_loader_platform_data _cyttsp4_G700_loader_platform_data = {
+	.fw = &cyttsp4_firmware,
+	.param_regs = &cyttsp4_sett_param_regs,
+	.param_size = &cyttsp4_sett_param_size,
+	.param_map =cyttsp4_G700_config_param_map,  
+	.flags = 1,
+};
+
+static struct cyttsp4_core_platform_data _cyttsp4_G700_core_platform_data = {
+	.irq_gpio = CYTTSP4_I2C_IRQ_GPIO,
+	.use_configure_sensitivity = 1,
+	.xres = cyttsp4_xres,
+	.init = cyttsp4_init,
+	.power = cyttsp4_power,
+	.sett = {
+		NULL,	/* Reserved */
+		NULL,	/* Command Registers */
+		NULL,	/* Touch Report */
+		NULL,	/* Cypress Data Record */
+		NULL,	/* Test Record */
+		NULL,	/* Panel Configuration Record */
+		NULL, /* &cyttsp4_sett_param_regs, */
+		NULL, /* &cyttsp4_sett_param_size, */
+		NULL,	/* Reserved */
+		NULL,	/* Reserved */
+		NULL,	/* Operational Configuration Record */
+		NULL, /* &cyttsp4_sett_ddata, *//* Design Data Record */
+		NULL, /* &cyttsp4_sett_mdata, *//* Manufacturing Data Record */
+		NULL,	/* Config and Test Registers */
+		&cyttsp4_sett_btn_keys,	/* button-to-keycode table */
+	},
+	.loader_pdata = & _cyttsp4_G700_loader_platform_data,
+};
+
 #include <Eely_G610_config.h>
 static struct touch_settings cyttsp4_G610_sett_eely_param_regs = {
        .data = (uint8_t *)&cyttsp4_G610_eely_param_regs[0],
@@ -483,26 +545,7 @@ struct cyttsp4_sett_param_map cyttsp4_G610_config_param_map[] = {
 	        },
 		  
 };
-#else
-static struct touch_settings cyttsp4_sett_param_regs = {
-	.data = NULL,
-	.size = 0,
-	.tag = 0,
-};
 
-static struct touch_settings cyttsp4_sett_param_size = {
-	.data = NULL,
-	.size = 0,
-	.tag = 0,
-};
-#endif
-static struct cyttsp4_loader_platform_data _cyttsp4_G700_loader_platform_data = {
-	.fw = &cyttsp4_firmware,
-	.param_regs = &cyttsp4_sett_param_regs,
-	.param_size = &cyttsp4_sett_param_size,
-	.param_map =cyttsp4_G700_config_param_map,  
-	.flags = 1,
-};
 static struct cyttsp4_loader_platform_data _cyttsp4_G610_loader_platform_data = {
 	.fw = &cyttsp4_firmware,
 	.param_regs = &cyttsp4_sett_param_regs,
@@ -534,31 +577,6 @@ static struct cyttsp4_core_platform_data _cyttsp4_G610_core_platform_data = {
 		&cyttsp4_sett_btn_keys,	/* button-to-keycode table */
 	},
 	.loader_pdata = & _cyttsp4_G610_loader_platform_data,
-};
-static struct cyttsp4_core_platform_data _cyttsp4_G700_core_platform_data = {
-	.irq_gpio = CYTTSP4_I2C_IRQ_GPIO,
-	.use_configure_sensitivity = 1,
-	.xres = cyttsp4_xres,
-	.init = cyttsp4_init,
-	.power = cyttsp4_power,
-	.sett = {
-		NULL,	/* Reserved */
-		NULL,	/* Command Registers */
-		NULL,	/* Touch Report */
-		NULL,	/* Cypress Data Record */
-		NULL,	/* Test Record */
-		NULL,	/* Panel Configuration Record */
-		NULL, /* &cyttsp4_sett_param_regs, */
-		NULL, /* &cyttsp4_sett_param_size, */
-		NULL,	/* Reserved */
-		NULL,	/* Reserved */
-		NULL,	/* Operational Configuration Record */
-		NULL, /* &cyttsp4_sett_ddata, *//* Design Data Record */
-		NULL, /* &cyttsp4_sett_mdata, *//* Manufacturing Data Record */
-		NULL,	/* Config and Test Registers */
-		&cyttsp4_sett_btn_keys,	/* button-to-keycode table */
-	},
-	.loader_pdata = &_cyttsp4_G700_loader_platform_data,
 };
 
 #define CY_MAXX 880

@@ -1,3 +1,4 @@
+//add Touch driver for G610-T11
 /*
  * cyttsp4_i2c.h
  * Cypress TrueTouch(TM) Standard Product V4 I2C driver module.

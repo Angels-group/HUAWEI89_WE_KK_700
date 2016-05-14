@@ -1,3 +1,4 @@
+//add Touch driver for G610-T11
 /*
  * cyttsp4_device_access.c
  * Cypress TrueTouch(TM) Standard Product V4 Device Access module.
@@ -46,7 +47,7 @@
 #include <linux/workqueue.h>
 #include "cyttsp4_device_access.h"
 #include "cyttsp4_regs.h"
-//#include <linux/hardware_self_adapt.h>
+#include <linux/hardware_self_adapt.h>
 
 #define CY_MAX_CONFIG_BYTES    256
 #define CY_CMD_INDEX             0
@@ -1991,10 +1992,6 @@ static int cyttsp4_check_raw_data(struct device *dev)
 					dad->heatmap.dataType = CY_SELF_RAW;
 				}
 				/* Start scan */
-				rc = _cyttsp4_exec_scan_cmd(dev);
-				if (rc < 0){
-					return 0;
-				}
 				/* retrieve scan data */
 				rc = cyttsp4_get_data_and_check(dev,  _cyttsp4_ret_scan_data_cmd, type, CY_CMD_IN_DATA_OFFSET_VALUE);
 				if(rc < 0)

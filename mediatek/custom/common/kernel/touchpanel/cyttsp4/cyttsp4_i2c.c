@@ -1,3 +1,4 @@
+//add Touch driver for G610-T11
 /*
  * cyttsp4_i2c.c
  * Cypress TrueTouch(TM) Standard Product V4 I2C Driver module.
@@ -122,7 +123,6 @@ static int cyttsp4_i2c_write(struct cyttsp4_adapter *adap, u8 addr,
 {
 	struct cyttsp4_i2c *ts = dev_get_drvdata(adap->dev);
 	int rc;
-	lmdebug_dump_buf(buf, size, "cyttsp4_i2c_write");
 
 	pm_runtime_get_noresume(adap->dev);
 	mutex_lock(&ts->lock);
@@ -147,7 +147,6 @@ static int cyttsp4_i2c_read(struct cyttsp4_adapter *adap, u8 addr,
 	mutex_unlock(&ts->lock);
 	pm_runtime_put_noidle(adap->dev);
 
-	lmdebug_dump_buf(buf, size, "cyttsp4_i2c_read");
 
 	return rc;
 }
@@ -157,7 +156,7 @@ static struct cyttsp4_ops ops = {
 	.read = cyttsp4_i2c_read,
 };
 
-static int __devinit cyttsp4_i2c_probe(struct i2c_client *client,
+static int cyttsp4_i2c_probe(struct i2c_client *client,
 	const struct i2c_device_id *i2c_id)
 {
 	struct cyttsp4_i2c *ts_i2c;
@@ -221,7 +220,7 @@ error_alloc_data_failed:
 }
 
 /* registered in driver struct */
-static int __devexit cyttsp4_i2c_remove(struct i2c_client *client)
+static int cyttsp4_i2c_remove(struct i2c_client *client)
 {
 	struct device *dev = &client->dev;
 	struct cyttsp4_i2c *ts_i2c = dev_get_drvdata(dev);
@@ -252,7 +251,7 @@ static struct i2c_driver cyttsp4_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = cyttsp4_i2c_probe,
-	.remove = __devexit_p(cyttsp4_i2c_remove),
+	.remove = cyttsp4_i2c_remove,
 	.id_table = cyttsp4_i2c_id,
 };
 

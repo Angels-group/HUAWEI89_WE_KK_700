@@ -1,3 +1,4 @@
+//add Touch driver for G610-T11
 /*
  * cyttsp4_core.c
  * Cypress TrueTouch(TM) Standard Product V4 Core driver module.
@@ -35,7 +36,6 @@ extern void cyttsp4_mtk_gpio_interrupt_disable();
 extern struct hoster_mode tp_hoster;
 
 
-#include "cyttsp4_bus.h"
 
 #include <asm/unaligned.h>
 #include <linux/delay.h>
@@ -55,13 +55,14 @@ extern struct hoster_mode tp_hoster;
 #include <linux/earlysuspend.h>
 #endif
 
+#include "cyttsp4_bus.h"
 #include "cyttsp4_core.h"
 #include "cyttsp4_regs.h"
-#include <linux/hardware_self_adapt.h>
+//#include <linux/hardware_self_adapt.h>
 #include <mach/mt_gpio.h>
 #include <mach/mt_pm_ldo.h>
 #include <cust_gpio_usage.h>
-#define GPIO_CTP_RST_PIN         GPIO140
+//#define GPIO_CTP_RST_PIN         GPIO8
 
 #define MTK
 /* Timeout in ms. */
@@ -2878,18 +2879,14 @@ static int cyttsp4_startup_(struct cyttsp4_core_data *cd)
 	rc = cyttsp4_reset_and_wait(cd);
 	if (rc < 0){
 		dev_err(cd->dev, "%s: Error on h/w reset r=%d\n", __func__, rc);
-		hw_product_type board_id;
-		board_id=get_hardware_product_version();
-		if((HW_G610_VER)&&(HW_G610U_VER_A))
-	  	{
 	  	mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ZERO); 
-		mdelay(100);
-	  	hwPowerDown(MT65XX_POWER_LDO_VGP5, "TP");
-		mdelay(100);
-		hwPowerOn(MT65XX_POWER_LDO_VGP5, VOL_1800, "TP");
-		mdelay(100);
+		msleep(100);
+	  	hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
+		msleep(100);	
+		hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
+		msleep(100);
 		mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ONE);  
-		mdelay(100);
+		msleep(100);
 
 		rc = cyttsp4_reset_and_wait(cd);
 		if (rc < 0)
@@ -2897,7 +2894,6 @@ static int cyttsp4_startup_(struct cyttsp4_core_data *cd)
 			dev_err(cd->dev, "%s: Error on h/w reset2 r=%d\n", __func__, rc);
 		}
 	  	}
-	}
 	/* exit bl into sysinfo mode */
 	dev_vdbg(cd->dev, "%s: write exit ldr...\n", __func__);
 	mutex_lock(&cd->system_lock);

@@ -1,3 +1,4 @@
+//add Touch driver for G610-T11
 /*
  * cyttsp4_device_access.h
  * Cypress TrueTouch(TM) Standard Product V4 Device Access module.

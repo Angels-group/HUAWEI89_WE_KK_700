@@ -87,6 +87,8 @@
 #define RELEASE_FOCUS_KEY	_IO('k', 26)
 #define PRESS_CAMERA_KEY	_IO('k', 27)
 #define RELEASE_CAMERA_KEY	_IO('k', 28)
+#define PRESS_POWER_KEY		_IO('k', 30)
+#define RELEASE_POWER_KEY	_IO('k', 31)
 #endif
 #define SET_KPD_KCOL		_IO('k', 29)
 

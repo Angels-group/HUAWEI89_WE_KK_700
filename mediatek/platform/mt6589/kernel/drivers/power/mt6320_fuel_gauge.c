@@ -2315,7 +2315,7 @@ void fgauge_Normal_Mode_Work(void)
 //2. Calculate battery capacity by VBAT    
     gFG_capacity_by_v = fgauge_read_capacity_by_v();
 
-	if(gFG_booting_counter_I_FLAG == 1) { 
+	if(gFG_booting_counter_I_FLAG == 0) {   // 1 was 0 in jb sources
 		gFG_capacity_by_v_init = gFG_capacity_by_v;
 	}
 //3. Calculate battery capacity by Coulomb Counter

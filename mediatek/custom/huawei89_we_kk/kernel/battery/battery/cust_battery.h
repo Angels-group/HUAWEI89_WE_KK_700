@@ -39,9 +39,9 @@ typedef struct{
 #define CONFIG_USB_IF 						0   
 #define USB_CHARGER_CURRENT_SUSPEND			Cust_CC_0MA		// def CONFIG_USB_IF
 #define USB_CHARGER_CURRENT_UNCONFIGURED	Cust_CC_70MA	// def CONFIG_USB_IF
-#define USB_CHARGER_CURRENT_CONFIGURED		Cust_CC_450MA	// def CONFIG_USB_IF
-#define USB_CHARGER_CURRENT					Cust_CC_450MA
-#define AC_CHARGER_CURRENT					Cust_CC_800MA	
+#define USB_CHARGER_CURRENT_CONFIGURED		Cust_CC_700MA	// def CONFIG_USB_IF
+#define USB_CHARGER_CURRENT					Cust_CC_700MA
+#define AC_CHARGER_CURRENT					Cust_CC_700MA	
 
 /* Battery Meter Solution */
 #define CONFIG_ADC_SOLUTION 	1
@@ -95,5 +95,6 @@ VBAT_TO_PERCENT Batt_VoltToPercent_Table[] = {
 //#define BATTERY_NOTIFY_CASE_0005
 
 //#define CONFIG_POWER_VERIFY
+#define DISABLE_POST_CHARGE //to verify. For reduce charging time ---BR---
 
 #endif /* _CUST_BAT_H_ */ 

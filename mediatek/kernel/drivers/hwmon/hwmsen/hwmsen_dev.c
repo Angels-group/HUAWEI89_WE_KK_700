@@ -45,6 +45,7 @@
 #define MAX_CHOOSE_G_NUM 5
 #define MAX_CHOOSE_M_NUM 5
 
+int holster_status= 0;
 static void hwmsen_early_suspend(struct early_suspend *h);
 static void hwmsen_late_resume(struct early_suspend *h);
 static void update_workqueue_polling_rate(int newDelay);
@@ -83,6 +84,7 @@ static char alsps_name[25];
 static struct sensor_init_info* alsps_init_list[MAX_CHOOSE_G_NUM]= {0}; //modified
 #endif
 
+static bool suspend_status = false;
 /*----------------------------------------------------------------------------*/
 struct dev_context {
     int		polling_running;
@@ -189,7 +191,7 @@ static void hwmsen_work_func(struct work_struct *work)
 			/* report 1 when pressing the power key after screen off*/  
 			if(power_key_ps == true && idx == ID_PROXIMITY)  
 			{  
-				// HWM_LOG("power_key_ps = %d,idx =%d\n",power_key_ps,idx);  
+				HWM_LOG("power_key_ps = %d,idx =%d\n",power_key_ps,idx);  
 				obj_data.data_updata[idx] = 1;  
 				obj_data.sensors_data[idx].values[0] = 1;  
 				power_key_ps = false;  
@@ -331,10 +333,20 @@ static void hwmsen_work_func(struct work_struct *work)
 	}
 
 	if(obj->dc->polling_running == 1)
+	{
+		if((1 == atomic_read(&hwm_obj->early_suspend))&&( holster_status!=1))
+		
+	    {
+	       // slow down polling rate at early suspend  let system have chance to sleep
+	       mod_timer(&obj->timer, jiffies + (HZ/7));
+		   HWM_LOG("hwm_dev early suspend work polling\n");
+	    }
+		else
 		{
 		  mod_timer(&obj->timer, jiffies + atomic_read(&obj->delay)/(1000/HZ)); 
 		}
 	}
+}
 
 /******************************************************************************
  * export functions
@@ -1147,6 +1159,24 @@ static struct file_operations hwmsen_fops = {
 	.unlocked_ioctl = hwmsen_unlocked_ioctl,
 };
 /*----------------------------------------------------------------------------*/
+static ssize_t holster_mode_store(struct device *dev, struct device_attribute *attr, char *buf, size_t count)
+{
+	int rc =0;
+	rc = kstrtoul(buf, 10, &holster_status);
+	HWM_ERR("%s: holster_statu=%d\n", __func__,holster_status);
+	if (rc < 0) {
+		HWM_ERR("%s: Invalid value.\n", __func__);
+		goto exit;
+	}
+	if(1==holster_status)
+	{
+		hwmsen_enable(hwm_obj, 0, 1);
+		hwmsen_set_delay(10, 0);
+	}
+	exit:
+	return count;
+}
+static DEVICE_ATTR(holster, 0664,NULL, holster_mode_store);
 static int hwmsen_probe(struct platform_device *pdev) 
 {
 
@@ -1193,6 +1223,10 @@ static int hwmsen_probe(struct platform_device *pdev)
 	}
 	dev_set_drvdata(hwm_obj->mdev.this_device, hwm_obj);
 	
+	if(device_create_file(&(pdev->dev), &dev_attr_holster)!=0)
+	{
+		HWM_ERR("unable to create attributes!!\n");
+	}
 	if(hwmsen_create_attr(hwm_obj->mdev.this_device) != 0)
 	{
 		HWM_ERR("unable to create attributes!!\n");
@@ -1235,6 +1269,7 @@ static int hwmsen_remove(struct platform_device *pdev)
 static void hwmsen_early_suspend(struct early_suspend *h) 
 {
    //HWM_FUN(f);
+   suspend_status = true;
    atomic_set(&(hwm_obj->early_suspend), 1);
    HWM_LOG(" hwmsen_early_suspend ok------->hwm_obj->early_suspend=%d \n",atomic_read(&hwm_obj->early_suspend));
    return ;
@@ -1243,6 +1278,7 @@ static void hwmsen_early_suspend(struct early_suspend *h)
 static void hwmsen_late_resume(struct early_suspend *h)
 {
    //HWM_FUN(f);
+   suspend_status = false;
    atomic_set(&(hwm_obj->early_suspend), 0);
    HWM_LOG(" hwmsen_late_resume ok------->hwm_obj->early_suspend=%d \n",atomic_read(&hwm_obj->early_suspend));
    return ;
@@ -1403,6 +1439,7 @@ static int gsensor_probe(struct platform_device *pdev)
 	    err = gsensor_init_list[i]->init();
 		if(0 == err)
 		{
+			set_id_value(GSENSOR_ID, gsensor_init_list[i]->name);
 		   strcpy(gsensor_name,gsensor_init_list[i]->name);
 		   HWM_LOG(" gsensor %s probe ok\n", gsensor_name);
 		   break;
@@ -1491,6 +1528,8 @@ static int alsps_sensor_probe(struct platform_device *pdev)
 	    err = alsps_init_list[i]->init();
 		if(0 == err)
 		{
+			/*for engineer mode*/
+			set_id_value(ALS_PS_ID, alsps_init_list[i]->name);
 		   strcpy(alsps_name,alsps_init_list[i]->name);
 		   HWM_LOG(" alsps sensor %s probe ok\n", alsps_name);
 		   break;

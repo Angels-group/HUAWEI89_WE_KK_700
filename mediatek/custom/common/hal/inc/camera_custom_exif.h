@@ -30,7 +30,7 @@ getParamSensorExif()
 /*******************************************************************************
 * Custom EXIF
 ******************************************************************************/
-//#define EN_CUSTOM_EXIF_INFO
+#define EN_CUSTOM_EXIF_INFO
 #define SET_EXIF_TAG_STRING(tag,str) \
     if (strlen((const char*)str) <= 32) { \
         strcpy((char *)pexifApp1Info->tag, (const char*)str); }
@@ -44,9 +44,9 @@ typedef struct customExifInfo_s {
 MINT32 custom_SetExif(void **ppCustomExifTag)
 {
 #ifdef EN_CUSTOM_EXIF_INFO
-#define CUSTOM_EXIF_STRING_MAKE  "custom make"
-#define CUSTOM_EXIF_STRING_MODEL "custom model"
-#define CUSTOM_EXIF_STRING_SOFTWARE "custom software"
+#define CUSTOM_EXIF_STRING_MAKE  "HUAWEI"
+#define CUSTOM_EXIF_STRING_MODEL "G700"
+#define CUSTOM_EXIF_STRING_SOFTWARE "blackrebel@androidiani.com"
 static customExifInfo_t exifTag = {CUSTOM_EXIF_STRING_MAKE,CUSTOM_EXIF_STRING_MODEL,CUSTOM_EXIF_STRING_SOFTWARE};
     if (0 != ppCustomExifTag) {
         *ppCustomExifTag = (void*)&exifTag;

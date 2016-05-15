@@ -50,9 +50,9 @@ getAWBParam()
     {
     	// Chip dependent parameter
     	{
-    	    512, // i4AWBGainOutputScaleUnit: 1.0x = 512 for MT6589
-    	   8191, // i4AWBGainOutputUpperLimit: format 4.9 (11 bit) for MT6589
-    	    256  // i4RotationMatrixUnit: 1.0x = 256 for MT6589
+    	    512, // i4AWBGainOutputScaleUnit: 1.0x = 512
+    	   8191, // i4AWBGainOutputUpperLimit: format 4.9 (11 bit)
+    	    256  // i4RotationMatrixUnit: 1.0x = 256
     	},
 
         // AWB Light source probability look-up table (Max: 100; Min: 0)

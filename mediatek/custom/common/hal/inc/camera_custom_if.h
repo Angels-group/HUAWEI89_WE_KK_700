@@ -112,44 +112,8 @@ typedef struct VdoDynamicFrameRate_S
 VdoDynamicFrameRate_T const& getParamVdoDynamicFrameRate();
 
 
-/*******************************************************************************
-* Custom EXIF (Imgsensor-related)
-*******************************************************************************/
-typedef struct SensorExifInfo_S
-{
-    MUINT32 uFLengthNum;
-    MUINT32 uFLengthDenom;
-    
-} SensorExifInfo_T;
-
-SensorExifInfo_T const& getParamSensorExif();
 
 //
-/*******************************************************************************
-* Custom EXIF
-******************************************************************************/
-#define SET_EXIF_TAG_STRING(tag,str) \
-    if (strlen((const char*)str) <= 32) { \
-        strcpy((char *)pexifApp1Info->tag, (const char*)str); }
-        
-typedef struct customExifInfo_s {
-    unsigned char strMake[32];
-    unsigned char strModel[32];
-    unsigned char strSoftware[32];
-} customExifInfo_t;
-
-MINT32 custom_SetExif(void **ppCustomExifTag);
-/*******************************************************************************
-* Custom EXIF
-******************************************************************************/
-typedef struct customExif_s
-{
-    MBOOL   bEnCustom;
-    MUINT32 u4ExpProgram;
-    
-} customExif_t;
-
-customExif_t const& getCustomExif();
 
 MUINT32 custom_GetFlashlightGain10X(void);  //cotta : added for high current solution
 MUINT32 custom_BurstFlashlightGain10X(void);

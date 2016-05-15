@@ -11,10 +11,9 @@ typedef unsigned char   MUINT8;
 
 #define MAX_DEFECT_PRV_SIZE             (256)  //(INT32)
 #define MAX_DEFECT_CAP_SIZE             (2048)  //5M sensor BPC ratio 0.1% = 5000 pixel (INT32)
-#define MAX_SHADING_Capture_SIZE        (32*32*16)//seanlin 120919 6589 (4096) //INT32
-#define MAX_SHADING_Preview_SIZE        (16*16*16)//seanlin 120919  (1600) //INT32
-#define MAX_SHADING_Video_SIZE          (16*16*16)//seanlin 120919  (1600) //INT32
-#define MAX_EEPROM_SENSOR_CAL_SIZE             (1024) //Byte
+#define MAX_SHADING_Capture_SIZE        (4096) //INT32 
+#define MAX_SHADING_Preview_SIZE        (1600) //INT32 
+#define MAX_SENSOR_CAL_SIZE             (1024) //Byte
 
 typedef enum
 {
@@ -93,10 +92,9 @@ typedef struct
 {
     MUINT32 shading_ctrl1;
     MUINT32 shading_ctrl2;
-    MUINT32 shading_ctrl3;
-    MUINT32 shading_lblock;
-    MUINT32 shading_ratio;
-    MUINT32 shading_gain_th;
+    MUINT32 shading_read_addr;
+    MUINT32 shading_last_blk;
+    MUINT32 shading_ratio_cfg;
 }EEPROM_SHADING_REG_STRUCT, *PEEPROM_SHADING_REG_STRUCT;
 
 typedef struct
@@ -143,7 +141,7 @@ typedef struct
     MUINT16 CaptureSize;
     MUINT32 PreviewTable[3][ MAX_SHADING_Preview_SIZE];
     MUINT32 CaptureTable[3][ MAX_SHADING_Capture_SIZE];
-    MUINT8 SensorCalTable[MAX_EEPROM_SENSOR_CAL_SIZE];
+    MUINT8 SensorCalTable[MAX_SENSOR_CAL_SIZE];
 }EEPROM_SHADING_STRUCT, *PEEPROM_SHADING_STRUCT;
 
 

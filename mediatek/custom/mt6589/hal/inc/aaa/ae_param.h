@@ -53,6 +53,9 @@ typedef struct
     MBOOL   bSkipAEinBirghtRange;            // To skip the AE in some brightness range for meter AE
     MBOOL   bPreAFLockAE;                        // Decide the do AE in the pre-AF or post-AF
     MBOOL   bStrobeFlarebyCapture;          // to Decide the strobe flare by capture image or precapture image
+    MBOOL   bEnableFaceAE;                        // Enable the Face AE or not
+    MBOOL   bEnableMeterAE;                      // Enable the Meter AE or not
+    MBOOL   bFlarMaxStepGapLimitEnable;   //enable max step gap for low light
     MUINT32 u4BackLightStrength;              // strength of backlight condtion
     MUINT32 u4OverExpStrength;               // strength of anti over exposure
     MUINT32 u4HistStretchStrength;           //strength of  histogram stretch
@@ -89,10 +92,18 @@ typedef struct
     MUINT8 uSatBlockAdjustFactor;        // adjust factore , to adjust central weighting target value
     MUINT8 uMeteringYLowBound;           // metering area min Y value
     MUINT8 uMeteringYHighBound;          // metering area max Y value
+    MUINT8 uFaceYLowBound;                 // face area min Y value
+    MUINT8 uFaceYHighBound;                // face area max Y value
+    MUINT8 uFaceCentralWeight;            // face central weighting
     MUINT8 uMeteringYLowSkipRatio;     // metering area min Y value to skip AE
     MUINT8 uMeteringYHighSkipRatio;    // metering area max Y value to skip AE
     MUINT32 u4MeteringStableMax;        // for metering stable using. 100 means the stable point.
     MUINT32 u4MeteringStableMin;          // for metering stable using. 100 means the stable point.    
+    MUINT32 u4MinYLowBound;                 // metering and face boundary min Y value
+    MUINT32 u4MaxYHighBound;                // metering and face boundary max Y value
+    MUINT32 u4MinCWRecommend;           // mini target value
+    MUINT32 u4MaxCWRecommend;          // max target value
+    MINT8   iMiniBVValue;                          // mini BV value.
     MINT8   uAEShutterDelayCycle;         // for AE smooth used.
     MINT8   uAESensorGainDelayCycleWShutter;
     MINT8   uAESensorGainDelayCycleWOShutter;
@@ -102,6 +113,14 @@ typedef struct
     MUINT32 u4FlareStdThrHigh;             // flare std high  256base
     MUINT32 u4FlareStdThrLow;             // flare std low    256 base
     MUINT32 u4PrvCapFlareDiff;             // step diff
+    MUINT32 u4FlareMaxStepGap_Fast;        // max step gap --fast
+    MUINT32 u4FlareMaxStepGap_Slow;        // max step gap --slow
+    MINT32  u4FlarMaxStepGapLimitBV;       //low BV start to limit step gap
+    MUINT32 u4FlareAEStableCount;           //wait AE stable counter
+
+    // v1.2
+    MUINT32 u4InStableThd;  // 0.1EV
+    MUINT32 u4OutStableThd; // 0.1EV
 }strAEParamCFG;
 
 typedef struct 
@@ -110,6 +129,17 @@ typedef struct
     MINT32  Ration;        //  Yarg/Ytarget  *100
     MINT32  move_index;   // move index
 }strAEMOVE;
+typedef struct
+{
+        MUINT32 u4SpeedUpRatio;
+        MUINT32 u4GlobalRatio;
+        MUINT32 u4Bright2TargetEnd;
+        MUINT32 u4Dark2TargetStart;
+        MUINT32 u4B2TEnd;
+        MUINT32 u4B2TStart;
+        MUINT32 u4D2TEnd;
+        MUINT32 u4D2TStart;
+} strAEMovingRatio;
 
 typedef struct
 {
@@ -161,6 +191,15 @@ typedef struct
     MUINT16 AE_HIST[4*AE_HISTOGRAM_BIN]; // 4 histogram x 128 bin (256 bytes)
 } AWBAE_STAT_T;
 
+/*******************************************************************************
+* Dynamic Frame Rate for Video
+******************************************************************************/
+typedef struct VdoDynamicFrameRate_S
+{
+    MBOOL   isEnableDFps;
+    MUINT32 EVThresNormal;
+    MUINT32 EVThresNight;
+} VdoDynamicFrameRate_T;
 //////////////////////////////////////////
 //
 //  AE Parameter structure
@@ -185,7 +224,18 @@ struct AE_PARAMETER
     strAEMOVE *pAEMovingTable;
     strAEMOVE *pAEVideoMovingTable;    
     strAEMOVE *pAEFaceMovingTable;    
+    strAEMOVE *pAETrackingMovingTable;
     strAELimiterTable strAELimiterData;
+    VdoDynamicFrameRate_T strVdoDFps;
+
+    // v1.2
+    MBOOL   bOldAESmooth;                          // Select the new or old AE smooth control
+    MBOOL   bEnableSubPreIndex;                // decide the sub camera re-initial index after come back to camera
+    MUINT32             u4VideoLPFWeight; // 0~24
+    strAEMovingRatio    *pAEMovingRatio;
+    strAEMovingRatio    *pAEVideoMovingRatio;
+    strAEMovingRatio    *pAEFaceMovingRatio;
+    strAEMovingRatio    *pAETrackingMovingRatio;
 };
 
 typedef struct AE_PARAMETER AE_PARAM_T;
@@ -285,6 +335,7 @@ typedef struct
     MBOOL          bAEStable;      // Only used in Preview/Movie
     strEvSetting  EvSetting;
     MINT32         Bv;
+    MINT32         i4EV;
     MUINT32        u4AECondition;
     MINT32         i4DeltaBV;
     MUINT32        u4ISO;          //correspoing ISO , only use in capture
@@ -394,6 +445,12 @@ typedef struct
     MUINT32 u4Weight;
 } AE_BLOCK_WINDOW_T;
 
+typedef enum
+{
+    AE_SENSOR_MAIN = 0,
+    AE_SENSOR_SUB,
+    AE_SENSOR_MAIN2
+} AE_SENSOR_DEV_T;
 //AE Sensor Config information
 typedef struct
 {
@@ -412,6 +469,7 @@ typedef struct
     LIB3A_AE_ISO_SPEED_T eAEISOSpeed;
     MINT32    i4AEMaxFps;    
     MINT32    i4AEMinFps;    
+    AE_SENSOR_DEV_T eSensorDev;
 } AE_INITIAL_INPUT_T;
 
 #if 0

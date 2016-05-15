@@ -39,8 +39,8 @@ typedef struct{
 #define CONFIG_USB_IF 						0   
 #define USB_CHARGER_CURRENT_SUSPEND			Cust_CC_0MA		// def CONFIG_USB_IF
 #define USB_CHARGER_CURRENT_UNCONFIGURED	Cust_CC_70MA	// def CONFIG_USB_IF
-#define USB_CHARGER_CURRENT_CONFIGURED		Cust_CC_450MA	// def CONFIG_USB_IF
-#define USB_CHARGER_CURRENT					Cust_CC_450MA
+#define USB_CHARGER_CURRENT_CONFIGURED		Cust_CC_700MA	// def CONFIG_USB_IF
+#define USB_CHARGER_CURRENT					Cust_CC_700MA
 #define AC_CHARGER_CURRENT					Cust_CC_700MA	
 
 /* Battery Meter Solution */
@@ -50,16 +50,16 @@ typedef struct{
 VBAT_TO_PERCENT Batt_VoltToPercent_Table[] = {
 	/*BattVolt,BattPercent*/
 	{3400,0},
-	{3470,10},
-	{3540,20},
-	{3600,30},
-	{3680,40},
-	{3750,50},
-	{3800,60},
-	{3876,70},
-	{3944,80},
-	{4012,90},
-	{4080,100},
+	{3641,10},
+	{3708,20},
+	{3741,30},
+	{3765,40},
+	{3793,50},
+	{3836,60},
+	{3891,70},
+	{3960,80},
+	{4044,90},
+	{4183,100},
 };
 
 /* Precise Tunning */
@@ -80,19 +80,21 @@ VBAT_TO_PERCENT Batt_VoltToPercent_Table[] = {
 /* Teperature related setting */
 #define RBAT_PULL_UP_R             39000
 #define RBAT_PULL_UP_VOLT          1800
-#define TBAT_OVER_CRITICAL_LOW     67790
+#define TBAT_OVER_CRITICAL_LOW     68237
 //#define TBAT_OVER_CRITICAL_LOW     483954
+#define TBAT_OVER_CRITICAL_LOW     67790
 #define BAT_TEMP_PROTECT_ENABLE    1
 #define BAT_NTC_10 1
 #define BAT_NTC_47 0
 
 /* Battery Notify */
-#define BATTERY_NOTIFY_CASE_0001
+//#define BATTERY_NOTIFY_CASE_0001
 //#define BATTERY_NOTIFY_CASE_0002
 //#define BATTERY_NOTIFY_CASE_0003
 //#define BATTERY_NOTIFY_CASE_0004
 //#define BATTERY_NOTIFY_CASE_0005
 
 //#define CONFIG_POWER_VERIFY
+#define DISABLE_POST_CHARGE //to verify. For reduce charging time ---BR---
 
 #endif /* _CUST_BAT_H_ */ 

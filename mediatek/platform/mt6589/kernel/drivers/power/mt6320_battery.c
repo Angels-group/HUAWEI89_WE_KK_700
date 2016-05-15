@@ -65,6 +65,11 @@
 #include <mach/upmu_hw.h>
 
 #include <mach/mt_sleep.h>
+#include <mach/mt_typedefs.h>
+#include <mach/mt_gpt.h>
+#include <mach/mt_boot.h>
+#include <mach/mt_gpio.h>
+#include <cust_gpio_usage.h>
 
 int Enable_BATDRV_LOG = 2;
 
@@ -439,7 +444,6 @@ int g_chr_event = 0;
 int bat_volt_cp_flag = 0;
 int bat_volt_check_point = 0;
 int g_wake_up_bat=0;
-int g_smartbook_update = 0;
 void wake_up_bat (void)
 {
     if (Enable_BATDRV_LOG == 1) {
@@ -478,10 +482,6 @@ int g_Support_USBIF = 1;
 #define ADC_CHANNEL_READ _IOW('k', 4, int)
 #define BAT_STATUS_READ _IOW('k', 5, int)
 #define Set_Charger_Current _IOW('k', 6, int)
-//add for meta tool-----------------------------------------
-#define Get_META_BAT_VOL _IOW('k', 10, int) 
-#define Get_META_BAT_SOC _IOW('k', 11, int) 
-//add for meta tool-----------------------------------------
 
 static struct class *adc_cali_class = NULL;
 static int adc_cali_major = 0;
@@ -499,7 +499,6 @@ int battery_in_data[1] = {0};
 int battery_out_data[1] = {0};    
 
 int charging_level_data[1] = {0};
-int g_bat_init_flag=0;
 
 kal_bool g_ADC_Cali = KAL_FALSE;
 kal_bool g_ftm_battery_flag = KAL_FALSE;
@@ -1488,7 +1487,6 @@ kal_bool pmic_chrdet_status(void)
 //// Pulse Charging Algorithm 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-int boot_check_once=1;
 
 void select_charging_curret(void)
 {
@@ -3025,15 +3023,6 @@ void BAT_thread(void)
 	}
 	else if(gFG_booting_counter_I_FLAG == 2)
 	{
-		if(boot_check_once==1)
-		{
-			if( upmu_is_chr_det() == KAL_TRUE && BMT_status.SOC == 100) // && get_rtc_spare_fg_value() == 100)
-			{
-				g_bat_full_user_view = KAL_TRUE;                
-				printk("[BATTERY] g_bat_full_user_view=%d\n", g_bat_full_user_view);
-			}
-			boot_check_once=0;
-		}
 		mt6320_ac_update(&mt6320_ac_main);
 		mt6320_usb_update(&mt6320_usb_main);
 		mt6320_battery_update(&mt6320_battery_main);  	
@@ -3249,9 +3238,10 @@ int bat_thread_kthread(void *x)
 #if defined(CONFIG_POWER_EXT)
             BAT_thread();
 #else
-            if(g_FG_init == 1)
+            if(g_FG_init == 0)
             {
-                g_FG_init=2;
+                g_FG_init=1;
+                fgauge_initialization();
                 FGADC_thread_kthread();
                 //sync FG timer
                 FGADC_thread_kthread();
@@ -3288,10 +3278,9 @@ int bat_thread_kthread(void *x)
         
         bat_thread_timeout=0;
 
-        if( g_wake_up_bat==1 && g_smartbook_update != 1)
+        if( g_wake_up_bat==1 )
         {
             g_wake_up_bat=0;
-            g_smartbook_update = 0;
             g_Calibration_FG = 0;
             FGADC_Reset_SW_Parameter();
             
@@ -3465,22 +3454,6 @@ static long adc_cali_ioctl(struct file *file, unsigned int cmd, unsigned long ar
             xlog_printk(ANDROID_LOG_DEBUG, "Power/Battery", "**** unlocked_ioctl : set_Charger_Current:%d\n", charging_level_data[0]);
             break;
 		
-		//add for meta tool-------------------------------
-		case Get_META_BAT_VOL:
-			user_data_addr = (int *)arg;
-            ret = copy_from_user(adc_in_data, user_data_addr, 8);
-			adc_out_data[0] = BMT_status.bat_vol;
-			ret = copy_to_user(user_data_addr, adc_out_data, 8); 
-            xlog_printk(ANDROID_LOG_DEBUG, "Power/Battery", "**** unlocked_ioctl : BAT_VOL:%d\n", adc_out_data[0]);   
-			break;
-		case Get_META_BAT_SOC:
-			user_data_addr = (int *)arg;
-            ret = copy_from_user(adc_in_data, user_data_addr, 8);
-			adc_out_data[0] = bat_volt_check_point;
-			ret = copy_to_user(user_data_addr, adc_out_data, 8); 
-            xlog_printk(ANDROID_LOG_DEBUG, "Power/Battery", "**** unlocked_ioctl : SOC:%d\n", adc_out_data[0]);   
-			break;
-		//add for meta tool-------------------------------
           
         default:
             g_ADC_Cali = KAL_FALSE;
@@ -4182,20 +4155,13 @@ static struct hrtimer battery_kthread_timer;
 static struct task_struct *battery_kthread_hrtimer_task = NULL;
 static int battery_kthread_flag = 0;
 static DECLARE_WAIT_QUEUE_HEAD(battery_kthread_waiter);
-static u8 g_bat_thread_count = 0;
 int battery_kthread_handler(void *unused)
 {
     ktime_t ktime;
 
     do
     {
-        if(g_bat_thread_count < 3) {
-        	xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "g_bat_thread_count : done\n", g_bat_thread_count);
-					g_bat_thread_count += 1;
-					ktime = ktime_set(5, 0);	// 5s, 5* 1000 ms
-				}else {
 		    	ktime = ktime_set(10, 0);	// 10s, 10* 1000 ms
-		    }
     
         wait_event_interruptible(battery_kthread_waiter, battery_kthread_flag != 0);
     
@@ -4220,7 +4186,7 @@ void battery_kthread_hrtimer_init(void)
 {
     ktime_t ktime;
 
-		ktime = ktime_set(5, 0);	// 5s, 5* 1000 ms
+    ktime = ktime_set(10, 0);	// 10s, 10* 1000 ms
 	
     hrtimer_init(&battery_kthread_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
     battery_kthread_timer.function = battery_kthread_hrtimer_func;    
@@ -4235,6 +4201,7 @@ void battery_kthread_hrtimer_init(void)
     xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "battery_kthread_hrtimer_init : done\n" );
 }
 
+int g_bat_init_flag=0;
 static int mt6320_battery_probe(struct platform_device *dev)    
 {
     struct class_device *class_dev = NULL;
@@ -4355,11 +4322,6 @@ static int mt6320_battery_probe(struct platform_device *dev)
     BMT_status.POSTFULL_charging_time = 0;
 
     BMT_status.bat_charging_state = CHR_PRE;
-		if(g_FG_init == 0)
-		{
-		  g_FG_init=1;
-		  fgauge_initialization();
-		}
     //baton initial setting
     //ret=pmic_config_interface(CHR_CON7, 0x01, PMIC_BATON_TDET_EN_MASK, PMIC_BATON_TDET_EN_SHIFT); //BATON_TDET_EN=1
     //ret=pmic_config_interface(AUXADC_CON0, 0x01, PMIC_RG_BUF_PWD_B_MASK, PMIC_RG_BUF_PWD_B_SHIFT); //RG_BUF_PWD_B=1

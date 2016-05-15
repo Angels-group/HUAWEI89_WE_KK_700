@@ -14,7 +14,6 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
-
 #include "camera_custom_types.h"
 #include "tsf_tuning_custom.h"
 #include "TSF_data.h"
@@ -36,7 +35,7 @@ getTSFTuningData(void)
 MBOOL
 isEnableTSF(void)
 {
-    return MFALSE;
+   return MFALSE;
 }
 
 MUINT32

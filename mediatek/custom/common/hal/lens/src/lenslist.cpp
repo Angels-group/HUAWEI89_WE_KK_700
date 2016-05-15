@@ -3,7 +3,7 @@
 #include <fcntl.h>
 #include <math.h>
 
-#include "MediaHal.h"
+#include "MediaTypes.h"
 
 //#include "lens_custom_cfg.h"
 //#include "msdk_lens_exp.h"
@@ -26,9 +26,6 @@ extern PFUNC_GETLENSDEFAULT pFM50AF_getDefaultData;
 extern PFUNC_GETLENSDEFAULT pMT9P017AF_getDefaultData;
 #endif
 
-#if defined(OV8825AF)
-extern PFUNC_GETLENSDEFAULT pOV8825AF_getDefaultData;
-#endif
 
 MSDK_LENS_INIT_FUNCTION_STRUCT LensList[MAX_NUM_OF_SUPPORT_LENS] =
 {
@@ -41,9 +38,6 @@ MSDK_LENS_INIT_FUNCTION_STRUCT LensList[MAX_NUM_OF_SUPPORT_LENS] =
     //{OV5642_SENSOR_ID, SENSOR_DRIVE_LENS_ID, "kd_camera_hw", pSensorDrive_getDefaultData},
 #endif
 
-#if defined(OV8825AF)
-		{OV8825_SENSOR_ID, OV8825AF_LENS_ID, "OV8825AF", pOV8825AF_getDefaultData},
-#endif
 #if defined(FM50AF)
 	{DUMMY_SENSOR_ID, FM50AF_LENS_ID, "FM50AF", pFM50AF_getDefaultData},
 #endif

@@ -34,7 +34,7 @@
 //     - When CUST_HDR_CAPTURE_ALGORITHM==2,
 //          Always take 2 pictures
 #define CUST_HDR_CAPTURE_ALGORITHM   1
-#define CUST_HDR_NEOverExp_Percent   10
+#define CUST_HDR_NEOverExp_Percent   15
 
 // [Prolonged VD]
 //     - Value Range: 1(default)~ (depend on sensor characteristics).

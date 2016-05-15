@@ -3,7 +3,6 @@
 #include <fcntl.h>
 #include <math.h>
 
-//#include "MediaHal.h"
 //#include "msdk_sensor_exp.h"
 #include "camera_custom_sensor.h"
 #if 1// seanlin 120925 for default #if (defined(IMX073_MIPI_RAW)||defined(OV5642_RAW))
@@ -29,7 +28,8 @@
     (NSFeature::SensorInfoBase*(*)()) \
     NSFeature::YUVSensorInfo<_id>::getInstance, \
     NSFeature::YUVSensorInfo<_id>::getDefaultData, \
-    getCalData \
+    getCalData, \
+	NSFeature::YUVSensorInfo<_id>::getNullFlickerPara \
     }
 #define RAW_INFO(_id, name, getCalData)\
     { \
@@ -38,7 +38,8 @@
     (NSFeature::SensorInfoBase*(*)()) \
     NSFeature::RAWSensorInfo<_id>::getInstance, \
     NSFeature::RAWSensorInfo<_id>::getDefaultData, \
-    getCalData \
+    getCalData, \
+	NSFeature::RAWSensorInfo<_id>::getFlickerPara \
     }
 
 

@@ -65,9 +65,9 @@ kernel_modules:
 	@echo "building linux kernel modules..."
 	$(KERNEL_MAKE_CMD) modules
 	$(KERNEL_MAKE_CMD) INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$(KERNEL_MODULE_INSTALL_PATH) INSTALL_MOD_DIR=$(KERNEL_MODULE_INSTALL_PATH) android_modules_install
-ifeq ($(strip $(MTK_WLAN_SUPPORT)),yes)
-	-@ln -sf $(CUR_WLAN_KO_NAME) $(LINK_WLAN_NAME).ko
-endif
+#ifeq ($(strip $(MTK_WLAN_SUPPORT)),yes)
+#	-@ln -sf $(CUR_WLAN_KO_NAME) $(LINK_WLAN_NAME).ko
+#endif
 
 endif #ifeq ($(TARGET_KMODULES),true)
 endif

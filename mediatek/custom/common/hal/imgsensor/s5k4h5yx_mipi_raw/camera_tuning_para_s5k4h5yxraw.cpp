@@ -1,63 +1,3 @@
-/* Copyright Statement:
- *
- * This software/firmware and related documentation ("MediaTek Software") are
- * protected under relevant copyright laws. The information contained herein
- * is confidential and proprietary to MediaTek Inc. and/or its licensors.
- * Without the prior written permission of MediaTek inc. and/or its licensors,
- * any reproduction, modification, use or disclosure of MediaTek Software,
- * and information contained herein, in whole or in part, shall be strictly prohibited.
- */
-/* MediaTek Inc. (C) 2010. All rights reserved.
- *
- * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
- * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
- * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
- * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
- * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
- * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
- * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
- * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
- * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
- * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
- * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
- * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
- * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
- * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
- * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
- * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
- *
- * The following software/firmware and/or related documentation ("MediaTek Software")
- * have been modified by MediaTek Inc. All revisions are subject to any receiver's
- * applicable license agreements with MediaTek Inc.
- */
-
-/********************************************************************************************
- *     LEGAL DISCLAIMER
- *
- *     (Header of MediaTek Software/Firmware Release or Documentation)
- *
- *     BY OPENING OR USING THIS FILE, BUYER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
- *     THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE") RECEIVED
- *     FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO BUYER ON AN "AS-IS" BASIS
- *     ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES, EXPRESS OR IMPLIED,
- *     INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR
- *     A PARTICULAR PURPOSE OR NONINFRINGEMENT. NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY
- *     WHATSOEVER WITH RESPECT TO THE SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY,
- *     INCORPORATED IN, OR SUPPLIED WITH THE MEDIATEK SOFTWARE, AND BUYER AGREES TO LOOK
- *     ONLY TO SUCH THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. MEDIATEK SHALL ALSO
- *     NOT BE RESPONSIBLE FOR ANY MEDIATEK SOFTWARE RELEASES MADE TO BUYER'S SPECIFICATION
- *     OR TO CONFORM TO A PARTICULAR STANDARD OR OPEN FORUM.
- *
- *     BUYER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND CUMULATIVE LIABILITY WITH
- *     RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE, AT MEDIATEK'S OPTION,
-TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE, OR REFUND ANY SOFTWARE LICENSE
- *     FEES OR SERVICE CHARGE PAID BY BUYER TO MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
- *
- *     THE TRANSACTION CONTEMPLATED HEREUNDER SHALL BE CONSTRUED IN ACCORDANCE WITH THE LAWS
- *     OF THE STATE OF CALIFORNIA, USA, EXCLUDING ITS CONFLICT OF LAWS PRINCIPLES.
- ************************************************************************************************/
 #include <utils/Log.h>
 #include <fcntl.h>
 #include <math.h>
@@ -112,7 +52,7 @@ const NVRAM_CAMERA_ISP_PARAM_STRUCT CAMERA_ISP_DEFAULT_VALUE =
         },
         {//06: MFB mixer for ISO 3200
             0x00000000, 0x00000000
-        }
+    }
     }},
     ISPCcmPoly22:{
         75170, // i4R_AVG
@@ -155,11 +95,11 @@ const NVRAM_CAMERA_3A_STRUCT CAMERA_3A_NVRAM_DEFAULT_VALUE =
             128,    // u4GainStepUnit, 1x/8
             26355,     // u4PreExpUnit
             30,     // u4PreMaxFrameRate
-            18376,     // u4VideoExpUnit
+            17763,     // u4VideoExpUnit
             30,     // u4VideoMaxFrameRate
             512,   // u4Video2PreRatio, 1024 base = 1x
-            28273,     // u4CapExpUnit
-            14,     // u4CapMaxFrameRate
+            17763,     // u4CapExpUnit
+            23,     // u4CapMaxFrameRate
             1024,   // u4Cap2PreRatio, 1024 base = 1x
             24,      // u4LensFno, Fno = 2.8
             350     // u4FocusLength_100x
@@ -180,7 +120,7 @@ const NVRAM_CAMERA_3A_STRUCT CAMERA_3A_NVRAM_DEFAULT_VALUE =
         {
             TRUE,            // bEnableBlackLight
             TRUE,            // bEnableHistStretch
-            FALSE,           // bEnableAntiOverExposure
+            TRUE,           // bEnableAntiOverExposure
             TRUE,            // bEnableTimeLPF
             FALSE,            // bEnableCaptureThres
             FALSE,            // bEnableVideoThres
@@ -191,25 +131,25 @@ const NVRAM_CAMERA_3A_STRUCT CAMERA_3A_NVRAM_DEFAULT_VALUE =
             50,                // u4InitIndex
             4,                 // u4BackLightWeight
             32,                // u4HistStretchWeight
-            4,                 // u4AntiOverExpWeight
+            8,                 // u4AntiOverExpWeight
             2,                 // u4BlackLightStrengthIndex
             2,                 // u4HistStretchStrengthIndex
-            2,                 // u4AntiOverExpStrengthIndex
+            4,                 // u4AntiOverExpStrengthIndex
             2,                 // u4TimeLPFStrengthIndex
             {1, 3, 5, 7, 8}, // u4LPFConvergeTable[AE_CCT_STRENGTH_NUM]
             90,                // u4InDoorEV = 9.0, 10 base
             -10,               // i4BVOffset delta BV = -2.3
-            4,                 // u4PreviewFlareOffset
-            4,                 // u4CaptureFlareOffset
-            5,                 // u4CaptureFlareThres
-            4,                 // u4VideoFlareOffset
-            5,                 // u4VideoFlareThres
-            2,                 // u4StrobeFlareOffset
-            2,                 // u4StrobeFlareThres
-            8,                 // u4PrvMaxFlareThres
-            0,                 // u4PrvMinFlareThres
-            8,                 // u4VideoMaxFlareThres
-            0,                 // u4VideoMinFlareThres            
+            8,                 // u4PreviewFlareOffset
+            8,                 // u4CaptureFlareOffset
+            10,                 // u4CaptureFlareThres
+            8,                 // u4VideoFlareOffset
+            10,                 // u4VideoFlareThres
+            4,                 // u4StrobeFlareOffset
+            4,                 // u4StrobeFlareThres
+            10,                 // u4PrvMaxFlareThres
+            4,                 // u4PrvMinFlareThres
+            10,                 // u4VideoMaxFlareThres
+            4,                 // u4VideoMinFlareThres            
             18,                // u4FlatnessThres              // 10 base for flatness condition.
             75                 // u4FlatnessStrength
          }
@@ -239,158 +179,158 @@ const NVRAM_CAMERA_3A_STRUCT CAMERA_3A_NVRAM_DEFAULT_VALUE =
             },
             // rD65Gain (D65 WB gain: 1.0 = 512)
             {
-			   809,	// i4R
-	           512,	// i4G
-			   534	// i4B
+                726,    // i4R
+                512,    // i4G
+                673    // i4B
     		}
     	},
     	// Original XY coordinate of AWB light source
     	{
 		    // Strobe
 		    {
-			    0, 	// i4X
-			    0	// i4Y
+                28,    // i4X
+                -230    // i4Y
 		    },
     		// Horizon
     		{
-			-473,	// i4X
-			-314	// i4Y
+                -489,    // i4X
+                -242    // i4Y
     		},
     		// A
     		{
-			-320,	// i4X
-			-306	// i4Y
+                -380,    // i4X
+                -254    // i4Y
     		},
     		// TL84
     		{
-			-144,	// i4X
-			-285	// i4Y
+                -195,    // i4X
+                -321    // i4Y
     		},
     		// CWF
     		{
-			-94,	// i4X
-			-416	// i4Y
+                -168,    // i4X
+                -384    // i4Y
     		},
     		// DNP
     		{
-			19,	// i4X
-			-263	// i4Y
+                -108,    // i4X
+                -263    // i4Y
     		},
     		// D65
     		{
-			180,	// i4X
-			-217	// i4Y
+                28,    // i4X
+                -230    // i4Y
     		},
 		// DF
 		{
-			0,	// i4X
-			0	// i4Y
+                0,    // i4X
+                -329    // i4Y
     		}
     	},
     	// Rotated XY coordinate of AWB light source
     	{
 		    // Strobe
 		    {
-			    0,	// i4X
-			    0	// i4Y
+                12,    // i4X
+                -231    // i4Y
 		    },
     		// Horizon
     		{
-			-515,	// i4X
-			-235	// i4Y
+                -504,    // i4X
+                -207    // i4Y
     		},
     		// A
     		{
-			-363,	// i4X
-			-251	// i4Y
+                -396,    // i4X
+                -226    // i4Y
     		},
     		// TL84
     		{
-			-186,	// i4X
-			-258	// i4Y
+                -217,    // i4X
+                -306    // i4Y
     		},
     		// CWF
     		{
-			-158,	// i4X
-			-395	// i4Y
+                -194,    // i4X
+                -371    // i4Y
     		},
     		// DNP
     		{
-			-22,	// i4X
-			-262	// i4Y
+                -126,    // i4X
+                -254    // i4Y
     		},
     		// D65
     		{
-			143,	// i4X
-			-242	// i4Y
+                12,    // i4X
+                -231    // i4Y
     		},
 		// DF
 		{
-			0,	// i4X
-			0	// i4Y
+               -23,    // i4X
+                -328    // i4Y
     		}
     	},
 	// AWB gain of AWB light source
 	{
 		// Strobe
 		{
-			512,	// i4R
-			512,	// i4G
-			512     // i4B
+                726,    // i4R
+                512,    // i4G
+                673    // i4B
 		},
 		// Horizon
 		{
-			512,	// i4R
-			512,	// i4G
-			512     // i4B
+                512,    // i4R
+                715,    // i4G
+                1925    // i4B
 		},
 		// A
 		{
-			512,	// i4R
-			512,	// i4G
-			512     // i4B
+                512,    // i4R
+                607,    // i4G
+                1431    // i4B
 		},
 		// TL84
 		{
-			512,	// i4R
-			512,	// i4G
-			512     // i4B
+                607,    // i4R
+                512,    // i4G
+                1031    // i4B
 		},
 		// CWF
 		{
-			512,	// i4R
-			512,	// i4G
-			512     // i4B
+                686,    // i4R
+                512,    // i4G
+                1081    // i4B
 		},
 		// DNP
 		{
-			512,	// i4R
-			512,	// i4G
-			512     // i4B
+                632,    // i4R
+                512,    // i4G
+                846    // i4B
 		},
 		// D65
 		{
-			512,	// i4R
-			512,	// i4G
-			512     // i4B
+                726,    // i4R
+                512,    // i4G
+                673    // i4B
 		},
 		// DF
 		{
-			512,	// i4R
-			512,	// i4G
-			512     // i4B
+                799,    // i4R
+                512,    // i4G
+                799    // i4B
 		}
 	},
     	// Rotation matrix parameter
     	{
-		9,	// i4RotationAngle
-		253,	// i4Cos
-		40	// i4Sin
+            4,    // i4RotationAngle
+            255,    // i4Cos
+            18    // i4Sin
     	},
     	// Daylight locus parameter
     	{
-		-179,	// i4SlopeNumerator
-    		128	// i4SlopeDenominator
+            -145,    // i4SlopeNumerator
+            128    // i4SlopeDenominator
     	},
     	// AWB light area
     	{
@@ -403,111 +343,111 @@ const NVRAM_CAMERA_3A_STRUCT CAMERA_3A_NVRAM_DEFAULT_VALUE =
 		    },
     		// Tungsten
     		{
-            0,    // i4RightBound
-            0,    // i4LeftBound
-            0,    // i4UpperBound
-            0    // i4LowerBound
+            -267,    // i4RightBound
+            -917,    // i4LeftBound
+            -166,    // i4UpperBound
+            -266    // i4LowerBound
     		},
     		// Warm fluorescent
     		{
-            0,    // i4RightBound
-            0,    // i4LeftBound
-            0,    // i4UpperBound
-            0    // i4LowerBound
+            -267,    // i4RightBound
+            -917,    // i4LeftBound
+            -266,    // i4UpperBound
+            -386    // i4LowerBound
     		},
     		// Fluorescent
     		{
-			5000,	// i4RightBound
-			-5000,	// i4LeftBound
-			5000,	// i4UpperBound
-			-5000	// i4LowerBound
+            -176,    // i4RightBound
+            -267,    // i4LeftBound
+            -158,    // i4UpperBound
+            -338    // i4LowerBound
     		},
     		// CWF
     		{
-            0,    // i4RightBound
-            0,    // i4LeftBound
-            0,    // i4UpperBound
-            0    // i4LowerBound
+            -176,    // i4RightBound
+            -267,    // i4LeftBound
+            -338,    // i4UpperBound
+            -421    // i4LowerBound
     		},
     		// Daylight
     		{
-            0,    // i4RightBound
-            0,    // i4LeftBound
-            0,    // i4UpperBound
-            0    // i4LowerBound
+            37,    // i4RightBound
+            -176,    // i4LeftBound
+            -151,    // i4UpperBound
+            -311    // i4LowerBound
     		},
     		// Shade
     		{
-            0,    // i4RightBound
-            0,    // i4LeftBound
-            0,    // i4UpperBound
-            0    // i4LowerBound
+            397,    // i4RightBound
+            37,    // i4LeftBound
+            -151,    // i4UpperBound
+            -311    // i4LowerBound
 		},
 		// Daylight Fluorescent
 		{
-			0,	// i4RightBound
-			0,	// i4LeftBound
-			0,	// i4UpperBound
-			0	// i4LowerBound
+            37,    // i4RightBound
+            -176,    // i4LeftBound
+            -311,    // i4UpperBound
+            -421    // i4LowerBound
     		}
     	},
     	// PWB light area
     	{
     		// Reference area
     		{
-			570,	// i4RightBound
-			-886,	// i4LeftBound
-			-162,	// i4UpperBound
-			-445	// i4LowerBound
+            397,    // i4RightBound
+            -917,    // i4LeftBound
+            0,    // i4UpperBound
+            -421    // i4LowerBound
     		},
     		// Daylight
     		{
-			210,	// i4RightBound
-			-72,	// i4LeftBound
-			-162,	// i4UpperBound
-			-322	// i4LowerBound
+            62,    // i4RightBound
+            -176,    // i4LeftBound
+            -151,    // i4UpperBound
+            -311    // i4LowerBound
     		},
     		// Cloudy daylight
     		{
-			357,	// i4RightBound
-			210,	// i4LeftBound
-			-179,	// i4UpperBound
-			-339	// i4LowerBound
+            162,    // i4RightBound
+            -13,    // i4LeftBound
+            -151,    // i4UpperBound
+            -311    // i4LowerBound
     		},
     		// Shade
     		{
-			517,	// i4RightBound
-			357,	// i4LeftBound
-			-179,	// i4UpperBound
-			-339	// i4LowerBound
+            262,    // i4RightBound
+            -13,    // i4LeftBound
+            -151,    // i4UpperBound
+            -311    // i4LowerBound
     		},
     		// Twilight
     		{
-			-72,	// i4RightBound
-			-232,	// i4LeftBound
-			-162,	// i4UpperBound
-			-322	// i4LowerBound
+            -176,    // i4RightBound
+            -336,    // i4LeftBound
+            -151,    // i4UpperBound
+            -311    // i4LowerBound
     		},
     		// Fluorescent
     		{
-			193,	// i4RightBound
-			-236,	// i4LeftBound
-			-208,	// i4UpperBound
-			-445	// i4LowerBound
+            62,    // i4RightBound
+            -317,    // i4LeftBound
+            -181,    // i4UpperBound
+            -421    // i4LowerBound
     		},
     		// Warm fluorescent
     		{
-			-236,	// i4RightBound
-			-413,	// i4LeftBound
-			-208,	// i4UpperBound
-			-445	// i4LowerBound
+            -296,    // i4RightBound
+            -496,    // i4LeftBound
+            -181,    // i4UpperBound
+            -421    // i4LowerBound
     		},
     		// Incandescent
     		{
-			-236,	// i4RightBound
-			-413,	// i4LeftBound
-			-162,	// i4UpperBound
-			-322	// i4LowerBound
+            -296,    // i4RightBound
+            -496,    // i4LeftBound
+            -151,    // i4UpperBound
+            -311    // i4LowerBound
     		},
             {// Gray World
             5000,    // i4RightBound
@@ -520,45 +460,45 @@ const NVRAM_CAMERA_3A_STRUCT CAMERA_3A_NVRAM_DEFAULT_VALUE =
     	{
     		// Daylight
     		{
-			753,	// i4R
-    		512,	// i4G
-			590	// i4B
+            666,    // i4R
+            512,    // i4G
+            743    // i4B
     		},
     		// Cloudy daylight
     		{
-			947,	// i4R
-    		512,	// i4G
-			451	// i4B
+            786,    // i4R
+            512,    // i4G
+            614    // i4B
     		},
     		// Shade
     		{
-			1097,	// i4R
-    			512,	// i4G
-			368	// i4B
+            837,    // i4R
+            512,    // i4G
+            572    // i4B
     		},
     		// Twilight
     		{
-			609,	// i4R
-    			512,	// i4G
-			790	// i4B
+            519,    // i4R
+            512,    // i4G
+            992    // i4B
     		},
     		// Fluorescent
     		{
-			772,	// i4R
-    			512,	// i4G
-			721	// i4B
+            674,    // i4R
+            512,    // i4G
+            899    // i4B
     		},
     		// Warm fluorescent
     		{
-			577,	// i4R
-    			512,	// i4G
-			1076	// i4B
+            481,    // i4R
+            512,    // i4G
+            1326    // i4B
     		},
     		// Incandescent
     		{
-			516,	// i4R
-    			512,	// i4G
-			992	// i4B
+          435,    // i4R
+            512,    // i4G
+            1214    // i4B
 		},
 		// Gray World
 		{
@@ -571,24 +511,24 @@ const NVRAM_CAMERA_3A_STRUCT CAMERA_3A_NVRAM_DEFAULT_VALUE =
     	{
     		// Tungsten
     		{
-    			50,	// i4SliderValue
-			4451	// i4OffsetThr
+            0,    // i4SliderValue
+            6749    // i4OffsetThr
     		},
     		// Warm fluorescent
     		{
-    			50,	// i4SliderValue
-			4451	// i4OffsetThr
+            0,    // i4SliderValue
+            4812    // i4OffsetThr
     		},
     		// Shade
     		{
-    			50,	// i4SliderValue
-			787	// i4OffsetThr
+            0,    // i4SliderValue
+            1342    // i4OffsetThr
     		},
     		// Daylight WB gain
     		{
-			713,	// i4R
-    			512,	// i4G
-			637	// i4B
+            611,    // i4R
+            512,    // i4G
+            821    // i4B
 		},
 		// Preference gain: strobe
 		{
@@ -651,11 +591,11 @@ const NVRAM_CAMERA_3A_STRUCT CAMERA_3A_NVRAM_DEFAULT_VALUE =
     		},
     		// Rotated X coordinate
     		{
-			-658,	// i4RotatedXCoordinate[0]
-			-506,	// i4RotatedXCoordinate[1]
-			-329,	// i4RotatedXCoordinate[2]
-			-165,	// i4RotatedXCoordinate[3]
-    			0	// i4RotatedXCoordinate[4]
+                -516,    // i4RotatedXCoordinate[0]
+                -408,    // i4RotatedXCoordinate[1]
+                -229,    // i4RotatedXCoordinate[2]
+                -138,    // i4RotatedXCoordinate[3]
+                0    // i4RotatedXCoordinate[4]
     		}
     	}
     },

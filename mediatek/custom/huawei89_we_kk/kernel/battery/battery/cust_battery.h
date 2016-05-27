@@ -95,6 +95,6 @@ VBAT_TO_PERCENT Batt_VoltToPercent_Table[] = {
 //#define BATTERY_NOTIFY_CASE_0005
 
 //#define CONFIG_POWER_VERIFY
-#define DISABLE_POST_CHARGE //to verify. For reduce charging time ---BR---
+//#define DISABLE_POST_CHARGE //to verify. For reduce charging time ---BR---
 
 #endif /* _CUST_BAT_H_ */ 

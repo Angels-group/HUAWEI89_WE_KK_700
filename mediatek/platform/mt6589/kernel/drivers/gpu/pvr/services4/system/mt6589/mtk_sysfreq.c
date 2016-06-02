@@ -53,16 +53,16 @@ void MtkInitSetFreqTbl(unsigned int tbltype)
 
 PVRSRV_ERROR MTKSetFreqInfo(unsigned int freq, unsigned int tbltype)
 {
-    printk(" freq= %d", freq);
+    //printk(" freq= %d", freq);
 
 #if defined(MTK_FREQ_OD_INIT)
     if (freq > GPU_DVFS_F5)
     {
 //        mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_15V);
-        mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_15V);
+        mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_05V);
         mt65xx_reg_sync_writel((readl(CLK_CFG_8)&0xffcffff)|0x30000, CLK_CFG_8);
 //        mt_gpufreq_keep_frequency_non_OD_init(GPU_MMPLL_D5, GPU_POWER_VRF18_1_15V);
-        mt_gpufreq_keep_frequency_non_OD_init(GPU_MMPLL_D5, GPU_POWER_VRF18_1_15V);
+        mt_gpufreq_keep_frequency_non_OD_init(GPU_MMPLL_D5, GPU_POWER_VRF18_1_05V);
     }
     else
 #endif

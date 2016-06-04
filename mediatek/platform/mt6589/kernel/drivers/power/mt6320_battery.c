@@ -403,7 +403,8 @@ int gBAT_counter_15=1;
 int gFG_can_reset_flag = 1;
 
 //cut off to full
-#define POST_CHARGING_TIME 30 * 60 // 30mins
+//#define POST_CHARGING_TIME 30 * 60 // 30mins
+#define POST_CHARGING_TIME 1 * 60 // 1min
 int post_charging_time=0;
 
 extern kal_int32 gFG_booting_counter_I_FLAG;

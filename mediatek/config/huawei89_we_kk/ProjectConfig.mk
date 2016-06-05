@@ -805,13 +805,13 @@ MTK_GEMINI_3SIM_SUPPORT = no
 MTK_GEMINI_4SIM_SUPPORT = no
 
 # Enable or disable the 3G Switch feature
-MTK_GEMINI_3G_SWITCH = no
+MTK_GEMINI_3G_SWITCH = yes
 
 # Enable or disable the GEMINI enhancement
 MTK_GEMINI_ENHANCEMENT = yes
 
 # Add MTK_GEMINI_SMART_3G_SWITCH feature.
-#MTK_GEMINI_SMART_3G_SWITCH = 1
+MTK_GEMINI_SMART_3G_SWITCH = 1
 
 # To identify which GPS chip be used on current platform.
 MTK_GPS_CHIP = MTK_GPS_MT6628
@@ -973,7 +973,7 @@ MTK_MMUMAP_SUPPORT = no
 # support mobile management framewokrs & support CTA security certificateion Level 1
 MTK_MOBILE_MANAGEMENT = yes
 MTK_MOTION_TRACK_SUPPORT = no
-MTK_MT519X_FM_SUPPORT = no
+
 # mt6592 720p msdc1 doesn't support SDR104
 MTK_MSDC1_NOT_SUPPORT_SDR104 = no
 MTK_MT6333_SUPPORT = no
@@ -1123,7 +1123,7 @@ MTK_PROGUARD_SHRINKING = no
 
 # "yes" means enable QQbrowser feature and "no" disable.
 MTK_QVGA_LANDSCAPE_SUPPORT = no
-MTK_QQBROWSER_SUPPORT = yes
+MTK_QQBROWSER_SUPPORT = no
 MTK_RADIOOFF_POWER_OFF_MD = no
 
 # These feature options are for AT&T related  requirement
@@ -1495,5 +1495,5 @@ MTK_BUILD_VERNO = ALPS.KK1.MP5.V1.3
 AEON_FCOVER_SUPPORT = no
 
 #CONFIG_MTK_FORCE_CPU_89T = yes
-HUAWEI_EASY_WAKEUP = yes
+#HUAWEI_EASY_WAKEUP = yes
 

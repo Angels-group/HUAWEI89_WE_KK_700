@@ -305,10 +305,10 @@ kal_int32 gfg_percent_check_point=50;
 kal_int32 gFG_BATT_CAPACITY_init_high_current = 1200;
 kal_int32 gFG_BATT_CAPACITY_aging = 1200;
 int volt_mode_update_timer=0;
-int volt_mode_update_time_out=4; // 40 sec// 1mins
+int volt_mode_update_time_out=6; //1mins
 kal_int32 g_rtc_fg_soc = 0;
 
-#define AGING_TUNING_VALUE 93
+#define AGING_TUNING_VALUE 103
 
 kal_int32 chip_diff_trim_value_4_0=0;
 kal_int32 chip_diff_trim_value=0; // unit = 0.1
@@ -1724,28 +1724,23 @@ kal_int32 fgauge_read_r_bat_by_v(kal_int32 voltage)
     int i = 0, saddles = 0;
     R_PROFILE_STRUC_P profile_p;
     kal_int32 ret_r = 0;
-    //add by yangyan
-    kal_int32 compensate_r = 50;                         //modify by yangyan
 
     profile_p = fgauge_get_profile_r_table(TEMPERATURE_T);
     if (profile_p == NULL)
     {
         xlog_printk(ANDROID_LOG_WARN, "Power/Battery", "[FGADC] fgauge get R-Table profile : fail !\r\n");
-   //     return (profile_p+0)->resistance;                              //modify by yangyan
-	 return (((profile_p+0)->resistance)+compensate_r);     //modify by yangyan
+        return (profile_p+0)->resistance;
     }
 
     saddles = fgauge_get_saddles_r_table();
 
     if (voltage > (profile_p+0)->voltage)
     {
-     //   return (profile_p+0)->resistance;                              //modify by yangyan
-	 return (((profile_p+0)->resistance)+compensate_r);     //modify by yangyan
+        return (profile_p+0)->resistance; 
     }    
     if (voltage < (profile_p+saddles-1)->voltage)
     {
-     //   return (profile_p+saddles-1)->resistance;                               //modify by yangyan
-	 return (((profile_p+saddles-1)->resistance)+compensate_r);     //modify by yangyan
+        return (profile_p+saddles-1)->resistance; 
     }
 
     for (i = 0; i < saddles - 1; i++)
@@ -1764,7 +1759,7 @@ kal_int32 fgauge_read_r_bat_by_v(kal_int32 voltage)
         }
     }
 
-    return (ret_r+compensate_r);                        //modify by yangyan
+    return ret_r;
 }
 
 kal_int32 fgauge_read_v_by_capacity(int bat_capacity)

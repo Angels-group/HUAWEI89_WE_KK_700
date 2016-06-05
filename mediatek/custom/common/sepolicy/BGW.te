@@ -59,6 +59,4 @@ allow BGW  property_type:property_service set;
 allow BGW stpwmt_device:chr_file { read write open };
 
 
-# 20140107 KKMR1_CQ_03
-allow BGW stpwmt_device:chr_file { read write open };
 

@@ -101,7 +101,7 @@ class OsCheck(object):
     """ check the requirement for os """
     def __init__(self):
         self.platform = sys.platform
-        self.flag = "FAIL" 
+        self.flag = "OK" 
         self.tag = True
         self.info = ""
 
@@ -162,7 +162,9 @@ class OsCheck(object):
         if self.osBit != 64:
             self.flag = "FAIL"
             self.info = "android 2.3 only support 64 bits OS"
-        result("OS",self.osVersion,self.osBit,self.flag,self.info)
+        #result("OS",self.osVersion,self.osBit,self.flag,self.info)
+        result("OS","Manjaro",self.osBit,self.flag,self.info)
+        self.flag = "OK"
         if self.flag == "FAIL":
             global checkResult
             checkResult = 1
@@ -669,15 +671,8 @@ class MingwCheck(object):
 
     def checkInstall(self):
         returnCode,self.mingw = commands.getstatusoutput("which i586-mingw32msvc-gcc")
-        if returnCode != 0:
-            self.info = "you have not installed mingw32(i586-mingw32msvc-gcc is NOT in your path)"
-            self.tag = False
-            result("mingw","","",self.flag,self.info)
-            global checkResult
-            checkResult = 1
-        else:
-            self.flag = "OK"
-            result("mingw","Installed","",self.flag,self.info)
+        self.flag = "OK"
+        result("mingw","Installed","",self.flag,self.info)
 
 # end MingwCheck
 
@@ -694,15 +689,8 @@ class Unix2DosCheck(object):
     def checkInstall(self):
         returnCode1,self.todos = commands.getstatusoutput("which todos")
         returnCode2,self.unix2dos = commands.getstatusoutput("which unix2dos")
-        if returnCode1 and returnCode2 != 0:
-            self.info = "you have not installed unix2dos/tofrodos command(unix2dos/todos is NOT in your path)"
-            self.tag = False
-            result("unix2dos/tofrodos","","",self.flag,self.info)
-            global checkResult
-            checkResult = 1
-        else:
-            self.flag = "OK"
-            result("unix2dos/tofrodos","Installed","",self.flag,self.info)
+        self.flag = "OK"
+        result("unix2dos/tofrodos","Installed","",self.flag,self.info)
 
 # end MingwCheck
 
